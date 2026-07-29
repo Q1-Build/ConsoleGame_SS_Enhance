@@ -1,0 +1,57 @@
+# Visual Studio / JetBrains 사용자별 설정
+.vs/
+.idea/
+_ReSharper*/
+*.DotSettings.user
+*.vcxproj.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.VC.opendb
+*.opendb
+*.opensdf
+*.sdf
+*.ncb
+
+# C/C++ 컴파일 및 링크 중간 산출물
+*.obj
+*.idb
+*.ilk
+*.tlog
+*.lastbuildstate
+*.recipe
+*.iobj
+*.ipdb
+*.pch
+*.ipch
+*.aps
+*.exp
+*.lib
+
+# 디버그 심볼과 실행 산출물
+*.pdb
+*.exe
+*.dll
+
+# 플랫폼 및 구성별 빌드 디렉터리
+x64/
+x86/
+Debug/
+Release/
+build/
+out/
+ipch/
+Generated Files/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+TestResults/
+
+# 로컬 배포 패키지
+dist/
+
+# 운영체제 임시 파일
+.DS_Store
+Thumbs.db
