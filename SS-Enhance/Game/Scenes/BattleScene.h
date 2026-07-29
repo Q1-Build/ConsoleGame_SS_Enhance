@@ -50,6 +50,7 @@ namespace ss
         [[nodiscard]] SceneTransition UpdateCompleted(float deltaSeconds);
         void ShowBossAttackResult(const BossAttackResult& result);
         void BeginBattleResult();
+        void BeginRetreat();
         void ApplySelectedReward();
 
         [[nodiscard]] BattleReward GetSelectedReward() const noexcept;
@@ -64,6 +65,7 @@ namespace ss
         BattleSettlement settlement_;
         BattlePhase phase_ = BattlePhase::Introduction;
         RewardChoice rewardChoice_ = RewardChoice::Gold;
+        bool wasRetreat_ = false;
 
         // 장면 단계, 격파 연출, 메시지 유지와 화면 흔들림 시간을 초 단위로 관리한다.
         float phaseTimeSeconds_ = 0.0f;

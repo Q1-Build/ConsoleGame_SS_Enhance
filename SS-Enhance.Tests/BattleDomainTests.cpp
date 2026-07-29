@@ -3,6 +3,7 @@
 #include "Game/Domain/BattleSettlement.h"
 #include "Game/Domain/ForgeRules.h"
 #include "Game/Domain/PlayerProgress.h"
+#include "Game/Domain/ProgressionRules.h"
 
 #include <iostream>
 #include <optional>
@@ -96,6 +97,26 @@ namespace
         Expect(session.IsComplete(), "zero player health did not complete battle");
         Expect(!session.IsPlayerVictorious(), "player death was treated as victory");
         Expect(!session.TryAttack().has_value(), "attack was accepted after player death");
+    }
+
+    void TestAttackTimingPreservesFrameOvershoot()
+    {
+        ss::BattleSession session(
+            MakeBoss(
+                100,
+                {{1.0f, 0.5f, 10, ss::AttackTelegraph::Honest}}),
+            4);
+
+        // 첫 공격을 0.1초 지나 처리해도 초과 시간이 다음 공격 주기에서 사라지지 않아야 한다.
+        Expect(
+            session.Update(1.1f).has_value(),
+            "first delayed attack did not resolve");
+        Expect(
+            !session.Update(0.85f).has_value(),
+            "next attack resolved before its carried-over delay");
+        Expect(
+            session.Update(0.06f).has_value(),
+            "frame overshoot was discarded from the next attack");
     }
 
     void TestBossDefinitionsHaveDistinctSequences()
@@ -233,6 +254,50 @@ namespace
             "easy penalty did not start at +10");
     }
 
+    void TestProgressionBoundaries()
+    {
+        Expect(
+            ss::ProgressionRules::GetSwordLevelCap(-1) == 4,
+            "negative victory count changed cap");
+        Expect(
+            ss::ProgressionRules::GetSwordLevelCap(0) == 4,
+            "initial cap is not +4");
+        Expect(
+            ss::ProgressionRules::GetSwordLevelCap(1) == 8,
+            "first victory did not unlock +8");
+        Expect(
+            ss::ProgressionRules::GetSwordLevelCap(2) == 12,
+            "second victory did not unlock +12");
+        Expect(
+            ss::ProgressionRules::GetSwordLevelCap(3) == 12,
+            "final cap exceeded +12");
+
+        Expect(
+            !ss::ProgressionRules::GetAvailableBoss(3, 0).has_value(),
+            "ember boss unlocked below +4");
+        Expect(
+            ss::ProgressionRules::GetAvailableBoss(4, 0) ==
+                ss::BossType::EmberWarden,
+            "ember boss did not unlock at +4");
+        Expect(
+            ss::ProgressionRules::GetAvailableBoss(8, 1) ==
+                ss::BossType::StormSentinel,
+            "storm boss did not unlock at +8");
+        Expect(
+            ss::ProgressionRules::GetAvailableBoss(12, 2) ==
+                ss::BossType::MemoryDevourer,
+            "memory boss did not unlock at +12");
+        Expect(
+            !ss::ProgressionRules::GetAvailableBoss(12, 3).has_value(),
+            "boss remained available after the ending");
+        Expect(
+            !ss::ProgressionRules::IsEndingAchieved(2),
+            "ending unlocked before all bosses were defeated");
+        Expect(
+            ss::ProgressionRules::IsEndingAchieved(3),
+            "ending did not unlock after all bosses were defeated");
+    }
+
     template <typename TestFunction>
     void RunTest(
         const char* testName,
@@ -275,6 +340,11 @@ int main()
         passedCount,
         failedCount);
     RunTest(
+        "AttackTimingPreservesFrameOvershoot",
+        TestAttackTimingPreservesFrameOvershoot,
+        passedCount,
+        failedCount);
+    RunTest(
         "BossDefinitionsHaveDistinctSequences",
         TestBossDefinitionsHaveDistinctSequences,
         passedCount,
@@ -287,6 +357,11 @@ int main()
     RunTest(
         "DifficultyFailurePenaltyThresholds",
         TestDifficultyFailurePenaltyThresholds,
+        passedCount,
+        failedCount);
+    RunTest(
+        "ProgressionBoundaries",
+        TestProgressionBoundaries,
         passedCount,
         failedCount);
 

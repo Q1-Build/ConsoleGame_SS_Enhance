@@ -16,9 +16,10 @@ namespace ss
             PlayerProgress& progress,
             BattleReward reward);
 
-        /// 검 강화 단계를 한 단계 낮추며 이미 결과가 적용됐다면 false를 반환한다.
+        /// 패배 또는 후퇴 시 검 단계를 하나 낮추며 이미 적용됐다면 false를 반환한다.
         [[nodiscard]] bool ApplyDefeat(PlayerProgress& progress);
 
+        /// 승리 또는 패배 결과가 이미 진행도에 반영됐는지 반환한다.
         [[nodiscard]] bool IsApplied() const noexcept;
 
     private:

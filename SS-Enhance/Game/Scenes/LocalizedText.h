@@ -40,7 +40,7 @@ namespace ss
             Language language,
             Difficulty difficulty) noexcept;
 
-        /// 선택한 게임 난이도의 비용, 제한 시간과 온도 특성을 설명한다.
+        /// 선택한 게임 난이도의 비용, 제한 시간, 실패 기준과 냉각 특성을 설명한다.
         [[nodiscard]] static std::wstring GetDifficultyDescription(
             Language language,
             Difficulty difficulty);

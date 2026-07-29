@@ -76,7 +76,7 @@ namespace ss
 
         [[nodiscard]] const BossAttackStep& GetCurrentStep() const noexcept;
         [[nodiscard]] BossAttackResult ResolveBossAttack();
-        void AdvanceAttackStep() noexcept;
+        void AdvanceAttackStep(float overdueSeconds) noexcept;
 
         // 전투 진입 시 고정되는 규칙 값과 승패를 결정하는 체력 상태다.
         BossDefinition boss_;

@@ -111,7 +111,7 @@ SS-Enhance.Tests/
 | Game/Domain | `Difficulty`, `DifficultyTuning` | 난이도 값과 비용·냉각·제한 시간·실패 페널티 시작 단계 튜닝 |
 | Game/Domain | `BossBattle`, `BattleRules` | 데이터 기반 공격 시퀀스와 공격·방어·반격 피해 및 선택 보상 규칙 |
 | Game/Domain | `BattleSession` | 체력, 공격 시퀀스, 정직·교란·가짜 예고와 방어 상태 |
-| Game/Domain | `BattleSettlement` | 승리 보상 또는 패배 페널티의 일회성 반영 |
+| Game/Domain | `BattleSettlement` | 승리 보상 또는 패배·후퇴 페널티의 일회성 반영 |
 | Game/Domain | `ProgressionRules` | 강화 구간 상한, 보스 해금과 엔딩 조건 |
 | Game/Domain | `PlayerProgress` | 검, 재화, 기억 조각, 강화 기록 관리 |
 | Game/Domain | `ForgeRules` | 강화 비용, 확률, 성공과 실패 결과 판정 |
@@ -131,7 +131,7 @@ SS-Enhance.Tests/
 | Game/Scenes | `ForgingScene` | 실시간 입력 해석, 제련 진행과 판정 요청 |
 | Game/Scenes | `ResultScene` | 강화 결과와 단계 변화 연출 |
 | Composition Root | `main` | 플랫폼 구현 생성, 의존성 주입과 실행 |
-| Tests | `BattleDomainTests` | 방어, 공격 시퀀스, 사망 입력 차단과 결과 중복 방지 검증 |
+| Tests | `BattleDomainTests` | 방어, 공격 시퀀스 시간, 진행 경계, 실패 기준과 결과 중복 방지 검증 |
 
 ## 계층별 책임
 

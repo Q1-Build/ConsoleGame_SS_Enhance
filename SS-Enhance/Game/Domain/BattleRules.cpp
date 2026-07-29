@@ -4,7 +4,7 @@
 
 namespace ss
 {
-    BossDefinition BattleRules::GetBossDefinition(BossType bossType) noexcept
+    BossDefinition BattleRules::GetBossDefinition(BossType bossType)
     {
         // 보스별 수치와 시퀀스를 한 표처럼 모아 패턴과 보상 밸런스를 함께 조정한다.
         switch (bossType)

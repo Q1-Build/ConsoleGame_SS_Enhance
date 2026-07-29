@@ -197,6 +197,7 @@ namespace ss
         BossAttackResult result;
         result.guardQuality = pendingGuard_;
         const BossAttackStep resolvedStep = GetCurrentStep();
+        const float overdueSeconds = std::max(0.0f, -bossAttackTimeLeft_);
 
         // 잔상은 방어 상태를 소비하지만 피해를 주지 않아 다음 진짜 공격을 다시 읽게 한다.
         if (resolvedStep.telegraph == AttackTelegraph::Feint)
@@ -223,17 +224,21 @@ namespace ss
         ++resolvedAttackCount_;
 
         // 다음 단계의 짧은 간격은 장면에 전달해 연속 공격 경고를 즉시 강조한다.
-        AdvanceAttackStep();
+        AdvanceAttackStep(overdueSeconds);
         result.hasQuickFollowUp =
             !IsComplete() &&
             GetCurrentStep().delaySeconds <= 0.8f;
         return result;
     }
 
-    void BattleSession::AdvanceAttackStep() noexcept
+    void BattleSession::AdvanceAttackStep(float overdueSeconds) noexcept
     {
+        assert(overdueSeconds >= 0.0f);
         attackStepIndex_ =
             (attackStepIndex_ + 1) % boss_.attackSequence.size();
-        bossAttackTimeLeft_ = GetCurrentStep().delaySeconds;
+
+        // 공격 판정을 지난 프레임의 초과 시간을 다음 단계에 넘겨 프레임별 누적 지연을 막는다.
+        bossAttackTimeLeft_ =
+            GetCurrentStep().delaySeconds - overdueSeconds;
     }
 }

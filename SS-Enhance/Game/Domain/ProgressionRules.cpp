@@ -1,38 +1,57 @@
 #include "Game/Domain/ProgressionRules.h"
 
 #include <algorithm>
+#include <array>
 
 namespace ss
 {
+    namespace
+    {
+        // 보스 순서와 도전 단계를 같은 인덱스로 관리해 진행 조건을 추가할 때 분기 누락을 막는다.
+        constexpr std::array<BossType, 3> kBossOrder =
+        {
+            BossType::EmberWarden,
+            BossType::StormSentinel,
+            BossType::MemoryDevourer
+        };
+        constexpr std::array<int, kBossOrder.size()> kBossMilestones =
+        {
+            4,
+            8,
+            12
+        };
+    }
+
     int ProgressionRules::GetSwordLevelCap(int bossVictoryCount) noexcept
     {
-        // 각 보스가 다음 네 단계의 강화를 해금하며 최종 상한은 +12다.
-        const int safeVictoryCount = std::clamp(bossVictoryCount, 0, 2);
-        return 4 + safeVictoryCount * 4;
+        const int safeVictoryCount = std::clamp(
+            bossVictoryCount,
+            0,
+            static_cast<int>(kBossMilestones.size()) - 1);
+        return kBossMilestones[static_cast<std::size_t>(safeVictoryCount)];
     }
 
     std::optional<BossType> ProgressionRules::GetAvailableBoss(
         int swordLevel,
         int bossVictoryCount) noexcept
     {
-        // 처치 순서를 진행도와 함께 검사해 이미 쓰러뜨린 보스가 다시 해금되지 않게 한다.
-        if (bossVictoryCount == 0 && swordLevel >= 4)
+        if (bossVictoryCount < 0 ||
+            bossVictoryCount >= static_cast<int>(kBossOrder.size()))
         {
-            return BossType::EmberWarden;
+            return std::nullopt;
         }
-        if (bossVictoryCount == 1 && swordLevel >= 8)
+
+        const std::size_t bossIndex =
+            static_cast<std::size_t>(bossVictoryCount);
+        if (swordLevel >= kBossMilestones[bossIndex])
         {
-            return BossType::StormSentinel;
-        }
-        if (bossVictoryCount == 2 && swordLevel >= 12)
-        {
-            return BossType::MemoryDevourer;
+            return kBossOrder[bossIndex];
         }
         return std::nullopt;
     }
 
     bool ProgressionRules::IsEndingAchieved(int bossVictoryCount) noexcept
     {
-        return bossVictoryCount >= 3;
+        return bossVictoryCount >= static_cast<int>(kBossOrder.size());
     }
 }

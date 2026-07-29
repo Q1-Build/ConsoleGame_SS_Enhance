@@ -5,10 +5,76 @@
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
 #include <sstream>
 
 namespace ss
 {
+    namespace
+    {
+        /// 한 보스의 한국어·영어 화면 문구를 함께 보관하는 표현 전용 데이터다.
+        struct BossTextSet
+        {
+            std::wstring_view koreanName;
+            std::wstring_view englishName;
+            std::wstring_view koreanPattern;
+            std::wstring_view englishPattern;
+            std::wstring_view koreanIntroduction;
+            std::wstring_view englishIntroduction;
+            std::wstring_view koreanDefeat;
+            std::wstring_view englishDefeat;
+        };
+
+        constexpr std::array<BossTextSet, 3> kBossTexts =
+        {{
+            {
+                L"잿불의 문지기",
+                L"EMBER WARDEN",
+                L"긴 차징 뒤 이어지는 강한 일격",
+                L"LONG CHARGE, CRUSHING BLOW",
+                L"갑옷 틈의 잿불이 거대한 불길로 번집니다.",
+                L"EMBERS BETWEEN ITS PLATES ERUPT INTO FLAME.",
+                L"무거운 갑옷이 잿가루가 되어 무너집니다.",
+                L"THE HEAVY ARMOR COLLAPSES INTO ASH."
+            },
+            {
+                L"폭풍의 파수꾼",
+                L"STORM SENTINEL",
+                L"점점 빨라지는 삼연격",
+                L"AN ACCELERATING TRIPLE COMBO",
+                L"세 번의 천둥이 서로 다른 박자로 울립니다.",
+                L"THREE THUNDERS ANSWER IN DIFFERENT RHYTHMS.",
+                L"마지막 번개가 끊어지며 폭풍이 잠잠해집니다.",
+                L"THE FINAL BOLT BREAKS, AND THE STORM FALLS SILENT."
+            },
+            {
+                L"기억을 삼키는 자",
+                L"MEMORY DEVOURER",
+                L"보랏빛 잔상과 뒤틀린 예고",
+                L"VIOLET FEINTS AND DISTORTED WARNINGS",
+                L"진짜 공격과 보랏빛 잔상이 기억 속에서 겹칩니다.",
+                L"TRUE STRIKES AND VIOLET AFTERIMAGES OVERLAP.",
+                L"뒤엉킨 잔상 속에서 마지막 기억이 돌아옵니다.",
+                L"THE FINAL MEMORY RETURNS FROM THE FRACTURED ECHOES."
+            }
+        }};
+
+        [[nodiscard]] constexpr std::size_t GetBossTextIndex(
+            BossType bossType) noexcept
+        {
+            switch (bossType)
+            {
+            case BossType::EmberWarden:
+                return 0;
+            case BossType::StormSentinel:
+                return 1;
+            case BossType::MemoryDevourer:
+                return 2;
+            }
+            return 0;
+        }
+    }
+
     std::wstring_view LocalizedText::GetSwordName(
         Language language,
         int swordTier) noexcept
@@ -98,17 +164,9 @@ namespace ss
         Language language,
         BossType bossType) noexcept
     {
-        // 도메인에는 표시 문자열을 넣지 않고 보스 식별 값만 번역 키처럼 사용한다.
-        switch (bossType)
-        {
-        case BossType::EmberWarden:
-            return Select(language, L"잿불의 문지기", L"EMBER WARDEN");
-        case BossType::StormSentinel:
-            return Select(language, L"폭풍의 파수꾼", L"STORM SENTINEL");
-        case BossType::MemoryDevourer:
-            return Select(language, L"기억을 삼키는 자", L"MEMORY DEVOURER");
-        }
-        return {};
+        // 도메인에는 표시 문자열을 넣지 않고 보스 식별 값만 표현 표의 키로 사용한다.
+        const BossTextSet& text = kBossTexts[GetBossTextIndex(bossType)];
+        return Select(language, text.koreanName, text.englishName);
     }
 
     std::wstring_view LocalizedText::GetBossPatternDescription(
@@ -116,65 +174,26 @@ namespace ss
         BossType bossType) noexcept
     {
         // 상세 수치를 반복하지 않고 전투 전에 알아야 할 패턴의 차이만 짧게 전달한다.
-        switch (bossType)
-        {
-        case BossType::EmberWarden:
-            return Select(language, L"긴 차징 뒤 이어지는 강한 일격", L"LONG CHARGE, CRUSHING BLOW");
-        case BossType::StormSentinel:
-            return Select(language, L"점점 빨라지는 삼연격", L"AN ACCELERATING TRIPLE COMBO");
-        case BossType::MemoryDevourer:
-            return Select(language, L"보랏빛 잔상과 뒤틀린 예고", L"VIOLET FEINTS AND DISTORTED WARNINGS");
-        }
-        return {};
+        const BossTextSet& text = kBossTexts[GetBossTextIndex(bossType)];
+        return Select(language, text.koreanPattern, text.englishPattern);
     }
 
     std::wstring_view LocalizedText::GetBossIntroduction(
         Language language,
         BossType bossType) noexcept
     {
-        switch (bossType)
-        {
-        case BossType::EmberWarden:
-            return Select(
-                language,
-                L"갑옷 틈의 잿불이 거대한 불길로 번집니다.",
-                L"EMBERS BETWEEN ITS PLATES ERUPT INTO FLAME.");
-        case BossType::StormSentinel:
-            return Select(
-                language,
-                L"세 번의 천둥이 서로 다른 박자로 울립니다.",
-                L"THREE THUNDERS ANSWER IN DIFFERENT RHYTHMS.");
-        case BossType::MemoryDevourer:
-            return Select(
-                language,
-                L"진짜 공격과 보랏빛 잔상이 기억 속에서 겹칩니다.",
-                L"TRUE STRIKES AND VIOLET AFTERIMAGES OVERLAP.");
-        }
-        return {};
+        const BossTextSet& text = kBossTexts[GetBossTextIndex(bossType)];
+        return Select(
+            language,
+            text.koreanIntroduction,
+            text.englishIntroduction);
     }
 
     std::wstring_view LocalizedText::GetBossDefeatText(
         Language language,
         BossType bossType) noexcept
     {
-        switch (bossType)
-        {
-        case BossType::EmberWarden:
-            return Select(
-                language,
-                L"무거운 갑옷이 잿가루가 되어 무너집니다.",
-                L"THE HEAVY ARMOR COLLAPSES INTO ASH.");
-        case BossType::StormSentinel:
-            return Select(
-                language,
-                L"마지막 번개가 끊어지며 폭풍이 잠잠해집니다.",
-                L"THE FINAL BOLT BREAKS, AND THE STORM FALLS SILENT.");
-        case BossType::MemoryDevourer:
-            return Select(
-                language,
-                L"뒤엉킨 잔상 속에서 마지막 기억이 돌아옵니다.",
-                L"THE FINAL MEMORY RETURNS FROM THE FRACTURED ECHOES.");
-        }
-        return {};
+        const BossTextSet& text = kBossTexts[GetBossTextIndex(bossType)];
+        return Select(language, text.koreanDefeat, text.englishDefeat);
     }
 }

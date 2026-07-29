@@ -20,6 +20,7 @@ namespace ss
             int shakeX,
             float worldTimeSeconds) const;
 
+        /// 보스 종류를 전투 UI와 결과 효과에서 공유할 대표 색상으로 변환한다.
         [[nodiscard]] Color GetPrimaryColor(BossType bossType) const noexcept;
     };
 }

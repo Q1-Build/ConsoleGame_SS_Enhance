@@ -9,7 +9,7 @@ namespace ss
     {
     public:
         /// 보스 종류에 대응하는 체력, 공격 패턴과 보상 묶음을 반환한다.
-        [[nodiscard]] static BossDefinition GetBossDefinition(BossType bossType) noexcept;
+        [[nodiscard]] static BossDefinition GetBossDefinition(BossType bossType);
 
         /// 검 단계와 0~1 타이밍 정확도를 반영한 플레이어 공격 피해를 계산한다.
         [[nodiscard]] static int CalculatePlayerDamage(

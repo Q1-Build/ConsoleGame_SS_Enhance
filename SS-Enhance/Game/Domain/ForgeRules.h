@@ -9,7 +9,7 @@ namespace ss
 {
     class PlayerProgress;
 
-    /// 강화 비용, 성공 확률, 실패 패널티를 한곳에서 판정하는 순수 도메인 서비스다.
+    /// 강화 비용, 성공 확률, 실패 페널티를 한곳에서 판정하는 순수 도메인 서비스다.
     class ForgeRules final
     {
     public:

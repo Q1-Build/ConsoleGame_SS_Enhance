@@ -77,7 +77,7 @@ namespace ss
             progress.GetBossVictoryCount());
         if (outcome.previousLevel >= levelCap)
         {
-            // 장면 밖 호출에서도 상한을 넘기거나 실패 패널티를 잘못 적용하지 않게 안전하게 종료한다.
+            // 장면 밖 호출에서도 상한을 넘기거나 실패 페널티를 잘못 적용하지 않게 안전하게 종료한다.
             outcome.succeeded = false;
             outcome.wasCritical = false;
             outcome.finalChance = 0.0f;

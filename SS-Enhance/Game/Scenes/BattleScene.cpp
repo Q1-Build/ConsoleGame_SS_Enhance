@@ -48,6 +48,7 @@ namespace ss
         settlement_ = BattleSettlement{};
         phase_ = BattlePhase::Introduction;
         rewardChoice_ = RewardChoice::Gold;
+        wasRetreat_ = false;
         phaseTimeSeconds_ = 0.0f;
         defeatTimeSeconds_ = 0.0f;
         messageTimeSeconds_ = 0.0f;
@@ -99,7 +100,9 @@ namespace ss
     {
         if (context_.input.WasPressed(InputKey::Escape))
         {
-            return SceneTransition::To(SceneType::Forge);
+            // 체력이 낮을 때 장면을 빠져나가 패배 페널티를 우회하지 못하도록 후퇴도 패배로 확정한다.
+            BeginRetreat();
+            return SceneTransition::None();
         }
 
         // 입력 순서는 방어 → 보스 공격 → 종료 확인 → 플레이어 공격으로 고정한다.
@@ -303,6 +306,20 @@ namespace ss
         phase_ = BattlePhase::Completed;
     }
 
+    void BattleScene::BeginRetreat()
+    {
+        assert(phase_ == BattlePhase::Combat);
+
+        const bool wasApplied = settlement_.ApplyDefeat(context_.progress);
+        assert(wasApplied);
+        wasRetreat_ = true;
+        phase_ = BattlePhase::Completed;
+        phaseTimeSeconds_ = 0.0f;
+        messageTimeSeconds_ = 0.0f;
+        shakeTimeSeconds_ = 0.0f;
+        context_.particles.Clear();
+    }
+
     void BattleScene::ApplySelectedReward()
     {
         const bool wasApplied = settlement_.ApplyVictory(
@@ -431,8 +448,8 @@ namespace ss
                 29,
                 LocalizedText::Select(
                     context_.language,
-                    L"[ SPACE ] 공격   [ A / ← ] 방어   [ ESC ] 후퇴",
-                    L"[ SPACE ] ATTACK   [ A / ← ] GUARD   [ ESC ] RETREAT"),
+                    L"[ SPACE ] 공격   [ A / ← ] 방어   [ ESC ] 후퇴(-1강)",
+                    L"[ SPACE ] ATTACK   [ A / ← ] GUARD   [ ESC ] RETREAT(-1)"),
                 Color::BrightYellow);
             return;
         }
@@ -444,11 +461,31 @@ namespace ss
         }
 
         const bool didWin = session_->IsPlayerVictorious();
+        std::wstring_view resultHeadline;
+        if (didWin)
+        {
+            resultHeadline = LocalizedText::Select(
+                context_.language,
+                L"보상 획득 완료",
+                L"REWARD CLAIMED");
+        }
+        else if (wasRetreat_)
+        {
+            resultHeadline = LocalizedText::Select(
+                context_.language,
+                L"전투에서 후퇴했습니다.",
+                L"RETREATED FROM BATTLE.");
+        }
+        else
+        {
+            resultHeadline = LocalizedText::Select(
+                context_.language,
+                L"전투 패배",
+                L"DEFEATED");
+        }
         screen.CenterText(
             24,
-            didWin
-                ? LocalizedText::Select(context_.language, L"보상 획득 완료", L"REWARD CLAIMED")
-                : LocalizedText::Select(context_.language, L"전투 패배", L"DEFEATED"),
+            resultHeadline,
             didWin ? Color::BrightGreen : Color::BrightRed);
         if (didWin)
         {
