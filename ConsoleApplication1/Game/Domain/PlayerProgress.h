@@ -1,0 +1,34 @@
+#pragma once
+
+#include "Game/Domain/Sword.h"
+
+namespace ss
+{
+    /// 플레이어의 검, 재화, 강화 기록을 하나의 유효한 진행 상태로 관리한다.
+    class PlayerProgress final
+    {
+    public:
+        [[nodiscard]] const Sword& GetSword() const noexcept;
+        [[nodiscard]] int GetGold() const noexcept;
+        [[nodiscard]] int GetFragments() const noexcept;
+        [[nodiscard]] int GetAttemptCount() const noexcept;
+        [[nodiscard]] int GetSuccessCount() const noexcept;
+        [[nodiscard]] bool CanAfford(int amount) const noexcept;
+
+        [[nodiscard]] bool SpendGold(int amount);
+        void GrantGold(int amount);
+        [[nodiscard]] bool ConsumeFragment();
+        void RecordAttempt() noexcept;
+        void RecordSuccess() noexcept;
+        void EnhanceSword(int levelCount);
+        void DowngradeSword();
+
+    private:
+        // 모든 재화와 누적 기록은 음수가 되지 않는다.
+        Sword sword_;
+        int gold_ = 1800;
+        int fragments_ = 2;
+        int attemptCount_ = 0;
+        int successCount_ = 0;
+    };
+}

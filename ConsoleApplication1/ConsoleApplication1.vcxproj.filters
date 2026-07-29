@@ -1,22 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Application">
+      <UniqueIdentifier>{5CA28441-E8DF-4C95-B68A-B1D5320C9B67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Core">
+      <UniqueIdentifier>{074546B9-297E-4F85-B761-4A42F98DA19C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Game\Domain">
+      <UniqueIdentifier>{C3D85797-3AD3-4E6B-A718-8062A9820644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Effects">
+      <UniqueIdentifier>{1C1D58AF-2DB6-43EA-AE44-F70EA20E7708}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scenes">
+      <UniqueIdentifier>{A665824C-D061-4E7F-8A3C-2BD85FE8063E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{FA298673-CA57-4DFC-8670-CE0983C0917B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Console">
+      <UniqueIdentifier>{382C41D2-64D5-40AE-9B25-C30DC5D975AE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{C64FAD00-4DD3-4E29-B4EF-D1068AECCEE0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Application\GameApplication.cpp">
+      <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="Core\RandomProvider.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Domain\ForgeRules.cpp">
+      <Filter>Game\Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Domain\ForgeSession.cpp">
+      <Filter>Game\Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Domain\PlayerProgress.cpp">
+      <Filter>Game\Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Domain\Sword.cpp">
+      <Filter>Game\Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Effects\ParticleSystem.cpp">
+      <Filter>Game\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\ForgeScene.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\ForgingScene.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\GameHudRenderer.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\ResultScene.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\TitleScene.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Console\ConsoleInput.cpp">
+      <Filter>Platform\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Console\ConsolePresenter.cpp">
+      <Filter>Platform\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Console\ConsoleSession.cpp">
+      <Filter>Platform\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\ScreenBuffer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Application\GameApplication.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\GameConstants.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\IRandomProvider.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\RandomProvider.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Domain\ForgeOutcome.h">
+      <Filter>Game\Domain</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Domain\ForgeRules.h">
+      <Filter>Game\Domain</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Domain\ForgeSession.h">
+      <Filter>Game\Domain</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Domain\PlayerProgress.h">
+      <Filter>Game\Domain</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Domain\Sword.h">
+      <Filter>Game\Domain</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Effects\Particle.h">
+      <Filter>Game\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Effects\ParticleSystem.h">
+      <Filter>Game\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\ForgeScene.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\ForgingScene.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\GameHudRenderer.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\IScene.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\ResultScene.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\SceneContext.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\SceneTransition.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\TitleScene.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\IInput.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\InputKey.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Console\ConsoleInput.h">
+      <Filter>Platform\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Console\ConsolePresenter.h">
+      <Filter>Platform\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Console\ConsoleSession.h">
+      <Filter>Platform\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\Cell.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\Color.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\IFramePresenter.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\IScreen.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\ScreenBuffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

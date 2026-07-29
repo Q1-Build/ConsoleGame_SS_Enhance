@@ -13,21 +13,37 @@
 
 ## 2. 현재 구현 상태
 
-현재 코드는 첫 번째 플레이 가능 버전을 빠르게 검증하기 위해
-`ConsoleApplication1/Main.cpp` 한 파일에 작성된 수직 슬라이스다.
+첫 번째 플레이 가능 버전의 기능을 계층별 클래스로 분리한 상태다.
+`Main.cpp`는 플랫폼 구현을 생성해 `GameApplication`에 주입하는 Composition Root만 담당한다.
 
 ### 현재 클래스와 역할
 
-| 구성 요소 | 현재 책임 |
-| --- | --- |
-| `Cell` | 화면 한 칸의 문자와 색상 데이터 보관 |
-| `Screen` | 문자 버퍼 관리, 텍스트·선·박스 그리기, 콘솔 프레임 출력 |
-| `ConsoleGuard` | Windows 콘솔 초기화, UTF-8·VT 모드 설정, 종료 시 상태 복원 |
-| `Input` | 키의 현재 상태와 이전 상태를 비교해 `Down`, `Pressed` 제공 |
-| `Particle` | 파티클 한 개의 위치, 속도, 수명, 문자, 색상 데이터 보관 |
-| `Scene` | 제목, 대장간, 제련, 결과, 종료 상태 구분 |
-| `Game` | 게임 루프, 장면 전환, 강화 규칙, 진행 데이터, 파티클, 모든 화면 연출 총괄 |
-| `main` | `Game` 생성과 실행 |
+| 계층 | 구성 요소 | 현재 책임 |
+| --- | --- | --- |
+| Application | `GameApplication` | 프레임 루프, 공유 서비스 수명, 장면 생성과 교체 |
+| Core | `GameConstants` | 화면 크기와 프레임 시간 등 공통 컴파일 타임 상수 |
+| Core | `IRandomProvider`, `RandomProvider` | 난수 계약과 메르센 트위스터 구현 |
+| Rendering | `Color`, `Cell` | ANSI 색상과 화면 셀 값 |
+| Rendering | `IScreen`, `ScreenBuffer` | 장면 그리기 계약과 메모리 화면 버퍼 |
+| Rendering | `IFramePresenter` | 완성된 프레임의 출력 계약 |
+| Platform | `InputKey`, `IInput` | 운영체제와 독립적인 게임 입력 값과 계약 |
+| Platform/Console | `ConsoleSession` | Windows 콘솔 초기화와 RAII 복원 |
+| Platform/Console | `ConsoleInput` | Windows 키 상태를 게임 입력으로 변환 |
+| Platform/Console | `ConsolePresenter` | ANSI 프레임을 Windows 콘솔에 출력 |
+| Game/Domain | `Sword` | 검의 강화 단계, 등급, 이름 관리 |
+| Game/Domain | `PlayerProgress` | 검, 재화, 기억 조각, 강화 기록 관리 |
+| Game/Domain | `ForgeRules` | 강화 비용, 확률, 성공과 실패 결과 판정 |
+| Game/Domain | `ForgeSession` | 온도, 리듬, 제한 시간, 타격 점수 관리 |
+| Game/Domain | `ForgeOutcome` | 한 번의 강화 판정 결과 전달 |
+| Game/Effects | `Particle`, `ParticleSystem` | 파티클 상태, 생성, 갱신, 제거, 그리기 |
+| Game/Scenes | `IScene`, `SceneTransition` | 장면 수명 주기와 전환 요청 계약 |
+| Game/Scenes | `SceneContext` | 장면이 공유하는 상태와 서비스의 비소유 참조 |
+| Game/Scenes | `GameHudRenderer` | 공통 배경, HUD, 검 형상 렌더링 |
+| Game/Scenes | `TitleScene` | 제목 연출과 게임 시작 |
+| Game/Scenes | `ForgeScene` | 검 상태 표시, 비용 확인, 제련 시작 |
+| Game/Scenes | `ForgingScene` | 실시간 입력 해석, 제련 진행, 강화 판정 요청 |
+| Game/Scenes | `ResultScene` | 강화 결과와 단계 변화 연출 |
+| Composition Root | `main` | 플랫폼 구현 생성, 의존성 주입, 애플리케이션 실행 |
 
 ### 현재 게임 흐름
 
@@ -54,22 +70,17 @@ Forge
 - 낮은 강화 단계의 실패는 단계를 유지한다.
 - 높은 단계에서는 기억 조각이 먼저 소모되고, 조각이 없으면 한 단계 하락한다.
 
-### 현재 구조의 기술 부채
+### 현재 구조의 핵심 경계
 
-`Game` 클래스가 다음 책임을 동시에 가지고 있어 SRP를 위반한다.
+- `Main.cpp`에는 게임 규칙과 장면 로직이 없다.
+- Windows API는 `Platform/Console` 구현에 격리되어 있다.
+- `Game/Domain`은 입력, 렌더링, Windows API를 참조하지 않는다.
+- 강화 판정은 외부에서 전달받은 난수 값으로 결정되어 재현과 테스트가 가능하다.
+- 장면은 서로를 직접 생성하지 않고 `SceneTransition`만 반환한다.
+- 공통 상태와 서비스는 `SceneContext`의 비소유 참조로 공유한다.
+- 화면 버퍼 생성과 실제 콘솔 출력은 `ScreenBuffer`와 `ConsolePresenter`로 분리되어 있다.
 
-- 애플리케이션 루프
-- 장면 상태와 전환
-- 플레이어 재화와 검 진행도
-- 강화 비용과 확률 계산
-- 실시간 제련 입력과 판정
-- 파티클 생성과 갱신
-- 모든 장면의 화면 그리기
-
-새 콘텐츠를 추가하기 전에 아래 목표 구조로 분리하는 것을 우선한다.
-기능을 추가하면서 `Game` 또는 `Main.cpp`를 더 비대하게 만들지 않는다.
-
-## 3. 목표 코드 구조
+## 3. 현재 코드 구조
 
 모든 소스는 `ConsoleApplication1` 아래에서 다음 구조를 따른다.
 헤더는 `.h`, 구현은 `.cpp`를 사용하며 한 파일에는 하나의 핵심 클래스만 둔다.
@@ -82,44 +93,55 @@ ConsoleApplication1/
 │  └─ GameApplication.cpp
 ├─ Core/
 │  ├─ GameConstants.h
-│  ├─ MathUtils.h
-│  └─ RandomProvider.h
+│  ├─ IRandomProvider.h
+│  ├─ RandomProvider.h
+│  └─ RandomProvider.cpp
 ├─ Platform/
+│  ├─ InputKey.h
+│  ├─ IInput.h
 │  └─ Console/
 │     ├─ ConsoleSession.h
 │     ├─ ConsoleSession.cpp
 │     ├─ ConsoleInput.h
-│     └─ ConsoleInput.cpp
+│     ├─ ConsoleInput.cpp
+│     ├─ ConsolePresenter.h
+│     └─ ConsolePresenter.cpp
 ├─ Rendering/
 │  ├─ Color.h
 │  ├─ Cell.h
+│  ├─ IScreen.h
+│  ├─ IFramePresenter.h
 │  ├─ ScreenBuffer.h
 │  └─ ScreenBuffer.cpp
-├─ Game/
-│  ├─ Domain/
-│  │  ├─ Sword.h
-│  │  ├─ PlayerProgress.h
-│  │  ├─ ForgeRules.h
-│  │  ├─ ForgeRules.cpp
-│  │  ├─ ForgeSession.h
-│  │  └─ ForgeSession.cpp
-│  ├─ Effects/
-│  │  ├─ Particle.h
-│  │  ├─ ParticleSystem.h
-│  │  └─ ParticleSystem.cpp
-│  └─ Scenes/
-│     ├─ IScene.h
-│     ├─ SceneContext.h
-│     ├─ TitleScene.h
-│     ├─ TitleScene.cpp
-│     ├─ ForgeScene.h
-│     ├─ ForgeScene.cpp
-│     ├─ ForgingScene.h
-│     ├─ ForgingScene.cpp
-│     ├─ ResultScene.h
-│     └─ ResultScene.cpp
-└─ Tests/
-   └─ ForgeRulesTests.cpp
+└─ Game/
+   ├─ Domain/
+   │  ├─ Sword.h
+   │  ├─ Sword.cpp
+   │  ├─ PlayerProgress.h
+   │  ├─ PlayerProgress.cpp
+   │  ├─ ForgeOutcome.h
+   │  ├─ ForgeRules.h
+   │  ├─ ForgeRules.cpp
+   │  ├─ ForgeSession.h
+   │  └─ ForgeSession.cpp
+   ├─ Effects/
+   │  ├─ Particle.h
+   │  ├─ ParticleSystem.h
+   │  └─ ParticleSystem.cpp
+   └─ Scenes/
+      ├─ IScene.h
+      ├─ SceneTransition.h
+      ├─ SceneContext.h
+      ├─ GameHudRenderer.h
+      ├─ GameHudRenderer.cpp
+      ├─ TitleScene.h
+      ├─ TitleScene.cpp
+      ├─ ForgeScene.h
+      ├─ ForgeScene.cpp
+      ├─ ForgingScene.h
+      ├─ ForgingScene.cpp
+      ├─ ResultScene.h
+      └─ ResultScene.cpp
 ```
 
 실제 필요가 생기기 전에는 빈 디렉터리나 빈 클래스를 미리 만들지 않는다.
@@ -525,18 +547,16 @@ public:
 - 입력, 상태 갱신, 판정, 렌더링의 경계가 명확함
 - 변경된 구조와 이 문서의 설명이 일치함
 
-## 13. 다음 리팩터링 순서
+## 13. 다음 확장 원칙
 
-현재 수직 슬라이스를 다음 순서로 분리한다.
+현재 수직 슬라이스의 구조 분리는 완료됐다. 이후 기능은 다음 순서로 확장한다.
 
-1. `Screen`, `Cell`, `Color`를 `Rendering`으로 이동
-2. `ConsoleGuard`, `Input`을 `Platform/Console`로 이동
-3. `Particle`, 파티클 생성·갱신을 `Game/Effects`로 이동
-4. 검과 플레이어 진행 데이터를 `Game/Domain`으로 이동
-5. 강화 공식과 결과 판정을 `ForgeRules`로 이동하고 테스트 가능하게 변경
-6. 실시간 제련 상태를 `ForgeSession`으로 이동
-7. 제목, 대장간, 제련, 결과 화면을 개별 `Scene`으로 분리
-8. 프레임 루프와 장면 전환만 `GameApplication`에 유지
-9. `Main.cpp`를 객체 조립과 실행만 담당하도록 축소
+1. 새 기능의 순수 규칙과 결과 타입을 `Game/Domain`에 먼저 정의한다.
+2. 규칙에 필요한 외부 요소는 작은 인터페이스로 주입해 테스트 가능하게 만든다.
+3. 기능별 장면을 추가하고 공통 시각 요소만 `GameHudRenderer` 또는 별도 렌더러로 추출한다.
+4. 구체 장면 생성은 `GameApplication::CreateScene` 한곳에서만 수행한다.
+5. Windows 전용 기능은 `Platform/Console`에 구현하고 게임 계층에는 계약만 노출한다.
+6. 보스전, 저장, 사운드 같은 대형 기능을 추가하기 전에 해당 책임과 데이터 수명을 문서화한다.
+7. 순수 게임 규칙부터 자동 테스트를 추가하고 플랫폼 코드는 통합 테스트로 검증한다.
 
-이 순서가 끝나기 전에는 보스전 같은 대형 기능을 `Main.cpp`에 직접 추가하지 않는다.
+새 기능을 `Main.cpp`에 직접 추가하거나 Domain에서 콘솔 API를 호출하지 않는다.

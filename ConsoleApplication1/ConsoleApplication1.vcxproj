@@ -95,6 +95,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -112,6 +113,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -131,6 +133,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -152,6 +155,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -162,7 +166,54 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application\GameApplication.cpp" />
+    <ClCompile Include="Core\RandomProvider.cpp" />
+    <ClCompile Include="Game\Domain\ForgeRules.cpp" />
+    <ClCompile Include="Game\Domain\ForgeSession.cpp" />
+    <ClCompile Include="Game\Domain\PlayerProgress.cpp" />
+    <ClCompile Include="Game\Domain\Sword.cpp" />
+    <ClCompile Include="Game\Effects\ParticleSystem.cpp" />
+    <ClCompile Include="Game\Scenes\ForgeScene.cpp" />
+    <ClCompile Include="Game\Scenes\ForgingScene.cpp" />
+    <ClCompile Include="Game\Scenes\GameHudRenderer.cpp" />
+    <ClCompile Include="Game\Scenes\ResultScene.cpp" />
+    <ClCompile Include="Game\Scenes\TitleScene.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Platform\Console\ConsoleInput.cpp" />
+    <ClCompile Include="Platform\Console\ConsolePresenter.cpp" />
+    <ClCompile Include="Platform\Console\ConsoleSession.cpp" />
+    <ClCompile Include="Rendering\ScreenBuffer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Application\GameApplication.h" />
+    <ClInclude Include="Core\GameConstants.h" />
+    <ClInclude Include="Core\IRandomProvider.h" />
+    <ClInclude Include="Core\RandomProvider.h" />
+    <ClInclude Include="Game\Domain\ForgeOutcome.h" />
+    <ClInclude Include="Game\Domain\ForgeRules.h" />
+    <ClInclude Include="Game\Domain\ForgeSession.h" />
+    <ClInclude Include="Game\Domain\PlayerProgress.h" />
+    <ClInclude Include="Game\Domain\Sword.h" />
+    <ClInclude Include="Game\Effects\Particle.h" />
+    <ClInclude Include="Game\Effects\ParticleSystem.h" />
+    <ClInclude Include="Game\Scenes\ForgeScene.h" />
+    <ClInclude Include="Game\Scenes\ForgingScene.h" />
+    <ClInclude Include="Game\Scenes\GameHudRenderer.h" />
+    <ClInclude Include="Game\Scenes\IScene.h" />
+    <ClInclude Include="Game\Scenes\ResultScene.h" />
+    <ClInclude Include="Game\Scenes\SceneContext.h" />
+    <ClInclude Include="Game\Scenes\SceneTransition.h" />
+    <ClInclude Include="Game\Scenes\TitleScene.h" />
+    <ClInclude Include="Platform\Console\ConsoleInput.h" />
+    <ClInclude Include="Platform\Console\ConsolePresenter.h" />
+    <ClInclude Include="Platform\Console\ConsoleSession.h" />
+    <ClInclude Include="Platform\IInput.h" />
+    <ClInclude Include="Platform\InputKey.h" />
+    <ClInclude Include="Rendering\Cell.h" />
+    <ClInclude Include="Rendering\Color.h" />
+    <ClInclude Include="Rendering\IFramePresenter.h" />
+    <ClInclude Include="Rendering\IScreen.h" />
+    <ClInclude Include="Rendering\ScreenBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
