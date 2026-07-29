@@ -183,6 +183,7 @@
     <ClCompile Include="Game\Scenes\EndingScene.cpp" />
     <ClCompile Include="Game\Scenes\ForgingScene.cpp" />
     <ClCompile Include="Game\Scenes\GameHudRenderer.cpp" />
+    <ClCompile Include="Game\Scenes\InputOverlay.cpp" />
     <ClCompile Include="Game\Scenes\LocalizedText.cpp" />
     <ClCompile Include="Game\Scenes\ResultScene.cpp" />
     <ClCompile Include="Game\Scenes\SettingsScene.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="Platform\Console\ConsolePresenter.cpp" />
     <ClCompile Include="Platform\Console\ConsoleSession.cpp" />
     <ClCompile Include="Rendering\ScreenBuffer.cpp" />
+    <ClCompile Include="Rendering\ScreenViewport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameApplication.h" />
@@ -218,6 +220,7 @@
     <ClInclude Include="Game\Scenes\EndingScene.h" />
     <ClInclude Include="Game\Scenes\ForgingScene.h" />
     <ClInclude Include="Game\Scenes\GameHudRenderer.h" />
+    <ClInclude Include="Game\Scenes\InputOverlay.h" />
     <ClInclude Include="Game\Scenes\IScene.h" />
     <ClInclude Include="Game\Scenes\LocalizedText.h" />
     <ClInclude Include="Game\Scenes\ResultScene.h" />
@@ -235,6 +238,7 @@
     <ClInclude Include="Rendering\IFramePresenter.h" />
     <ClInclude Include="Rendering\IScreen.h" />
     <ClInclude Include="Rendering\ScreenBuffer.h" />
+    <ClInclude Include="Rendering\ScreenViewport.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

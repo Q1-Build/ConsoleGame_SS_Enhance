@@ -27,6 +27,12 @@ namespace ss
         : input_(input),
           presenter_(presenter),
           randomProvider_(randomProvider),
+          gameScreen_(
+              screen_,
+              0,
+              0,
+              kGameViewportWidth,
+              kGameViewportHeight),
           particles_(randomProvider_),
           sceneContext_(
               input_,
@@ -59,6 +65,7 @@ namespace ss
 
             // 입력 → 공통 효과 → 장면 순서로 갱신해 모든 장면이 같은 프레임 상태를 보게 한다.
             input_.Update();
+            inputOverlay_.Update(deltaSeconds, input_);
             sceneContext_.worldTimeSeconds += deltaSeconds;
             particles_.Update(deltaSeconds);
 
@@ -72,8 +79,11 @@ namespace ss
                 break;
             }
 
-            currentScene_->Render(screen_);
-            particles_.Draw(screen_);
+            // 장면은 기존 게임 뷰포트에, 발표용 입력 UI는 전체 프레임에 서로 겹치지 않게 그린다.
+            screen_.Clear();
+            currentScene_->Render(gameScreen_);
+            particles_.Draw(gameScreen_);
+            inputOverlay_.Draw(screen_, sceneContext_.language);
 
             // 여러 번 출력하면 깜빡임이 생기므로 완성된 프레임을 한 번에 전달한다.
             const std::wstring frame = screen_.BuildAnsiFrame();

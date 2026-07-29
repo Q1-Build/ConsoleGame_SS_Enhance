@@ -79,6 +79,9 @@
     <ClCompile Include="Game\Scenes\GameHudRenderer.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scenes\InputOverlay.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Scenes\LocalizedText.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
@@ -101,6 +104,9 @@
       <Filter>Platform\Console</Filter>
     </ClCompile>
     <ClCompile Include="Rendering\ScreenBuffer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\ScreenViewport.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
   </ItemGroup>
@@ -177,6 +183,9 @@
     <ClInclude Include="Game\Scenes\GameHudRenderer.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Scenes\InputOverlay.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
     <ClInclude Include="Game\Scenes\IScene.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
@@ -226,6 +235,9 @@
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Rendering\ScreenBuffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\ScreenViewport.h">
       <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>

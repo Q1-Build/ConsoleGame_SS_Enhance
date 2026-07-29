@@ -16,33 +16,37 @@ namespace ss
         screen.Clear();
 
         // 모든 장면이 같은 크기와 색상의 외곽 프레임을 공유한다.
-        for (int y = 1; y < kScreenHeight - 1; ++y)
+        for (int y = 1; y < kGameViewportHeight - 1; ++y)
         {
             screen.Put(1, y, L'│', Color::BrightBlack);
-            screen.Put(kScreenWidth - 2, y, L'│', Color::BrightBlack);
+            screen.Put(kGameViewportWidth - 2, y, L'│', Color::BrightBlack);
         }
-        for (int x = 2; x < kScreenWidth - 2; ++x)
+        for (int x = 2; x < kGameViewportWidth - 2; ++x)
         {
             screen.Put(x, 0, L'─', Color::BrightBlack);
-            screen.Put(x, kScreenHeight - 1, L'─', Color::BrightBlack);
+            screen.Put(x, kGameViewportHeight - 1, L'─', Color::BrightBlack);
         }
 
         screen.Put(1, 0, L'┌', Color::BrightBlack);
-        screen.Put(kScreenWidth - 2, 0, L'┐', Color::BrightBlack);
-        screen.Put(1, kScreenHeight - 1, L'└', Color::BrightBlack);
-        screen.Put(kScreenWidth - 2, kScreenHeight - 1, L'┘', Color::BrightBlack);
+        screen.Put(kGameViewportWidth - 2, 0, L'┐', Color::BrightBlack);
+        screen.Put(1, kGameViewportHeight - 1, L'└', Color::BrightBlack);
+        screen.Put(
+            kGameViewportWidth - 2,
+            kGameViewportHeight - 1,
+            L'┘',
+            Color::BrightBlack);
 
         // 사인 파형으로 하단 화로의 밝은 범위를 천천히 넓혔다 줄인다.
         const int pulse = static_cast<int>(
             (std::sin(worldTimeSeconds * 1.7f) + 1.0f) * 0.5f * 12.0f);
-        for (int x = 3; x < kScreenWidth - 3; ++x)
+        for (int x = 3; x < kGameViewportWidth - 3; ++x)
         {
-            const int distance = std::abs(x - kScreenWidth / 2);
+            const int distance = std::abs(x - kGameViewportWidth / 2);
             const int animationFrame = static_cast<int>(worldTimeSeconds * 7.0f);
             if (distance < 14 + pulse && (x + animationFrame) % 3 == 0)
             {
                 const Color color = distance < 8 ? Color::BrightRed : Color::Red;
-                screen.Put(x, kScreenHeight - 2, L'▁', color);
+                screen.Put(x, kGameViewportHeight - 2, L'▁', color);
             }
         }
     }
@@ -61,11 +65,17 @@ namespace ss
                << progress.GetFragments();
         const std::wstring statusText = status.str();
         screen.RightText(
-            kScreenWidth - 5,
+            kGameViewportWidth - 5,
             2,
             statusText,
             Color::BrightYellow);
-        screen.Line(4, 3, kScreenWidth - 5, 3, L'─', Color::BrightBlack);
+        screen.Line(
+            4,
+            3,
+            kGameViewportWidth - 5,
+            3,
+            L'─',
+            Color::BrightBlack);
     }
 
     void GameHudRenderer::DrawSword(

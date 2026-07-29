@@ -69,8 +69,10 @@ namespace ss
     {
         // 화면 아래의 임의 위치에서 위로 떠오르는 작은 불씨를 만든다.
         Particle particle;
-        particle.x = randomProvider_.NextFloat(6.0f, static_cast<float>(kScreenWidth - 7));
-        particle.y = static_cast<float>(kScreenHeight - 3);
+        particle.x = randomProvider_.NextFloat(
+            6.0f,
+            static_cast<float>(kGameViewportWidth - 7));
+        particle.y = static_cast<float>(kGameViewportHeight - 3);
         particle.velocityX = randomProvider_.NextFloat(-1.2f, 1.2f);
         particle.velocityY = randomProvider_.NextFloat(-7.0f, -2.5f);
         particle.life = randomProvider_.NextFloat(1.0f, 2.7f);

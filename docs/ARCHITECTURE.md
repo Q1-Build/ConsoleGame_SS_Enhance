@@ -36,7 +36,9 @@ SS-Enhance/
 │  ├─ IScreen.h
 │  ├─ IFramePresenter.h
 │  ├─ ScreenBuffer.h
-│  └─ ScreenBuffer.cpp
+│  ├─ ScreenBuffer.cpp
+│  ├─ ScreenViewport.h
+│  └─ ScreenViewport.cpp
 └─ Game/
    ├─ Domain/
    │  ├─ BossBattle.h
@@ -68,6 +70,8 @@ SS-Enhance/
       ├─ SceneContext.h
       ├─ GameHudRenderer.h
       ├─ GameHudRenderer.cpp
+      ├─ InputOverlay.h
+      ├─ InputOverlay.cpp
       ├─ LocalizedText.h
       ├─ LocalizedText.cpp
       ├─ SettingsScene.h
@@ -101,7 +105,7 @@ SS-Enhance.Tests/
 | Core | `Language` | 화면 표시 언어 값 |
 | Core | `IRandomProvider`, `RandomProvider` | 난수 계약과 메르센 트위스터 구현 |
 | Rendering | `Color`, `Cell` | ANSI 색상과 전각 연속 칸을 포함한 화면 셀 값 |
-| Rendering | `IScreen`, `ScreenBuffer` | 그리기 계약, 전각 문자 폭 처리, 메모리 화면 버퍼 |
+| Rendering | `IScreen`, `ScreenBuffer`, `ScreenViewport` | 그리기 계약, 전각 문자 폭 처리, 전체 버퍼와 장면 영역 격리 |
 | Rendering | `IFramePresenter` | 완성된 프레임 출력 계약 |
 | Platform | `InputKey`, `IInput` | 운영체제와 독립적인 게임 입력 값과 계약 |
 | Platform/Console | `ConsoleSession` | Windows 콘솔 초기화와 RAII 복원 |
@@ -121,6 +125,7 @@ SS-Enhance.Tests/
 | Game/Scenes | `IScene`, `SceneTransition` | 장면 수명 주기와 전환 요청 계약 |
 | Game/Scenes | `SceneContext` | 공유 진행·설정, 장면 간 임시 결과와 서비스의 비소유 참조 |
 | Game/Scenes | `GameHudRenderer` | 공통 배경, HUD와 검 형상 렌더링 |
+| Game/Scenes | `InputOverlay` | 공통 조작 안내와 입력 강조 가상 키보드 |
 | Game/Scenes | `LocalizedText` | 현재 언어에 맞는 UI 문구와 검 이름 선택 |
 | Game/Scenes | `TitleScene` | 한국어 기본 제목 연출과 설정 화면 진입 |
 | Game/Scenes | `SettingsScene` | 표시 언어와 게임 난이도 선택 |
@@ -166,6 +171,7 @@ SS-Enhance.Tests/
 - 골드, 강화 단계, 성공 확률 같은 게임 의미를 판단하지 않는다.
 - 좌표 경계를 검사하고 화면 밖 쓰기를 안전하게 무시하거나 명확히 처리한다.
 - 한글과 CJK 전각 문자의 실제 콘솔 표시 폭을 셀 점유와 정렬 계산에 반영한다.
+- `ScreenViewport`는 기존 장면을 104×34 영역에 격리해 보조 UI 확장이 장면 좌표에 영향을 주지 않게 한다.
 
 ### `Game/Domain`
 
@@ -185,6 +191,7 @@ SS-Enhance.Tests/
 - 장면끼리 서로의 구체 클래스를 생성하거나 소유하지 않는다.
 - 공통 데이터와 서비스는 `SceneContext`로 필요한 최소 범위만 전달한다.
 - 현지화된 문자열과 검 이름은 화면 표현 책임으로 유지하고 Domain에 넣지 않는다.
+- `InputOverlay`는 모든 장면 뒤에 그려지며 입력 규칙을 변경하지 않고 발표용 피드백만 제공한다.
 
 ## 의존성 방향
 
@@ -228,4 +235,5 @@ public:
 - `Render`: 현재 논리 상태를 그리며 게임 상태를 변경하지 않음
 - `OnExit`: 장면 종료 정리
 
-화면 버퍼 생성과 실제 콘솔 출력은 각각 `ScreenBuffer`와 `ConsolePresenter`가 담당한다.
+전체 화면 버퍼, 장면 뷰포트와 실제 콘솔 출력은 각각
+`ScreenBuffer`, `ScreenViewport`, `ConsolePresenter`가 담당한다.

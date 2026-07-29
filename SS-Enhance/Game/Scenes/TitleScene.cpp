@@ -67,7 +67,7 @@ namespace ss
 
         context_.hudRenderer.DrawSword(
             screen,
-            kScreenWidth / 2,
+            kGameViewportWidth / 2,
             13,
             Color::BrightRed,
             6,

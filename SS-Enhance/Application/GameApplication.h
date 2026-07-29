@@ -4,8 +4,10 @@
 #include "Game/Domain/PlayerProgress.h"
 #include "Game/Effects/ParticleSystem.h"
 #include "Game/Scenes/GameHudRenderer.h"
+#include "Game/Scenes/InputOverlay.h"
 #include "Game/Scenes/SceneContext.h"
 #include "Rendering/ScreenBuffer.h"
+#include "Rendering/ScreenViewport.h"
 
 #include <memory>
 
@@ -46,10 +48,12 @@ namespace ss
 
         // 게임 전체에서 한 번 생성되어 장면들이 공유하는 상태와 서비스다.
         ScreenBuffer screen_;
+        ScreenViewport gameScreen_;
         PlayerProgress progress_;
         ForgeRules forgeRules_;
         ParticleSystem particles_;
         GameHudRenderer hudRenderer_;
+        InputOverlay inputOverlay_;
         SceneContext sceneContext_;
 
         // 현재 장면은 애플리케이션이 단독 소유하며 전환 시 즉시 교체한다.
