@@ -11,14 +11,19 @@ namespace ss
     BattleSession::BattleSession(BossDefinition boss, int swordLevel)
         : boss_(boss),
           swordLevel_(swordLevel),
-          bossHealth_(boss.maxHealth),
-          bossAttackTimeLeft_(boss.attackIntervalSeconds)
+          bossHealth_(boss.maxHealth)
     {
         assert(swordLevel >= 0);
         assert(boss.maxHealth > 0);
-        assert(boss.attackIntervalSeconds > 0.0f);
-        assert(boss.warningSeconds > 0.0f);
-        assert(boss.comboCount > 0);
+        assert(!boss.attackSequence.empty());
+        for (const BossAttackStep& step : boss.attackSequence)
+        {
+            assert(step.delaySeconds > 0.0f);
+            assert(step.warningSeconds > 0.0f);
+            assert(step.warningSeconds <= step.delaySeconds);
+            assert(step.damage >= 0);
+        }
+        bossAttackTimeLeft_ = GetCurrentStep().delaySeconds;
     }
 
     std::optional<BossAttackResult> BattleSession::Update(float deltaSeconds)
@@ -34,7 +39,7 @@ namespace ss
         guardCooldown_ = std::max(0.0f, guardCooldown_ - deltaSeconds);
 
         float markerWave = std::sin(battleTimeSeconds_ * 3.4f);
-        if (boss_.pattern == BossPattern::MemoryDistortion &&
+        if (GetCurrentTelegraph() == AttackTelegraph::Distorted &&
             IsAttackWarning())
         {
             // 최종 보스는 예고 중 속도를 높이고 공격마다 방향을 뒤집어 공격 타이밍을 교란한다.
@@ -132,7 +137,7 @@ namespace ss
     bool BattleSession::IsAttackWarning() const noexcept
     {
         return !IsComplete() &&
-            bossAttackTimeLeft_ <= GetCurrentWarningSeconds();
+            bossAttackTimeLeft_ <= GetCurrentStep().warningSeconds;
     }
 
     float BattleSession::GetWarningProgress() const noexcept
@@ -142,7 +147,7 @@ namespace ss
             return 0.0f;
         }
 
-        const float warningSeconds = GetCurrentWarningSeconds();
+        const float warningSeconds = GetCurrentStep().warningSeconds;
         // 남은 시간을 진행 방향으로 뒤집어 UI 표식이 항상 왼쪽에서 오른쪽으로 이동하게 한다.
         return std::clamp(
             1.0f - bossAttackTimeLeft_ / warningSeconds,
@@ -152,7 +157,7 @@ namespace ss
 
     float BattleSession::GetPerfectGuardStartProgress() const noexcept
     {
-        const float warningSeconds = GetCurrentWarningSeconds();
+        const float warningSeconds = GetCurrentStep().warningSeconds;
         return std::clamp(
             1.0f - kPerfectGuardWindowSeconds / warningSeconds,
             0.0f,
@@ -165,24 +170,40 @@ namespace ss
             GetWarningProgress() >= GetPerfectGuardStartProgress();
     }
 
-    float BattleSession::GetCurrentWarningSeconds() const noexcept
+    AttackTelegraph BattleSession::GetCurrentTelegraph() const noexcept
     {
-        if (comboAttacksRemaining_ > 0)
-        {
-            return std::min(
-                boss_.warningSeconds,
-                boss_.comboGapSeconds * 0.75f);
-        }
-        return boss_.warningSeconds;
+        return GetCurrentStep().telegraph;
+    }
+
+    int BattleSession::GetCurrentAttackStep() const noexcept
+    {
+        return static_cast<int>(attackStepIndex_);
+    }
+
+    int BattleSession::GetAttackStepCount() const noexcept
+    {
+        return static_cast<int>(boss_.attackSequence.size());
+    }
+
+    const BossAttackStep& BattleSession::GetCurrentStep() const noexcept
+    {
+        assert(!boss_.attackSequence.empty());
+        assert(attackStepIndex_ < boss_.attackSequence.size());
+        return boss_.attackSequence[attackStepIndex_];
     }
 
     BossAttackResult BattleSession::ResolveBossAttack()
     {
         BossAttackResult result;
         result.guardQuality = pendingGuard_;
+        const BossAttackStep resolvedStep = GetCurrentStep();
 
-        // 완벽 방어는 피해를 없애고 반격하며, 일반 방어만 감소된 피해를 적용한다.
-        if (pendingGuard_ == GuardQuality::Perfect)
+        // 잔상은 방어 상태를 소비하지만 피해를 주지 않아 다음 진짜 공격을 다시 읽게 한다.
+        if (resolvedStep.telegraph == AttackTelegraph::Feint)
+        {
+            result.wasFeint = true;
+        }
+        else if (pendingGuard_ == GuardQuality::Perfect)
         {
             result.counterDamage = BattleRules::CalculateCounterDamage(swordLevel_);
             bossHealth_ = std::max(0, bossHealth_ - result.counterDamage);
@@ -190,36 +211,29 @@ namespace ss
         else if (pendingGuard_ == GuardQuality::Guarded)
         {
             result.damageTaken = BattleRules::CalculateGuardedDamage(
-                boss_.attackDamage);
+                resolvedStep.damage);
         }
         else
         {
-            result.damageTaken = boss_.attackDamage;
+            result.damageTaken = resolvedStep.damage;
         }
 
         playerHealth_ = std::max(0, playerHealth_ - result.damageTaken);
         pendingGuard_ = GuardQuality::Miss;
         ++resolvedAttackCount_;
 
-        // 폭풍의 파수꾼은 세 타를 짧은 간격으로 이어가고 마지막 타격 뒤 기본 주기로 복귀한다.
-        if (comboAttacksRemaining_ > 0)
-        {
-            --comboAttacksRemaining_;
-        }
-        else
-        {
-            comboAttacksRemaining_ = boss_.comboCount - 1;
-        }
-
-        if (comboAttacksRemaining_ > 0)
-        {
-            bossAttackTimeLeft_ = boss_.comboGapSeconds;
-            result.hasMoreComboAttacks = !IsComplete();
-        }
-        else
-        {
-            bossAttackTimeLeft_ = boss_.attackIntervalSeconds;
-        }
+        // 다음 단계의 짧은 간격은 장면에 전달해 연속 공격 경고를 즉시 강조한다.
+        AdvanceAttackStep();
+        result.hasQuickFollowUp =
+            !IsComplete() &&
+            GetCurrentStep().delaySeconds <= 0.8f;
         return result;
+    }
+
+    void BattleSession::AdvanceAttackStep() noexcept
+    {
+        attackStepIndex_ =
+            (attackStepIndex_ + 1) % boss_.attackSequence.size();
+        bossAttackTimeLeft_ = GetCurrentStep().delaySeconds;
     }
 }

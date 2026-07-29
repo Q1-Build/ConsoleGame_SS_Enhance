@@ -50,15 +50,15 @@ namespace ss
         const Color titleColor = std::sin(context_.worldTimeSeconds * 2.2f) > 0.0f
             ? Color::BrightRed
             : Color::BrightYellow;
-        screen.CenterText(5, L"███████╗ ███████╗", titleColor);
-        screen.CenterText(6, L"██╔════╝ ██╔════╝", titleColor);
-        screen.CenterText(7, L"███████╗ ███████╗", titleColor);
-        screen.CenterText(8, L"╚════██║ ╚════██║", titleColor);
-        screen.CenterText(9, L"███████║ ███████║", titleColor);
-        screen.CenterText(10, L"╚══════╝ ╚══════╝", titleColor);
-        screen.CenterText(12, L"E  N  H  A  N  C  E", Color::BrightWhite);
+        screen.CenterText(2, L"███████╗ ███████╗", titleColor);
+        screen.CenterText(3, L"██╔════╝ ██╔════╝", titleColor);
+        screen.CenterText(4, L"███████╗ ███████╗", titleColor);
+        screen.CenterText(5, L"╚════██║ ╚════██║", titleColor);
+        screen.CenterText(6, L"███████║ ███████║", titleColor);
+        screen.CenterText(7, L"╚══════╝ ╚══════╝", titleColor);
+        screen.CenterText(9, L"E  N  H  A  N  C  E", Color::BrightWhite);
         screen.CenterText(
-            14,
+            11,
             LocalizedText::Select(
                 context_.language,
                 L"—  검 은   모 든   것 을   기 억 한 다  —",
@@ -68,7 +68,7 @@ namespace ss
         context_.hudRenderer.DrawSword(
             screen,
             kScreenWidth / 2,
-            16,
+            13,
             Color::BrightRed,
             6,
             (std::sin(context_.worldTimeSeconds * 3.0f) + 1.0f) * 0.5f,
@@ -79,15 +79,16 @@ namespace ss
             static_cast<int>(context_.worldTimeSeconds * 2.0f) % 2 == 0
                 ? Color::BrightYellow
                 : Color::White;
+        // 검 손잡이 아래 두 행을 안내 전용 영역으로 남겨 검 형상과 문구가 겹치지 않게 한다.
         screen.CenterText(
-            29,
+            31,
             LocalizedText::Select(
                 context_.language,
                 L"언어와 난이도는 다음 화면에서 설정합니다.",
                 L"LANGUAGE AND DIFFICULTY ARE SET ON THE NEXT SCREEN."),
             Color::BrightCyan);
         screen.CenterText(
-            31,
+            32,
             LocalizedText::Select(
                 context_.language,
                 L"[ ENTER ]  설정으로",

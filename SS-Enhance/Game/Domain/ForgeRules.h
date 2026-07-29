@@ -27,10 +27,11 @@ namespace ss
         /// 기본 확률에 0~1 제련 완성도 보정을 적용해 최종 성공 확률을 반환한다.
         [[nodiscard]] static float CalculateFinalChance(int swordLevel, float craftScore) noexcept;
 
-        /// 전달된 난수 값으로 강화 결과를 결정하고 플레이어 진행도에 원자적으로 반영한다.
+        /// 전달된 난수와 난이도로 강화 결과를 결정하고 플레이어 진행도에 원자적으로 반영한다.
         [[nodiscard]] ForgeOutcome Resolve(
             PlayerProgress& progress,
             const std::vector<float>& strikeScores,
+            Difficulty difficulty,
             float randomRoll) const;
 
     private:

@@ -170,6 +170,7 @@
     <ClCompile Include="Core\RandomProvider.cpp" />
     <ClCompile Include="Game\Domain\ForgeRules.cpp" />
     <ClCompile Include="Game\Domain\BattleRules.cpp" />
+    <ClCompile Include="Game\Domain\BattleSettlement.cpp" />
     <ClCompile Include="Game\Domain\BattleSession.cpp" />
     <ClCompile Include="Game\Domain\ForgeSession.cpp" />
     <ClCompile Include="Game\Domain\PlayerProgress.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Game\Effects\ParticleSystem.cpp" />
     <ClCompile Include="Game\Scenes\ForgeScene.cpp" />
     <ClCompile Include="Game\Scenes\BattleScene.cpp" />
+    <ClCompile Include="Game\Scenes\BossRenderer.cpp" />
     <ClCompile Include="Game\Scenes\EndingScene.cpp" />
     <ClCompile Include="Game\Scenes\ForgingScene.cpp" />
     <ClCompile Include="Game\Scenes\GameHudRenderer.cpp" />
@@ -200,6 +202,7 @@
     <ClInclude Include="Game\Domain\ForgeOutcome.h" />
     <ClInclude Include="Game\Domain\BossBattle.h" />
     <ClInclude Include="Game\Domain\BattleRules.h" />
+    <ClInclude Include="Game\Domain\BattleSettlement.h" />
     <ClInclude Include="Game\Domain\BattleSession.h" />
     <ClInclude Include="Game\Domain\Difficulty.h" />
     <ClInclude Include="Game\Domain\ForgeRules.h" />
@@ -211,6 +214,7 @@
     <ClInclude Include="Game\Effects\ParticleSystem.h" />
     <ClInclude Include="Game\Scenes\ForgeScene.h" />
     <ClInclude Include="Game\Scenes\BattleScene.h" />
+    <ClInclude Include="Game\Scenes\BossRenderer.h" />
     <ClInclude Include="Game\Scenes\EndingScene.h" />
     <ClInclude Include="Game\Scenes\ForgingScene.h" />
     <ClInclude Include="Game\Scenes\GameHudRenderer.h" />

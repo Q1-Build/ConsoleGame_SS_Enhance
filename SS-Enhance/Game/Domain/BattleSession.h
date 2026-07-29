@@ -2,6 +2,7 @@
 
 #include "Game/Domain/BossBattle.h"
 
+#include <cstddef>
 #include <optional>
 
 namespace ss
@@ -21,7 +22,8 @@ namespace ss
         int damageTaken = 0;
         GuardQuality guardQuality = GuardQuality::Miss;
         int counterDamage = 0;
-        bool hasMoreComboAttacks = false;
+        bool wasFeint = false;
+        bool hasQuickFollowUp = false;
     };
 
     /// 한 번의 보스 전투에서 체력, 공격 주기와 타이밍 표시를 관리한다.
@@ -61,13 +63,20 @@ namespace ss
         [[nodiscard]] float GetPerfectGuardStartProgress() const noexcept;
         [[nodiscard]] bool IsPerfectGuardWindow() const noexcept;
 
+        /// 현재 예고의 종류를 반환해 장면이 정직한 공격, 교란과 잔상을 구분하게 한다.
+        [[nodiscard]] AttackTelegraph GetCurrentTelegraph() const noexcept;
+
+        [[nodiscard]] int GetCurrentAttackStep() const noexcept;
+        [[nodiscard]] int GetAttackStepCount() const noexcept;
+
     private:
         // 플레이어 기본 체력과 완벽 방어 판정 폭은 모든 보스가 공유하는 전투 규칙이다.
         static constexpr int kPlayerMaxHealth = 100;
         static constexpr float kPerfectGuardWindowSeconds = 0.18f;
 
-        [[nodiscard]] float GetCurrentWarningSeconds() const noexcept;
+        [[nodiscard]] const BossAttackStep& GetCurrentStep() const noexcept;
         [[nodiscard]] BossAttackResult ResolveBossAttack();
+        void AdvanceAttackStep() noexcept;
 
         // 전투 진입 시 고정되는 규칙 값과 승패를 결정하는 체력 상태다.
         BossDefinition boss_;
@@ -82,8 +91,8 @@ namespace ss
         float guardCooldown_ = 0.0f;
         float marker_ = 0.0f;
 
-        // 연속 공격 진행도와 다음 보스 공격에 적용할 방어 상태다.
-        int comboAttacksRemaining_ = 0;
+        // 데이터 시퀀스 위치와 다음 보스 공격에 적용할 방어 상태다.
+        std::size_t attackStepIndex_ = 0;
         int resolvedAttackCount_ = 0;
         GuardQuality pendingGuard_ = GuardQuality::Miss;
     };

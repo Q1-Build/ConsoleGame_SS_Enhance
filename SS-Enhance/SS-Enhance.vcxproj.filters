@@ -40,6 +40,9 @@
     <ClCompile Include="Game\Domain\BattleRules.cpp">
       <Filter>Game\Domain</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Domain\BattleSettlement.cpp">
+      <Filter>Game\Domain</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Domain\BattleSession.cpp">
       <Filter>Game\Domain</Filter>
     </ClCompile>
@@ -62,6 +65,9 @@
       <Filter>Game\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scenes\BattleScene.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\BossRenderer.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scenes\EndingScene.cpp">
@@ -123,6 +129,9 @@
     <ClInclude Include="Game\Domain\BattleRules.h">
       <Filter>Game\Domain</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Domain\BattleSettlement.h">
+      <Filter>Game\Domain</Filter>
+    </ClInclude>
     <ClInclude Include="Game\Domain\BattleSession.h">
       <Filter>Game\Domain</Filter>
     </ClInclude>
@@ -154,6 +163,9 @@
       <Filter>Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scenes\BattleScene.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\BossRenderer.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scenes\EndingScene.h">

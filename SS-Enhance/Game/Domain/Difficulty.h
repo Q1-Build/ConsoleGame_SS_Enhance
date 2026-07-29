@@ -18,10 +18,11 @@ namespace ss
     /// 한 난이도에 묶여 함께 조정되는 강화 비용과 제련 조건이다.
     struct DifficultyTuning
     {
-        // 백분율 비용, 자연 냉각 배율, 초 단위 제한 시간을 함께 관리한다.
+        // 비용, 냉각, 제한 시간과 실패 페널티 시작 단계를 함께 관리한다.
         int forgeCostPercent = 100;
         float naturalCoolingMultiplier = 1.0f;
         float forgeDurationSeconds = 12.0f;
+        int failurePenaltyStartLevel = 9;
     };
 
     /// 난이도별 밸런스 값을 한곳에서 반환해 비용과 제련 규칙의 수치 중복을 막는다.
@@ -31,11 +32,11 @@ namespace ss
         switch (difficulty)
         {
         case Difficulty::Easy:
-            return {90, 0.85f, 14.0f};
+            return {90, 0.85f, 14.0f, 10};
         case Difficulty::Normal:
-            return {100, 1.0f, 12.0f};
+            return {100, 1.0f, 12.0f, 9};
         case Difficulty::Hard:
-            return {115, 1.25f, 10.0f};
+            return {115, 1.25f, 10.0f, 4};
         }
         return {};
     }

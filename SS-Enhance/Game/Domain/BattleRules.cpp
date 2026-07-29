@@ -6,45 +6,40 @@ namespace ss
 {
     BossDefinition BattleRules::GetBossDefinition(BossType bossType) noexcept
     {
-        // 보스 수치는 첫 수직 슬라이스의 진행 시간을 짧게 유지하도록 보수적으로 설정한다.
+        // 보스별 수치와 시퀀스를 한 표처럼 모아 패턴과 보상 밸런스를 함께 조정한다.
         switch (bossType)
         {
         case BossType::EmberWarden:
             return {
                 bossType,
-                BossPattern::HeavyStrike,
                 180,
-                20,
-                3.2f,
-                1.15f,
-                1,
-                0.0f,
-                700,
-                1};
+                {
+                    {3.4f, 1.35f, 24, AttackTelegraph::Honest}
+                },
+                {900, 0},
+                {300, 2}};
         case BossType::StormSentinel:
             return {
                 bossType,
-                BossPattern::TripleCombo,
                 300,
-                8,
-                2.5f,
-                0.65f,
-                3,
-                0.42f,
-                1200,
-                2};
+                {
+                    {2.5f, 0.75f, 8, AttackTelegraph::Honest},
+                    {0.62f, 0.42f, 8, AttackTelegraph::Honest},
+                    {0.38f, 0.28f, 10, AttackTelegraph::Honest}
+                },
+                {1500, 0},
+                {600, 3}};
         case BossType::MemoryDevourer:
             return {
                 bossType,
-                BossPattern::MemoryDistortion,
                 500,
-                15,
-                2.2f,
-                0.85f,
-                1,
-                0.0f,
-                2200,
-                3};
+                {
+                    {2.2f, 0.85f, 15, AttackTelegraph::Distorted},
+                    {1.7f, 0.75f, 0, AttackTelegraph::Feint},
+                    {0.55f, 0.36f, 18, AttackTelegraph::Honest}
+                },
+                {2600, 0},
+                {1000, 4}};
         }
         return {};
     }

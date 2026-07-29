@@ -4,6 +4,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SS-Enhance", "SS-Enhance\SS-Enhance.vcxproj", "{AE74C436-DFBA-40FD-84B6-63575FD60E44}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SS-Enhance.Tests", "SS-Enhance.Tests\SS-Enhance.Tests.vcxproj", "{5CBA112A-9E7F-45D7-B619-31C7A68061E4}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{59061BF8-527B-4822-A006-49175D70B5F6}"
 	ProjectSection(SolutionItems) = preProject
 		AGENTS.md = AGENTS.md
@@ -25,6 +27,14 @@ Global
 		{AE74C436-DFBA-40FD-84B6-63575FD60E44}.Release|Win32.Build.0 = Release|Win32
 		{AE74C436-DFBA-40FD-84B6-63575FD60E44}.Release|x64.ActiveCfg = Release|x64
 		{AE74C436-DFBA-40FD-84B6-63575FD60E44}.Release|x64.Build.0 = Release|x64
+		{5CBA112A-9E7F-45D7-B619-31C7A68061E4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5CBA112A-9E7F-45D7-B619-31C7A68061E4}.Debug|Win32.Build.0 = Debug|Win32
+		{5CBA112A-9E7F-45D7-B619-31C7A68061E4}.Debug|x64.ActiveCfg = Debug|x64
+		{5CBA112A-9E7F-45D7-B619-31C7A68061E4}.Debug|x64.Build.0 = Debug|x64
+		{5CBA112A-9E7F-45D7-B619-31C7A68061E4}.Release|Win32.ActiveCfg = Release|Win32
+		{5CBA112A-9E7F-45D7-B619-31C7A68061E4}.Release|Win32.Build.0 = Release|Win32
+		{5CBA112A-9E7F-45D7-B619-31C7A68061E4}.Release|x64.ActiveCfg = Release|x64
+		{5CBA112A-9E7F-45D7-B619-31C7A68061E4}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

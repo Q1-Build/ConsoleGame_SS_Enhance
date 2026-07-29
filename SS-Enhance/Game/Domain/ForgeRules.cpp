@@ -59,6 +59,7 @@ namespace ss
     ForgeOutcome ForgeRules::Resolve(
         PlayerProgress& progress,
         const std::vector<float>& strikeScores,
+        Difficulty difficulty,
         float randomRoll) const
     {
         assert(randomRoll >= 0.0f && randomRoll <= 1.0f);
@@ -97,8 +98,11 @@ namespace ss
             progress.RecordSuccess();
             progress.GrantGold(65 + progress.GetSword().GetLevel() * 15);
         }
-        else if (outcome.previousLevel < 4)
+        else if (
+            outcome.previousLevel <
+            GetDifficultyTuning(difficulty).failurePenaltyStartLevel)
         {
+            // 쉬운 난이도일수록 높은 단계까지 실패 페널티를 유예해 성장 정체를 줄인다.
             outcome.failureConsequence = FailureConsequence::LevelMaintained;
         }
         else if (progress.ConsumeFragment())

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{7D78B08D-1D9D-443E-B36D-3D458337E2E8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shared Domain">
+      <UniqueIdentifier>{1906E27B-DB9D-4447-BED4-B4E970CC4928}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BattleDomainTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SS-Enhance\Game\Domain\BattleRules.cpp">
+      <Filter>Shared Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SS-Enhance\Game\Domain\BattleSession.cpp">
+      <Filter>Shared Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SS-Enhance\Game\Domain\BattleSettlement.cpp">
+      <Filter>Shared Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SS-Enhance\Game\Domain\ForgeRules.cpp">
+      <Filter>Shared Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SS-Enhance\Game\Domain\PlayerProgress.cpp">
+      <Filter>Shared Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SS-Enhance\Game\Domain\ProgressionRules.cpp">
+      <Filter>Shared Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SS-Enhance\Game\Domain\Sword.cpp">
+      <Filter>Shared Domain</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

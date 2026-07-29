@@ -34,7 +34,7 @@
 - C++17, Allman 중괄호, 공백 4칸, 프로젝트 명명 규칙을 따른다.
 - 새 클래스, public API, 핵심 규칙과 구현 의도에는 규약에 맞는 한글 주석을 작성한다.
 - 새 `.h`와 `.cpp`는 Visual Studio 프로젝트 및 필터 파일에 등록한다.
-- 코드 변경 후 Debug x64 빌드와 `git diff --check`를 통과시킨다.
+- 코드 변경 후 Debug x64 빌드, 관련 Domain 자동 테스트와 `git diff --check`를 통과시킨다.
 
 ## 문서 관리 원칙
 

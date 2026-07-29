@@ -4,7 +4,8 @@
 
 ## 현재 구조
 
-모든 소스는 `SS-Enhance` 아래에 둔다. 헤더는 `.h`, 구현은 `.cpp`를 사용하며
+제품 소스는 `SS-Enhance`, 자동 테스트 소스는 `SS-Enhance.Tests` 아래에 둔다.
+헤더는 `.h`, 구현은 `.cpp`를 사용하며
 한 파일에는 하나의 핵심 클래스만 둔다. 실제 필요가 생기기 전에 빈 디렉터리나 빈 클래스를 만들지 않는다.
 
 ```text
@@ -41,6 +42,8 @@ SS-Enhance/
    │  ├─ BossBattle.h
    │  ├─ BattleRules.h
    │  ├─ BattleRules.cpp
+   │  ├─ BattleSettlement.h
+   │  ├─ BattleSettlement.cpp
    │  ├─ BattleSession.h
    │  ├─ BattleSession.cpp
    │  ├─ Difficulty.h
@@ -71,6 +74,8 @@ SS-Enhance/
       ├─ SettingsScene.cpp
       ├─ BattleScene.h
       ├─ BattleScene.cpp
+      ├─ BossRenderer.h
+      ├─ BossRenderer.cpp
       ├─ EndingScene.h
       ├─ EndingScene.cpp
       ├─ TitleScene.h
@@ -81,6 +86,10 @@ SS-Enhance/
       ├─ ForgingScene.cpp
       ├─ ResultScene.h
       └─ ResultScene.cpp
+
+SS-Enhance.Tests/
+├─ BattleDomainTests.cpp
+└─ SS-Enhance.Tests.vcxproj
 ```
 
 ## 구성 요소와 책임
@@ -99,9 +108,10 @@ SS-Enhance/
 | Platform/Console | `ConsoleInput` | Windows 키 상태를 게임 입력으로 변환 |
 | Platform/Console | `ConsolePresenter` | ANSI 프레임을 Windows 콘솔에 출력 |
 | Game/Domain | `Sword` | 검의 강화 단계와 등급 관리 |
-| Game/Domain | `Difficulty`, `DifficultyTuning` | 난이도 값과 비용·냉각·제한 시간 튜닝 |
-| Game/Domain | `BossBattle`, `BattleRules` | 보스 패턴 값과 공격·방어·반격 피해 및 보상 규칙 |
-| Game/Domain | `BattleSession` | 체력, 공격 예고, 방어, 연속 공격과 타이밍 상태 |
+| Game/Domain | `Difficulty`, `DifficultyTuning` | 난이도 값과 비용·냉각·제한 시간·실패 페널티 시작 단계 튜닝 |
+| Game/Domain | `BossBattle`, `BattleRules` | 데이터 기반 공격 시퀀스와 공격·방어·반격 피해 및 선택 보상 규칙 |
+| Game/Domain | `BattleSession` | 체력, 공격 시퀀스, 정직·교란·가짜 예고와 방어 상태 |
+| Game/Domain | `BattleSettlement` | 승리 보상 또는 패배 페널티의 일회성 반영 |
 | Game/Domain | `ProgressionRules` | 강화 구간 상한, 보스 해금과 엔딩 조건 |
 | Game/Domain | `PlayerProgress` | 검, 재화, 기억 조각, 강화 기록 관리 |
 | Game/Domain | `ForgeRules` | 강화 비용, 확률, 성공과 실패 결과 판정 |
@@ -115,11 +125,13 @@ SS-Enhance/
 | Game/Scenes | `TitleScene` | 한국어 기본 제목 연출과 설정 화면 진입 |
 | Game/Scenes | `SettingsScene` | 표시 언어와 게임 난이도 선택 |
 | Game/Scenes | `BattleScene` | 보스 전투 입력, 예고·흔들림 연출, 승패와 보상 반영 |
+| Game/Scenes | `BossRenderer` | 보스별 아스키 형상, 대표 색상과 등장·격파 연출 |
 | Game/Scenes | `EndingScene` | 최종 기록과 완성된 검 표시 |
 | Game/Scenes | `ForgeScene` | 검 상태 표시, 비용 확인과 제련 시작 |
 | Game/Scenes | `ForgingScene` | 실시간 입력 해석, 제련 진행과 판정 요청 |
 | Game/Scenes | `ResultScene` | 강화 결과와 단계 변화 연출 |
 | Composition Root | `main` | 플랫폼 구현 생성, 의존성 주입과 실행 |
+| Tests | `BattleDomainTests` | 방어, 공격 시퀀스, 사망 입력 차단과 결과 중복 방지 검증 |
 
 ## 계층별 책임
 

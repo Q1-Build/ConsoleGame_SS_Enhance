@@ -247,6 +247,7 @@ namespace ss
         context_.lastOutcome = context_.forgeRules.Resolve(
             context_.progress,
             session_->GetStrikeScores(),
+            context_.difficulty,
             randomRoll);
 
         const ForgeOutcome& outcome = *context_.lastOutcome;

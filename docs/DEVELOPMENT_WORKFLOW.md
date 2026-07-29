@@ -26,10 +26,11 @@
 
 1. 변경된 호출부와 계층 의존성을 정적 검색으로 확인한다.
 2. Debug x64 빌드를 실행한다.
-3. 새 컴파일 경고가 없는지 확인한다.
-4. `git diff --check`로 공백 오류를 확인한다.
-5. 변경 범위에 맞는 수동 플레이 또는 자동 테스트를 수행한다.
-6. 한글 UI 변경 시 전각 문자 정렬, 박스 경계와 줄바꿈을 실제 콘솔에서 확인한다.
+3. Domain 규칙 변경 시 `SS-Enhance.Tests`를 빌드하고 실행한다.
+4. 새 컴파일 경고가 없는지 확인한다.
+5. `git diff --check`로 공백 오류를 확인한다.
+6. 변경 범위에 맞는 수동 플레이 또는 자동 테스트를 수행한다.
+7. 한글 UI 변경 시 전각 문자 정렬, 박스 경계와 줄바꿈을 실제 콘솔에서 확인한다.
 
 기본 빌드 명령은 다음과 같다.
 
@@ -38,11 +39,19 @@
     /t:Build `
     /p:Configuration=Debug `
     /p:Platform=x64
+
+& MSBuild.exe SS-Enhance.Tests\SS-Enhance.Tests.vcxproj `
+    /t:Build `
+    /p:Configuration=Debug `
+    /p:Platform=x64
+
+& .\SS-Enhance.Tests\x64\Debug\SS-Enhance.Tests.exe
 ```
 
 ## 완료 조건
 
 - Debug x64 빌드 성공
+- 관련 Domain 자동 테스트 통과
 - 새 경고를 추가하지 않음
 - `git diff --check` 통과
 - `Main.cpp`에 게임 로직을 추가하지 않음

@@ -54,5 +54,15 @@ namespace ss
         [[nodiscard]] static std::wstring_view GetBossPatternDescription(
             Language language,
             BossType bossType) noexcept;
+
+        /// 보스 등장 순간에 개성을 드러내는 짧은 문구를 반환한다.
+        [[nodiscard]] static std::wstring_view GetBossIntroduction(
+            Language language,
+            BossType bossType) noexcept;
+
+        /// 보스 격파 직후 보상 선택 전에 표시할 문구를 반환한다.
+        [[nodiscard]] static std::wstring_view GetBossDefeatText(
+            Language language,
+            BossType bossType) noexcept;
     };
 }

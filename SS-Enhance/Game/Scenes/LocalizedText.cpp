@@ -69,24 +69,26 @@ namespace ss
         std::wstringstream description;
         description << Select(language, L"비용 ", L"COST ")
                     << tuning.forgeCostPercent
-                    << Select(language, L"% | 제한 ", L"% | ")
+                    << Select(language, L"% | ", L"% | ")
                     << static_cast<int>(tuning.forgeDurationSeconds)
-                    << Select(language, L"초 | ", L" sec | ");
+                    << Select(language, L"초 | 하락 +", L"s | LOSS +")
+                    << tuning.failurePenaltyStartLevel
+                    << Select(language, L"부터 | ", L"+ | ");
 
         // 수치는 Domain 튜닝에서 가져오고 체감 설명만 난이도별 번역으로 덧붙인다.
         switch (difficulty)
         {
         case Difficulty::Easy:
             description << Select(
-                language, L"온도가 천천히 내려갑니다.", L"Heat falls slowly.");
+                language, L"느린 냉각", L"SLOW COOLING");
             break;
         case Difficulty::Normal:
             description << Select(
-                language, L"기본 온도 속도", L"Standard heat speed");
+                language, L"기본 냉각", L"STANDARD COOLING");
             break;
         case Difficulty::Hard:
             description << Select(
-                language, L"온도가 빠르게 내려갑니다.", L"Heat falls quickly.");
+                language, L"빠른 냉각", L"FAST COOLING");
             break;
         }
         return description.str();
@@ -117,11 +119,61 @@ namespace ss
         switch (bossType)
         {
         case BossType::EmberWarden:
-            return Select(language, L"느리지만 강한 일격", L"SLOW, HEAVY STRIKES");
+            return Select(language, L"긴 차징 뒤 이어지는 강한 일격", L"LONG CHARGE, CRUSHING BLOW");
         case BossType::StormSentinel:
-            return Select(language, L"빠르게 이어지는 삼연격", L"RAPID TRIPLE COMBO");
+            return Select(language, L"점점 빨라지는 삼연격", L"AN ACCELERATING TRIPLE COMBO");
         case BossType::MemoryDevourer:
-            return Select(language, L"예고 중 타이밍 교란", L"DISTORTS TIMING WHILE WARNING");
+            return Select(language, L"보랏빛 잔상과 뒤틀린 예고", L"VIOLET FEINTS AND DISTORTED WARNINGS");
+        }
+        return {};
+    }
+
+    std::wstring_view LocalizedText::GetBossIntroduction(
+        Language language,
+        BossType bossType) noexcept
+    {
+        switch (bossType)
+        {
+        case BossType::EmberWarden:
+            return Select(
+                language,
+                L"갑옷 틈의 잿불이 거대한 불길로 번집니다.",
+                L"EMBERS BETWEEN ITS PLATES ERUPT INTO FLAME.");
+        case BossType::StormSentinel:
+            return Select(
+                language,
+                L"세 번의 천둥이 서로 다른 박자로 울립니다.",
+                L"THREE THUNDERS ANSWER IN DIFFERENT RHYTHMS.");
+        case BossType::MemoryDevourer:
+            return Select(
+                language,
+                L"진짜 공격과 보랏빛 잔상이 기억 속에서 겹칩니다.",
+                L"TRUE STRIKES AND VIOLET AFTERIMAGES OVERLAP.");
+        }
+        return {};
+    }
+
+    std::wstring_view LocalizedText::GetBossDefeatText(
+        Language language,
+        BossType bossType) noexcept
+    {
+        switch (bossType)
+        {
+        case BossType::EmberWarden:
+            return Select(
+                language,
+                L"무거운 갑옷이 잿가루가 되어 무너집니다.",
+                L"THE HEAVY ARMOR COLLAPSES INTO ASH.");
+        case BossType::StormSentinel:
+            return Select(
+                language,
+                L"마지막 번개가 끊어지며 폭풍이 잠잠해집니다.",
+                L"THE FINAL BOLT BREAKS, AND THE STORM FALLS SILENT.");
+        case BossType::MemoryDevourer:
+            return Select(
+                language,
+                L"뒤엉킨 잔상 속에서 마지막 기억이 돌아옵니다.",
+                L"THE FINAL MEMORY RETURNS FROM THE FRACTURED ECHOES.");
         }
         return {};
     }
