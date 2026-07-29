@@ -14,6 +14,7 @@ namespace ss
     {
         screen.Clear();
 
+        // 모든 장면이 같은 크기와 색상의 외곽 프레임을 공유한다.
         for (int y = 1; y < kScreenHeight - 1; ++y)
         {
             screen.Put(1, y, L'│', Color::BrightBlack);
@@ -30,6 +31,7 @@ namespace ss
         screen.Put(1, kScreenHeight - 1, L'└', Color::BrightBlack);
         screen.Put(kScreenWidth - 2, kScreenHeight - 1, L'┘', Color::BrightBlack);
 
+        // 사인 파형으로 하단 화로의 밝은 범위를 천천히 넓혔다 줄인다.
         const int pulse = static_cast<int>(
             (std::sin(worldTimeSeconds * 1.7f) + 1.0f) * 0.5f * 12.0f);
         for (int x = 3; x < kScreenWidth - 3; ++x)
@@ -72,6 +74,7 @@ namespace ss
         const Color auraColor = glow > 0.52f ? color : Color::BrightBlack;
         const int length = 11 + std::min(level / 2, 4);
 
+        // +2부터 검 주변에 움직이는 오라를 추가하고 단계에 따라 검신을 길게 만든다.
         if (level >= 2)
         {
             for (int index = 0; index < length; ++index)
@@ -125,6 +128,7 @@ namespace ss
         Color fillColor,
         std::wstring_view label) const
     {
+        // 호출자가 범위를 벗어난 값을 전달해도 막대가 프레임을 침범하지 않게 보정한다.
         const float safeValue = Clamp01(value);
         screen.Text(x, y, label, Color::BrightWhite);
         screen.Put(x + static_cast<int>(label.size()), y, L'[', Color::BrightBlack);
@@ -148,6 +152,7 @@ namespace ss
 
     Color GameHudRenderer::GetSwordColor(int swordLevel) const noexcept
     {
+        // 색상 등급은 화면 표현 규칙이므로 도메인 Sword가 아니라 HUD에서 결정한다.
         if (swordLevel >= 10)
         {
             return Color::BrightMagenta;

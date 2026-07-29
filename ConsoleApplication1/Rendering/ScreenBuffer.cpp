@@ -19,6 +19,7 @@ namespace ss
 
     void ScreenBuffer::Put(int x, int y, wchar_t glyph, Color color)
     {
+        // 파티클처럼 화면 밖으로 이동할 수 있는 요소 때문에 경계 밖 쓰기는 안전하게 무시한다.
         if (!IsInside(x, y))
         {
             return;
@@ -43,6 +44,7 @@ namespace ss
 
     void ScreenBuffer::Line(int x1, int y1, int x2, int y2, wchar_t glyph, Color color)
     {
+        // 모든 기울기의 선을 정수 좌표로 그리기 위해 Bresenham 방식으로 셀을 선택한다.
         const int deltaX = std::abs(x2 - x1);
         const int stepX = x1 < x2 ? 1 : -1;
         const int deltaY = -std::abs(y2 - y1);
@@ -96,6 +98,7 @@ namespace ss
         frame.reserve(kScreenWidth * kScreenHeight + 2048);
         int currentColorCode = -1;
 
+        // 색상이 달라지는 지점에만 ANSI 코드를 넣어 프레임 문자열 크기를 줄인다.
         for (int y = 0; y < kScreenHeight; ++y)
         {
             for (int x = 0; x < kScreenWidth; ++x)

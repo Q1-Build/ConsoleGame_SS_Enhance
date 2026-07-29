@@ -26,6 +26,7 @@ namespace ss
 
     void ForgingScene::OnEnter()
     {
+        // 진입 시점의 검 단계로 난도를 고정해 제련 도중 외부 상태 변화에 영향받지 않게 한다.
         const int swordLevel = context_.progress.GetSword().GetLevel();
         session_ = std::make_unique<ForgeSession>(swordLevel);
         context_.particles.Clear();
@@ -40,6 +41,7 @@ namespace ss
             return SceneTransition::To(SceneType::Forge);
         }
 
+        // 키보드 종류에 관계없이 문자 키와 방향키를 같은 도메인 입력으로 합친다.
         const bool isCooling =
             context_.input.IsDown(InputKey::A) ||
             context_.input.IsDown(InputKey::Left);
@@ -60,6 +62,7 @@ namespace ss
             const std::optional<float> score = session_->TryStrike();
             if (score.has_value())
             {
+                // 쿨다운 중 입력은 점수가 없으므로 실제 타격이 성립한 경우에만 효과를 생성한다.
                 context_.particles.SpawnImpact(*score);
             }
         }
@@ -81,6 +84,8 @@ namespace ss
         const Color frameColor = session_->GetImpactFlash() > 0.0f
             ? Color::BrightWhite
             : Color::BrightBlack;
+
+        // 충돌 직후 프레임과 망치를 밝게 바꿔 별도 이미지 없이 화면 플래시를 표현한다.
         screen.Box(4, 5, 99, 29, frameColor);
         screen.CenterText(
             6,
@@ -113,6 +118,7 @@ namespace ss
                 ? Color::BrightYellow
                 : Color::BrightBlack);
 
+        // 현재 온도를 검신 색과 상태 문구에 동시에 반영해 수치를 보지 않아도 상태를 알 수 있게 한다.
         const float heat = session_->GetHeat();
         const Color bladeColor = heat > 82.0f
             ? Color::BrightWhite
@@ -149,6 +155,8 @@ namespace ss
         screen.Text(10, 24, L"RHYTHM ", Color::BrightWhite);
         screen.Put(18, 24, L'[', Color::BrightBlack);
         constexpr int kRhythmWidth = 62;
+
+        // 0~1 리듬 위치를 고정 폭 문자 좌표로 변환하고 중앙의 성공 구간과 겹쳐 표시한다.
         const int markerPosition = static_cast<int>(
             session_->GetMarker() * static_cast<float>(kRhythmWidth - 1));
         for (int index = 0; index < kRhythmWidth; ++index)
@@ -216,6 +224,7 @@ namespace ss
     {
         assert(session_ != nullptr);
 
+        // 난수 생성과 판정 계산을 분리해 ForgeRules 자체는 결정론적으로 유지한다.
         const float randomRoll = context_.randomProvider.NextFloat(0.0f, 1.0f);
         context_.lastOutcome = context_.forgeRules.Resolve(
             context_.progress,
@@ -224,6 +233,7 @@ namespace ss
 
         const ForgeOutcome& outcome = *context_.lastOutcome;
         const Color swordColor = context_.hudRenderer.GetSwordColor(outcome.newLevel);
+        // 타격 불꽃을 결과 전용 파티클로 교체해 장면 전환의 시각적 경계를 만든다.
         context_.particles.Clear();
         context_.particles.SpawnResultBurst(
             outcome.succeeded,

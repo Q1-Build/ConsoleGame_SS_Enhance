@@ -37,6 +37,8 @@ namespace ss
     bool PlayerProgress::SpendGold(int amount)
     {
         assert(amount >= 0);
+
+        // 검사와 차감을 한 메서드에서 처리해 음수 재화 상태가 만들어지지 않게 한다.
         if (!CanAfford(amount))
         {
             return false;
@@ -54,6 +56,7 @@ namespace ss
 
     bool PlayerProgress::ConsumeFragment()
     {
+        // 조각이 없을 때는 상태를 바꾸지 않고 호출자가 다음 실패 규칙을 선택하게 한다.
         if (fragments_ <= 0)
         {
             return false;

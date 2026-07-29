@@ -9,6 +9,7 @@ namespace ss
 {
     void ConsoleInput::Update()
     {
+        // 이전 배열을 먼저 보존해야 Down 상태와 이번 프레임의 Pressed 상태를 함께 계산할 수 있다.
         previous_ = current_;
         for (std::size_t index = 0; index < current_.size(); ++index)
         {
@@ -30,6 +31,7 @@ namespace ss
 
     int ConsoleInput::ToVirtualKey(InputKey key) noexcept
     {
+        // Windows 가상 키 코드는 이 변환 경계 밖의 게임 코드로 노출하지 않는다.
         switch (key)
         {
         case InputKey::Enter:

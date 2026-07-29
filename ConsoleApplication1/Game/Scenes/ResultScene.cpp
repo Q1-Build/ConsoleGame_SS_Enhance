@@ -33,6 +33,8 @@ namespace ss
 
         const ForgeOutcome& outcome = *context_.lastOutcome;
         const Color swordColor = context_.hudRenderer.GetSwordColor(outcome.newLevel);
+
+        // 초기 폭발 뒤에도 작은 결과 파티클을 추가해 정지 화면처럼 보이지 않게 한다.
         if (context_.randomProvider.NextFloat(0.0f, 1.0f) < 0.22f)
         {
             context_.particles.SpawnResultParticle(outcome.succeeded, swordColor);
@@ -43,6 +45,7 @@ namespace ss
             return SceneTransition::To(SceneType::Forge);
         }
 
+        // 결과를 읽을 최소 시간을 보장해 타격 키가 복귀 입력으로 연속 처리되지 않게 한다.
         const bool isReturnRequested =
             context_.input.WasPressed(InputKey::Enter) ||
             context_.input.WasPressed(InputKey::Space);
@@ -63,6 +66,8 @@ namespace ss
 
         const Color swordColor = context_.hudRenderer.GetSwordColor(outcome.newLevel);
         const Color resultColor = outcome.succeeded ? swordColor : Color::BrightRed;
+
+        // 장면 진입 직후 잠깐 흰색 테두리를 사용해 강화 판정 순간을 강조한다.
         screen.Box(
             12,
             5,
@@ -118,6 +123,7 @@ namespace ss
 
     std::wstring_view ResultScene::GetHeadline(const ForgeOutcome& outcome) noexcept
     {
+        // 도메인 결과를 사용자에게 보여줄 문구로 변환하는 책임은 장면에만 둔다.
         if (outcome.succeeded)
         {
             return outcome.wasCritical

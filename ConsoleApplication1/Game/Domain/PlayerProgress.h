@@ -15,8 +15,11 @@ namespace ss
         [[nodiscard]] int GetSuccessCount() const noexcept;
         [[nodiscard]] bool CanAfford(int amount) const noexcept;
 
+        /// 골드가 충분하면 차감하고 성공 여부를 반환한다.
         [[nodiscard]] bool SpendGold(int amount);
         void GrantGold(int amount);
+
+        /// 기억 조각이 있으면 하나를 소비하고 성공 여부를 반환한다.
         [[nodiscard]] bool ConsumeFragment();
         void RecordAttempt() noexcept;
         void RecordSuccess() noexcept;

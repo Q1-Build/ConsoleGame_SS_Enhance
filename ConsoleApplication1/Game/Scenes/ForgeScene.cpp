@@ -52,12 +52,14 @@ namespace ss
         const int forgeCost = ForgeRules::CalculateCost(swordLevel);
         if (!context_.progress.CanAfford(forgeCost))
         {
+            // 플레이가 재화 부족으로 영구 중단되지 않도록 같은 장면에서 긴급 계약을 지급한다.
             context_.progress.GrantGold(600);
             context_.notice =
                 L"Not enough gold. The guild grants an emergency contract: +600 G";
             return SceneTransition::None();
         }
 
+        // 장면 전환 전에 비용과 시도 횟수를 확정해 중복 입력으로 두 번 시작되는 것을 막는다.
         const bool wasPaid = context_.progress.SpendGold(forgeCost);
         if (!wasPaid)
         {
@@ -74,6 +76,7 @@ namespace ss
         context_.hudRenderer.DrawBackdrop(screen, context_.worldTimeSeconds);
         context_.hudRenderer.DrawHeader(screen, context_.progress);
 
+        // 왼쪽은 조작과 확률, 오른쪽은 현재 검의 시각 정보로 영역을 구분한다.
         screen.Box(4, 5, 65, 29, Color::BrightBlack);
         screen.Box(68, 5, 99, 29, Color::BrightBlack);
         screen.Text(7, 6, L"THE ANVIL", Color::BrightRed);

@@ -16,6 +16,7 @@ namespace ss
 
     void ParticleSystem::Update(float deltaSeconds)
     {
+        // 파티클은 간단한 중력만 적용해 문자 애니메이션 비용을 낮게 유지한다.
         for (Particle& particle : particles_)
         {
             particle.life -= deltaSeconds;
@@ -24,6 +25,7 @@ namespace ss
             particle.velocityY += deltaSeconds * 5.0f;
         }
 
+        // erase-remove로 만료된 파티클을 한 번에 정리해 반복 중 컨테이너 변경을 피한다.
         particles_.erase(
             std::remove_if(
                 particles_.begin(),
@@ -42,6 +44,7 @@ namespace ss
 
     void ParticleSystem::SpawnAmbientEmber()
     {
+        // 화면 아래의 임의 위치에서 위로 떠오르는 작은 불씨를 만든다.
         Particle particle;
         particle.x = randomProvider_.NextFloat(6.0f, static_cast<float>(kScreenWidth - 7));
         particle.y = static_cast<float>(kScreenHeight - 3);
@@ -58,6 +61,7 @@ namespace ss
 
     void ParticleSystem::SpawnImpact(float score)
     {
+        // 정확한 타격일수록 더 많은 불꽃을 방사해 플레이 결과를 즉시 시각화한다.
         const int particleCount = 28 + static_cast<int>(score * 35.0f);
         for (int index = 0; index < particleCount; ++index)
         {
@@ -89,6 +93,7 @@ namespace ss
 
     void ParticleSystem::SpawnResultParticle(bool succeeded, Color swordColor)
     {
+        // 성공은 검 색상의 별빛, 실패는 어두운 재로 서로 다른 감정을 표현한다.
         Particle particle;
         particle.x = 52.0f + randomProvider_.NextFloat(-5.0f, 5.0f);
         particle.y = 18.0f + randomProvider_.NextFloat(-2.0f, 2.0f);
@@ -110,6 +115,7 @@ namespace ss
     {
         for (const Particle& particle : particles_)
         {
+            // 수명이 거의 끝난 파티클은 어둡게 표시해 자연스럽게 사라지는 효과를 낸다.
             const float lifeRatio = particle.life / particle.maxLife;
             const Color color = lifeRatio < 0.28f ? Color::BrightBlack : particle.color;
             screen.Put(

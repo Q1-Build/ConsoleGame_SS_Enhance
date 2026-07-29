@@ -26,6 +26,7 @@ namespace ss
     {
         static_cast<void>(deltaSeconds);
 
+        // 프레임마다 낮은 확률로 생성해 시간에 따라 불규칙한 배경 불씨를 만든다.
         if (context_.randomProvider.NextFloat(0.0f, 1.0f) < 0.13f)
         {
             context_.particles.SpawnAmbientEmber();
@@ -47,6 +48,7 @@ namespace ss
     {
         context_.hudRenderer.DrawBackdrop(screen, context_.worldTimeSeconds);
 
+        // 제목 색상을 주기적으로 교차해 정적인 문자 로고에 맥동감을 준다.
         const Color titleColor = std::sin(context_.worldTimeSeconds * 2.2f) > 0.0f
             ? Color::BrightRed
             : Color::BrightYellow;
@@ -71,6 +73,7 @@ namespace ss
             (std::sin(context_.worldTimeSeconds * 3.0f) + 1.0f) * 0.5f,
             context_.worldTimeSeconds);
 
+        // 입력 안내는 일정 주기로 점멸하지만 입력 가능 여부에는 영향을 주지 않는다.
         const Color promptColor =
             static_cast<int>(context_.worldTimeSeconds * 2.0f) % 2 == 0
                 ? Color::BrightYellow

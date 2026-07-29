@@ -13,8 +13,13 @@ namespace ss
     class GameHudRenderer final
     {
     public:
+        /// 장면 공통 테두리와 하단 화로 애니메이션을 그린다.
         void DrawBackdrop(IScreen& screen, float worldTimeSeconds) const;
+
+        /// 플레이어의 골드와 기억 조각을 공통 상단 영역에 표시한다.
         void DrawHeader(IScreen& screen, const PlayerProgress& progress) const;
+
+        /// 강화 단계에 따라 길이와 오라가 달라지는 검 형상을 그린다.
         void DrawSword(
             IScreen& screen,
             int centerX,
@@ -23,6 +28,8 @@ namespace ss
             int level,
             float glow,
             float worldTimeSeconds) const;
+
+        /// 0~1 범위의 값을 고정 폭 막대로 표현한다.
         void DrawProgressBar(
             IScreen& screen,
             int x,

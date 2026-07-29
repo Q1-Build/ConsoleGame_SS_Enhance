@@ -15,12 +15,17 @@ namespace ss
     public:
         explicit ParticleSystem(IRandomProvider& randomProvider);
 
+        /// 모든 파티클을 경과 시간만큼 이동시키고 수명이 끝난 항목을 제거한다.
         void Update(float deltaSeconds);
         void Clear() noexcept;
+
+        /// 장면의 상황에 맞는 파티클 묶음을 생성한다.
         void SpawnAmbientEmber();
         void SpawnImpact(float score);
         void SpawnResultBurst(bool succeeded, Color swordColor, int count);
         void SpawnResultParticle(bool succeeded, Color swordColor);
+
+        /// 현재 파티클을 화면에 그리며 파티클 상태는 변경하지 않는다.
         void Draw(IScreen& screen) const;
 
     private:

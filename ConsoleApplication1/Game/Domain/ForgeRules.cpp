@@ -10,6 +10,7 @@ namespace ss
 {
     float ForgeRules::GetBaseChance(int swordLevel) noexcept
     {
+        // 확률 테이블은 강화 단계별 밸런스를 코드 한곳에서 조정할 수 있게 모아둔다.
         static constexpr std::array<float, 12> kBaseChances =
         {
             0.96f, 0.90f, 0.82f, 0.73f, 0.63f, 0.52f,
@@ -39,6 +40,7 @@ namespace ss
 
     float ForgeRules::CalculateFinalChance(int swordLevel, float craftScore) noexcept
     {
+        // 플레이 실력이 기본 확률을 완전히 대체하지 않고 62~110% 범위에서 보정한다.
         const float skillMultiplier = 0.62f + Clamp01(craftScore) * 0.48f;
         const float calculatedChance = GetBaseChance(swordLevel) * skillMultiplier;
         return std::max(0.02f, std::min(calculatedChance, 0.98f));
@@ -60,6 +62,7 @@ namespace ss
             randomRoll < outcome.finalChance * 0.20f;
         outcome.succeeded = randomRoll < outcome.finalChance;
 
+        // 판정과 진행도 반영을 한 트랜잭션으로 처리해 화면과 실제 상태가 어긋나지 않게 한다.
         if (outcome.succeeded)
         {
             const int gainedLevels = outcome.wasCritical ? 2 : 1;
@@ -73,6 +76,7 @@ namespace ss
         }
         else if (progress.ConsumeFragment())
         {
+            // 높은 단계에서는 기억 조각이 단계 하락보다 먼저 소비된다.
             outcome.failureConsequence = FailureConsequence::FragmentConsumed;
         }
         else

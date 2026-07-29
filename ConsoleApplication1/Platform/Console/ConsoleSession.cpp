@@ -11,6 +11,7 @@ namespace ss
         hasOutputMode_ = GetConsoleMode(outputHandle_, &oldOutputMode_) != 0;
         hasInputMode_ = GetConsoleMode(inputHandle_, &oldInputMode_) != 0;
 
+        // 유니코드 검 문자와 ANSI 색상 시퀀스를 같은 콘솔에서 사용할 수 있게 설정한다.
         SetConsoleOutputCP(CP_UTF8);
         SetConsoleCP(CP_UTF8);
 
@@ -26,11 +27,14 @@ namespace ss
         }
 
         SetConsoleTitleW(L"SS_Enhance");
+
+        // 대체 화면 버퍼를 사용해 종료 후 사용자의 기존 콘솔 내용을 그대로 복원한다.
         WriteControlSequence(L"\x1b[?1049h\x1b[2J\x1b[?25l");
     }
 
     ConsoleSession::~ConsoleSession() noexcept
     {
+        // 커서와 화면 버퍼를 먼저 복원한 뒤 저장해 둔 콘솔 모드로 되돌린다.
         WriteControlSequence(L"\x1b[0m\x1b[?25h\x1b[?1049l");
 
         if (hasOutputMode_)
