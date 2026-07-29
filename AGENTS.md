@@ -82,11 +82,11 @@ Forge
 
 ## 3. 현재 코드 구조
 
-모든 소스는 `ConsoleApplication1` 아래에서 다음 구조를 따른다.
+모든 소스는 `SS-Enhance` 아래에서 다음 구조를 따른다.
 헤더는 `.h`, 구현은 `.cpp`를 사용하며 한 파일에는 하나의 핵심 클래스만 둔다.
 
 ```text
-ConsoleApplication1/
+SS-Enhance/
 ├─ Main.cpp
 ├─ Application/
 │  ├─ GameApplication.h
