@@ -6,6 +6,7 @@
 #include "Game/Domain/PlayerProgress.h"
 #include "Game/Effects/ParticleSystem.h"
 #include "Game/Scenes/GameHudRenderer.h"
+#include "Game/Scenes/LocalizedText.h"
 #include "Game/Scenes/SceneContext.h"
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
@@ -79,7 +80,10 @@ namespace ss
         assert(session_ != nullptr);
 
         context_.hudRenderer.DrawBackdrop(screen, context_.worldTimeSeconds);
-        context_.hudRenderer.DrawHeader(screen, context_.progress);
+        context_.hudRenderer.DrawHeader(
+            screen,
+            context_.progress,
+            context_.language);
 
         const Color frameColor = session_->GetImpactFlash() > 0.0f
             ? Color::BrightWhite
@@ -89,7 +93,10 @@ namespace ss
         screen.Box(4, 5, 99, 29, frameColor);
         screen.CenterText(
             6,
-            L"—  LISTEN TO THE HAMMER'S ECHO  —",
+            LocalizedText::Select(
+                context_.language,
+                L"—  망치의 메아리에 귀 기울여라  —",
+                L"—  LISTEN TO THE HAMMER'S ECHO  —"),
             Color::BrightRed);
 
         const float hammerSwing = session_->GetStrikeCooldown() > 0.18f
@@ -144,15 +151,18 @@ namespace ss
             31,
             heat / 100.0f,
             bladeColor,
-            L"HEAT   ");
+            LocalizedText::Select(context_.language, L"온도   ", L"HEAT   "));
         const bool isResonantHeat = heat >= 58.0f && heat <= 78.0f;
         screen.Text(
             71,
             21,
-            isResonantHeat ? L"RESONANT" : L"UNSTABLE",
+            isResonantHeat
+                ? LocalizedText::Select(context_.language, L"공명", L"RESONANT")
+                : LocalizedText::Select(context_.language, L"불안정", L"UNSTABLE"),
             isResonantHeat ? Color::BrightGreen : Color::BrightRed);
 
-        screen.Text(10, 24, L"RHYTHM ", Color::BrightWhite);
+        screen.Text(10, 24, LocalizedText::Select(
+            context_.language, L"리듬   ", L"RHYTHM "), Color::BrightWhite);
         screen.Put(18, 24, L'[', Color::BrightBlack);
         constexpr int kRhythmWidth = 62;
 
@@ -172,7 +182,7 @@ namespace ss
         screen.Put(19 + kRhythmWidth, 24, L']', Color::BrightBlack);
 
         std::wstringstream timer;
-        timer << L"TIME "
+        timer << LocalizedText::Select(context_.language, L"시간 ", L"TIME ")
               << std::fixed
               << std::setprecision(1)
               << std::max(0.0f, session_->GetTimeLeft())
@@ -185,7 +195,8 @@ namespace ss
                 ? Color::BrightRed
                 : Color::BrightWhite);
 
-        screen.Text(44, 27, L"STRIKES", Color::BrightBlack);
+        screen.Text(44, 27, LocalizedText::Select(
+            context_.language, L"타격", L"STRIKES"), Color::BrightBlack);
         const std::vector<float>& scores = session_->GetStrikeScores();
         for (int index = 0; index < 3; ++index)
         {
@@ -197,8 +208,10 @@ namespace ss
 
             const float score = scores[static_cast<std::size_t>(index)];
             const std::wstring_view text = score >= 0.86f
-                ? L"[PERF]"
-                : (score >= 0.62f ? L"[GOOD]" : L"[MISS]");
+                ? LocalizedText::Select(context_.language, L"[완벽]", L"[PERF]")
+                : (score >= 0.62f
+                    ? LocalizedText::Select(context_.language, L"[좋음]", L"[GOOD]")
+                    : LocalizedText::Select(context_.language, L"[실패]", L"[MISS]"));
             const Color color = score >= 0.86f
                 ? Color::BrightCyan
                 : (score >= 0.62f ? Color::BrightYellow : Color::BrightRed);
@@ -207,7 +220,10 @@ namespace ss
 
         screen.CenterText(
             31,
-            L"A / D : TEMPER HEAT     SPACE : STRIKE     ESC : ABORT",
+            LocalizedText::Select(
+                context_.language,
+                L"A / D : 온도 조절     SPACE : 타격     ESC : 중단",
+                L"A / D : TEMPER HEAT     SPACE : STRIKE     ESC : ABORT"),
             Color::BrightBlack);
         if (session_->GetImpactFlash() > 0.0f)
         {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Language.h"
 #include "Game/Domain/ForgeOutcome.h"
 
 #include <optional>
@@ -45,5 +46,8 @@ namespace ss
         float worldTimeSeconds = 0.0f;
         std::optional<ForgeOutcome> lastOutcome;
         std::wstring notice;
+
+        // 첫 실행 언어는 한국어이며 타이틀 장면에서만 시작 전에 변경한다.
+        Language language = Language::Korean;
     };
 }

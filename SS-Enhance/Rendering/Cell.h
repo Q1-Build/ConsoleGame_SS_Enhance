@@ -9,5 +9,8 @@ namespace ss
     {
         wchar_t glyph = L' ';
         Color color = Color::White;
+
+        // 전각 문자가 차지한 두 번째 화면 칸은 출력 문자열에 다시 쓰지 않는다.
+        bool isWideContinuation = false;
     };
 }

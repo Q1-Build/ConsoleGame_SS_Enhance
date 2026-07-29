@@ -14,7 +14,7 @@ namespace ss
 
     void ScreenBuffer::Clear(wchar_t glyph, Color color)
     {
-        std::fill(cells_.begin(), cells_.end(), Cell{glyph, color});
+        std::fill(cells_.begin(), cells_.end(), Cell{glyph, color, false});
     }
 
     void ScreenBuffer::Put(int x, int y, wchar_t glyph, Color color)
@@ -25,21 +25,63 @@ namespace ss
             return;
         }
 
-        cells_[y * kScreenWidth + x] = {glyph, color};
+        const int displayWidth = GetDisplayWidth(glyph);
+        if (displayWidth == 2 && !IsInside(x + 1, y))
+        {
+            return;
+        }
+
+        // 기존 전각 문자의 어느 칸을 덮어써도 소유 문자와 연속 칸을 함께 비운다.
+        ClearOccupiedCell(x, y);
+        if (displayWidth == 2)
+        {
+            ClearOccupiedCell(x + 1, y);
+        }
+
+        cells_[y * kScreenWidth + x] = {glyph, color, false};
+        if (displayWidth == 2)
+        {
+            cells_[y * kScreenWidth + x + 1] = {L' ', color, true};
+        }
     }
 
     void ScreenBuffer::Text(int x, int y, std::wstring_view text, Color color)
     {
-        for (std::size_t index = 0; index < text.size(); ++index)
+        int cursorX = x;
+        for (const wchar_t glyph : text)
         {
-            Put(x + static_cast<int>(index), y, text[index], color);
+            Put(cursorX, y, glyph, color);
+            cursorX += GetDisplayWidth(glyph);
         }
     }
 
     void ScreenBuffer::CenterText(int y, std::wstring_view text, Color color)
     {
-        const int left = (kScreenWidth - static_cast<int>(text.size())) / 2;
+        const int left = (kScreenWidth - GetDisplayWidth(text)) / 2;
         Text(left, y, text, color);
+    }
+
+    void ScreenBuffer::RightText(
+        int right,
+        int y,
+        std::wstring_view text,
+        Color color)
+    {
+        const int left = right - GetDisplayWidth(text) + 1;
+        Text(left, y, text, color);
+    }
+
+    void ScreenBuffer::CenterTextIn(
+        int left,
+        int right,
+        int y,
+        std::wstring_view text,
+        Color color)
+    {
+        const int regionWidth = std::max(0, right - left + 1);
+        const int textWidth = GetDisplayWidth(text);
+        const int textLeft = left + std::max(0, regionWidth - textWidth) / 2;
+        Text(textLeft, y, text, color);
     }
 
     void ScreenBuffer::Line(int x1, int y1, int x2, int y2, wchar_t glyph, Color color)
@@ -104,6 +146,11 @@ namespace ss
             for (int x = 0; x < kScreenWidth; ++x)
             {
                 const Cell& cell = cells_[y * kScreenWidth + x];
+                if (cell.isWideContinuation)
+                {
+                    continue;
+                }
+
                 const int colorCode = static_cast<int>(cell.color);
                 if (colorCode != currentColorCode)
                 {
@@ -128,5 +175,50 @@ namespace ss
     bool ScreenBuffer::IsInside(int x, int y) const noexcept
     {
         return x >= 0 && x < kScreenWidth && y >= 0 && y < kScreenHeight;
+    }
+
+    int ScreenBuffer::GetDisplayWidth(wchar_t glyph) noexcept
+    {
+        // Windows 콘솔에서 두 칸을 차지하는 한글·CJK·전각 문자의 주요 Unicode 범위다.
+        const bool isWide =
+            (glyph >= L'\x1100' && glyph <= L'\x115F') ||
+            (glyph >= L'\x2E80' && glyph <= L'\xA4CF') ||
+            (glyph >= L'\xAC00' && glyph <= L'\xD7A3') ||
+            (glyph >= L'\xF900' && glyph <= L'\xFAFF') ||
+            (glyph >= L'\xFE10' && glyph <= L'\xFE6F') ||
+            (glyph >= L'\xFF01' && glyph <= L'\xFF60') ||
+            (glyph >= L'\xFFE0' && glyph <= L'\xFFE6');
+        return isWide ? 2 : 1;
+    }
+
+    int ScreenBuffer::GetDisplayWidth(std::wstring_view text) noexcept
+    {
+        int width = 0;
+        for (const wchar_t glyph : text)
+        {
+            width += GetDisplayWidth(glyph);
+        }
+        return width;
+    }
+
+    void ScreenBuffer::ClearOccupiedCell(int x, int y)
+    {
+        if (!IsInside(x, y))
+        {
+            return;
+        }
+
+        const int index = y * kScreenWidth + x;
+        if (cells_[index].isWideContinuation && x > 0)
+        {
+            cells_[index - 1] = {};
+        }
+        else if (GetDisplayWidth(cells_[index].glyph) == 2 &&
+                 IsInside(x + 1, y) &&
+                 cells_[index + 1].isWideContinuation)
+        {
+            cells_[index + 1] = {};
+        }
+        cells_[index] = {};
     }
 }

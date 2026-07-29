@@ -5,6 +5,7 @@
 #include "Game/Domain/PlayerProgress.h"
 #include "Game/Effects/ParticleSystem.h"
 #include "Game/Scenes/GameHudRenderer.h"
+#include "Game/Scenes/LocalizedText.h"
 #include "Game/Scenes/SceneContext.h"
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
@@ -62,7 +63,10 @@ namespace ss
         const ForgeOutcome& outcome = *context_.lastOutcome;
 
         context_.hudRenderer.DrawBackdrop(screen, context_.worldTimeSeconds);
-        context_.hudRenderer.DrawHeader(screen, context_.progress);
+        context_.hudRenderer.DrawHeader(
+            screen,
+            context_.progress,
+            context_.language);
 
         const Color swordColor = context_.hudRenderer.GetSwordColor(outcome.newLevel);
         const Color resultColor = outcome.succeeded ? swordColor : Color::BrightRed;
@@ -74,10 +78,13 @@ namespace ss
             91,
             29,
             sceneTimeSeconds_ < 0.18f ? Color::BrightWhite : resultColor);
-        screen.CenterText(7, GetHeadline(outcome), resultColor);
+        screen.CenterText(
+            7,
+            GetHeadline(outcome, context_.language),
+            resultColor);
         screen.CenterText(
             9,
-            GetDetail(outcome),
+            GetDetail(outcome, context_.language),
             outcome.succeeded ? Color::BrightWhite : Color::BrightBlack);
 
         context_.hudRenderer.DrawSword(
@@ -96,11 +103,13 @@ namespace ss
         screen.CenterText(26, transition.str(), resultColor);
 
         std::wstringstream score;
-        score << L"CRAFT "
+        score << LocalizedText::Select(
+                     context_.language, L"제련도 ", L"CRAFT ")
               << std::fixed
               << std::setprecision(0)
               << outcome.craftScore * 100.0f
-              << L"%     FINAL RESONANCE "
+              << LocalizedText::Select(
+                     context_.language, L"%     최종 공명률 ", L"%     FINAL RESONANCE ")
               << outcome.finalChance * 100.0f
               << L"%";
         screen.CenterText(28, score.str(), Color::BrightBlack);
@@ -112,7 +121,10 @@ namespace ss
         {
             screen.CenterText(
                 31,
-                L"[ ENTER ]  RETURN TO THE ANVIL",
+                LocalizedText::Select(
+                    context_.language,
+                    L"[ ENTER ]  모루로 돌아가기",
+                    L"[ ENTER ]  RETURN TO THE ANVIL"),
                 Color::BrightYellow);
         }
     }
@@ -121,52 +133,76 @@ namespace ss
     {
     }
 
-    std::wstring_view ResultScene::GetHeadline(const ForgeOutcome& outcome) noexcept
+    std::wstring_view ResultScene::GetHeadline(
+        const ForgeOutcome& outcome,
+        Language language) noexcept
     {
         // 도메인 결과를 사용자에게 보여줄 문구로 변환하는 책임은 장면에만 둔다.
         if (outcome.succeeded)
         {
             return outcome.wasCritical
-                ? L"RESONANCE : PERFECT ASCENSION"
-                : L"THE BLADE ANSWERS";
+                ? LocalizedText::Select(
+                    language, L"공명 : 완벽한 승급", L"RESONANCE : PERFECT ASCENSION")
+                : LocalizedText::Select(
+                    language, L"검이 응답했다", L"THE BLADE ANSWERS");
         }
 
         switch (outcome.failureConsequence)
         {
         case FailureConsequence::LevelMaintained:
-            return L"THE ECHO FADES";
+            return LocalizedText::Select(language, L"메아리가 사라진다", L"THE ECHO FADES");
         case FailureConsequence::FragmentConsumed:
-            return L"MEMORY SHARD SHATTERED";
+            return LocalizedText::Select(
+                language, L"기억 조각이 부서졌다", L"MEMORY SHARD SHATTERED");
         case FailureConsequence::LevelLost:
-            return L"A MEMORY WAS LOST";
+            return LocalizedText::Select(
+                language, L"하나의 기억을 잃었다", L"A MEMORY WAS LOST");
         case FailureConsequence::None:
             break;
         }
-        return L"THE RITUAL ENDS";
+        return LocalizedText::Select(language, L"의식이 끝났다", L"THE RITUAL ENDS");
     }
 
-    std::wstring_view ResultScene::GetDetail(const ForgeOutcome& outcome) noexcept
+    std::wstring_view ResultScene::GetDetail(
+        const ForgeOutcome& outcome,
+        Language language) noexcept
     {
         if (outcome.wasCritical)
         {
-            return L"A flawless rhythm awakened two memories at once.";
+            return LocalizedText::Select(
+                language,
+                L"완벽한 리듬이 두 기억을 동시에 깨웠습니다.",
+                L"A flawless rhythm awakened two memories at once.");
         }
         if (outcome.succeeded)
         {
-            return L"Steel, flame, and will have become one.";
+            return LocalizedText::Select(
+                language,
+                L"강철과 불꽃, 의지가 하나가 되었습니다.",
+                L"Steel, flame, and will have become one.");
         }
 
         switch (outcome.failureConsequence)
         {
         case FailureConsequence::LevelMaintained:
-            return L"The blade endured. Its enhancement remains unchanged.";
+            return LocalizedText::Select(
+                language,
+                L"검이 버텼습니다. 강화 단계는 유지됩니다.",
+                L"The blade endured. Its enhancement remains unchanged.");
         case FailureConsequence::FragmentConsumed:
-            return L"A shard sacrificed itself to protect the enhancement.";
+            return LocalizedText::Select(
+                language,
+                L"기억 조각이 강화를 지키기 위해 희생되었습니다.",
+                L"A shard sacrificed itself to protect the enhancement.");
         case FailureConsequence::LevelLost:
-            return L"The blade survives, but one enhancement has faded.";
+            return LocalizedText::Select(
+                language,
+                L"검은 살아남았지만 강화 한 단계가 사라졌습니다.",
+                L"The blade survives, but one enhancement has faded.");
         case FailureConsequence::None:
             break;
         }
-        return L"The forge has fallen silent.";
+        return LocalizedText::Select(
+            language, L"대장간이 고요해졌습니다.", L"The forge has fallen silent.");
     }
 }

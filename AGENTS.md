@@ -22,6 +22,7 @@
 | --- | --- | --- |
 | Application | `GameApplication` | 프레임 루프, 공유 서비스 수명, 장면 생성과 교체 |
 | Core | `GameConstants` | 화면 크기와 프레임 시간 등 공통 컴파일 타임 상수 |
+| Core | `Language` | 화면 표시 언어 값 |
 | Core | `IRandomProvider`, `RandomProvider` | 난수 계약과 메르센 트위스터 구현 |
 | Rendering | `Color`, `Cell` | ANSI 색상과 화면 셀 값 |
 | Rendering | `IScreen`, `ScreenBuffer` | 장면 그리기 계약과 메모리 화면 버퍼 |
@@ -39,6 +40,7 @@
 | Game/Scenes | `IScene`, `SceneTransition` | 장면 수명 주기와 전환 요청 계약 |
 | Game/Scenes | `SceneContext` | 장면이 공유하는 상태와 서비스의 비소유 참조 |
 | Game/Scenes | `GameHudRenderer` | 공통 배경, HUD, 검 형상 렌더링 |
+| Game/Scenes | `LocalizedText` | 현재 언어에 맞는 UI 문구와 검 이름 선택 |
 | Game/Scenes | `TitleScene` | 제목 연출과 게임 시작 |
 | Game/Scenes | `ForgeScene` | 검 상태 표시, 비용 확인, 제련 시작 |
 | Game/Scenes | `ForgingScene` | 실시간 입력 해석, 제련 진행, 강화 판정 요청 |
@@ -64,6 +66,7 @@ Forge
 - `A` 또는 왼쪽 방향키: 검의 열기를 낮춘다.
 - `D` 또는 오른쪽 방향키: 화력을 높인다.
 - `Space` 또는 `Enter`: 망치로 검을 타격한다.
+- 기본 표시 언어는 한국어이며 타이틀 화면에서 `←/A`로 한국어, `→/D`로 영어를 선택한다.
 - 타이밍 정확도 68%, 온도 정확도 32%를 합산해 타격 점수를 계산한다.
 - 세 번의 타격 평균이 최종 강화 확률에 영향을 준다.
 - 완벽한 제련은 일정 확률로 두 단계 상승을 발생시킨다.
@@ -93,6 +96,7 @@ SS-Enhance/
 │  └─ GameApplication.cpp
 ├─ Core/
 │  ├─ GameConstants.h
+│  ├─ Language.h
 │  ├─ IRandomProvider.h
 │  ├─ RandomProvider.h
 │  └─ RandomProvider.cpp
@@ -134,6 +138,8 @@ SS-Enhance/
       ├─ SceneContext.h
       ├─ GameHudRenderer.h
       ├─ GameHudRenderer.cpp
+      ├─ LocalizedText.h
+      ├─ LocalizedText.cpp
       ├─ TitleScene.h
       ├─ TitleScene.cpp
       ├─ ForgeScene.h

@@ -58,6 +58,9 @@
     <ClCompile Include="Game\Scenes\GameHudRenderer.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scenes\LocalizedText.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Scenes\ResultScene.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
@@ -85,6 +88,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\IRandomProvider.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Language.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\RandomProvider.h">
@@ -121,6 +127,9 @@
       <Filter>Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scenes\IScene.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\LocalizedText.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scenes\ResultScene.h">

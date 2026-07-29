@@ -2,6 +2,7 @@
 
 #include "Core/GameConstants.h"
 #include "Game/Domain/PlayerProgress.h"
+#include "Game/Scenes/LocalizedText.h"
 #include "Rendering/IScreen.h"
 
 #include <algorithm>
@@ -46,16 +47,21 @@ namespace ss
         }
     }
 
-    void GameHudRenderer::DrawHeader(IScreen& screen, const PlayerProgress& progress) const
+    void GameHudRenderer::DrawHeader(
+        IScreen& screen,
+        const PlayerProgress& progress,
+        Language language) const
     {
         screen.Text(4, 2, L"S S _ E N H A N C E", Color::BrightRed);
 
         std::wstringstream status;
-        status << L"GOLD " << progress.GetGold()
-               << L" G   SHARDS " << progress.GetFragments();
+        status << LocalizedText::Select(language, L"골드 ", L"GOLD ")
+               << progress.GetGold()
+               << LocalizedText::Select(language, L" G   기억 조각 ", L" G   SHARDS ")
+               << progress.GetFragments();
         const std::wstring statusText = status.str();
-        screen.Text(
-            kScreenWidth - 5 - static_cast<int>(statusText.size()),
+        screen.RightText(
+            kScreenWidth - 5,
             2,
             statusText,
             Color::BrightYellow);

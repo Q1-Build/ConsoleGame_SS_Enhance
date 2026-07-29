@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Language.h"
 #include "Game/Scenes/IScene.h"
 
 #include <string_view>
@@ -21,8 +22,12 @@ namespace ss
         void OnExit() override;
 
     private:
-        [[nodiscard]] static std::wstring_view GetHeadline(const ForgeOutcome& outcome) noexcept;
-        [[nodiscard]] static std::wstring_view GetDetail(const ForgeOutcome& outcome) noexcept;
+        [[nodiscard]] static std::wstring_view GetHeadline(
+            const ForgeOutcome& outcome,
+            Language language) noexcept;
+        [[nodiscard]] static std::wstring_view GetDetail(
+            const ForgeOutcome& outcome,
+            Language language) noexcept;
 
         // 공유 서비스는 비소유하며 장면 경과 시간만 직접 관리한다.
         SceneContext& context_;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Language.h"
 #include "Rendering/Color.h"
 
 #include <string_view>
@@ -17,7 +18,10 @@ namespace ss
         void DrawBackdrop(IScreen& screen, float worldTimeSeconds) const;
 
         /// 플레이어의 골드와 기억 조각을 공통 상단 영역에 표시한다.
-        void DrawHeader(IScreen& screen, const PlayerProgress& progress) const;
+        void DrawHeader(
+            IScreen& screen,
+            const PlayerProgress& progress,
+            Language language) const;
 
         /// 강화 단계에 따라 길이와 오라가 달라지는 검 형상을 그린다.
         void DrawSword(
