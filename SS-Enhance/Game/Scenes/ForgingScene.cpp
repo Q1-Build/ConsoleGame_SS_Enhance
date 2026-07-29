@@ -29,7 +29,9 @@ namespace ss
     {
         // 진입 시점의 검 단계로 난도를 고정해 제련 도중 외부 상태 변화에 영향받지 않게 한다.
         const int swordLevel = context_.progress.GetSword().GetLevel();
-        session_ = std::make_unique<ForgeSession>(swordLevel);
+        session_ = std::make_unique<ForgeSession>(
+            swordLevel,
+            context_.difficulty);
         context_.particles.Clear();
     }
 

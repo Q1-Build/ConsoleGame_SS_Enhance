@@ -38,6 +38,7 @@ SS-Enhance/
 │  └─ ScreenBuffer.cpp
 └─ Game/
    ├─ Domain/
+   │  ├─ Difficulty.h
    │  ├─ Sword.h
    │  ├─ Sword.cpp
    │  ├─ PlayerProgress.h
@@ -59,6 +60,8 @@ SS-Enhance/
       ├─ GameHudRenderer.cpp
       ├─ LocalizedText.h
       ├─ LocalizedText.cpp
+      ├─ SettingsScene.h
+      ├─ SettingsScene.cpp
       ├─ TitleScene.h
       ├─ TitleScene.cpp
       ├─ ForgeScene.h
@@ -85,6 +88,7 @@ SS-Enhance/
 | Platform/Console | `ConsoleInput` | Windows 키 상태를 게임 입력으로 변환 |
 | Platform/Console | `ConsolePresenter` | ANSI 프레임을 Windows 콘솔에 출력 |
 | Game/Domain | `Sword` | 검의 강화 단계와 등급 관리 |
+| Game/Domain | `Difficulty`, `DifficultyTuning` | 난이도 값과 비용·냉각·제한 시간 튜닝 |
 | Game/Domain | `PlayerProgress` | 검, 재화, 기억 조각, 강화 기록 관리 |
 | Game/Domain | `ForgeRules` | 강화 비용, 확률, 성공과 실패 결과 판정 |
 | Game/Domain | `ForgeSession` | 온도, 리듬, 제한 시간, 타격 점수 관리 |
@@ -94,7 +98,8 @@ SS-Enhance/
 | Game/Scenes | `SceneContext` | 공유 상태와 서비스의 비소유 참조 |
 | Game/Scenes | `GameHudRenderer` | 공통 배경, HUD와 검 형상 렌더링 |
 | Game/Scenes | `LocalizedText` | 현재 언어에 맞는 UI 문구와 검 이름 선택 |
-| Game/Scenes | `TitleScene` | 제목 연출, 언어 선택과 게임 시작 |
+| Game/Scenes | `TitleScene` | 한국어 기본 제목 연출과 설정 화면 진입 |
+| Game/Scenes | `SettingsScene` | 표시 언어와 게임 난이도 선택 |
 | Game/Scenes | `ForgeScene` | 검 상태 표시, 비용 확인과 제련 시작 |
 | Game/Scenes | `ForgingScene` | 실시간 입력 해석, 제련 진행과 판정 요청 |
 | Game/Scenes | `ResultScene` | 강화 결과와 단계 변화 연출 |

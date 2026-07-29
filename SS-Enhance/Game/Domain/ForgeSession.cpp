@@ -6,10 +6,16 @@
 
 namespace ss
 {
-    ForgeSession::ForgeSession(int swordLevel)
+    ForgeSession::ForgeSession(int swordLevel, Difficulty difficulty)
         : swordLevel_(swordLevel)
     {
         assert(swordLevel >= 0);
+
+        // 세션 중 바뀌지 않는 난이도 수치만 복사해 이후 프레임 갱신을 단순하게 유지한다.
+        const DifficultyTuning tuning = GetDifficultyTuning(difficulty);
+        naturalCoolingMultiplier_ = tuning.naturalCoolingMultiplier;
+        timeLeft_ = tuning.forgeDurationSeconds;
+
         strikeScores_.reserve(3);
     }
 
@@ -29,8 +35,11 @@ namespace ss
         const float rhythmSpeed = 2.25f + static_cast<float>(swordLevel_) * 0.11f;
         marker_ = std::sin(worldTimeSeconds * rhythmSpeed) * 0.5f + 0.5f;
 
-        // 입력이 없어도 검은 자연 냉각되며 플레이어 입력이 냉각과 가열을 추가한다.
-        heat_ -= deltaSeconds * (5.5f + static_cast<float>(swordLevel_) * 0.15f);
+        // 높은 난이도에서는 자연 냉각만 빨라져 가열 입력과 타격 시점 관리가 더 중요해진다.
+        const float naturalCooling =
+            (5.5f + static_cast<float>(swordLevel_) * 0.15f) *
+            naturalCoolingMultiplier_;
+        heat_ -= deltaSeconds * naturalCooling;
         if (isCooling)
         {
             heat_ -= deltaSeconds * 31.0f;

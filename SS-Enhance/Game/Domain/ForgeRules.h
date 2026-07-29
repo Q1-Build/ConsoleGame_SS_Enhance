@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Game/Domain/Difficulty.h"
 #include "Game/Domain/ForgeOutcome.h"
 
 #include <vector>
@@ -12,10 +13,10 @@ namespace ss
     class ForgeRules final
     {
     public:
-        [[nodiscard]] static constexpr int CalculateCost(int swordLevel) noexcept
-        {
-            return 120 + swordLevel * 95 + swordLevel * swordLevel * 12;
-        }
+        /// 검 단계의 기본 비용에 선택한 난이도 배율을 적용한다.
+        [[nodiscard]] static int CalculateCost(
+            int swordLevel,
+            Difficulty difficulty) noexcept;
 
         [[nodiscard]] static float GetBaseChance(int swordLevel) noexcept;
         [[nodiscard]] static float CalculateCraftScore(const std::vector<float>& strikeScores) noexcept;

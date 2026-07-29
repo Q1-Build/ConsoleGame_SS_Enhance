@@ -6,6 +6,7 @@
 #include "Game/Scenes/ForgingScene.h"
 #include "Game/Scenes/IScene.h"
 #include "Game/Scenes/ResultScene.h"
+#include "Game/Scenes/SettingsScene.h"
 #include "Game/Scenes/TitleScene.h"
 #include "Platform/IInput.h"
 #include "Rendering/IFramePresenter.h"
@@ -112,6 +113,8 @@ namespace ss
         {
         case SceneType::Title:
             return std::make_unique<TitleScene>(sceneContext_);
+        case SceneType::Settings:
+            return std::make_unique<SettingsScene>(sceneContext_);
         case SceneType::Forge:
             return std::make_unique<ForgeScene>(sceneContext_);
         case SceneType::Forging:

@@ -1,7 +1,10 @@
 #include "Game/Scenes/LocalizedText.h"
 
+#include "Game/Domain/Difficulty.h"
+
 #include <algorithm>
 #include <array>
+#include <sstream>
 
 namespace ss
 {
@@ -38,5 +41,52 @@ namespace ss
         return language == Language::Korean
             ? kKoreanNames[static_cast<std::size_t>(safeTier)]
             : kEnglishNames[static_cast<std::size_t>(safeTier)];
+    }
+
+    std::wstring_view LocalizedText::GetDifficultyName(
+        Language language,
+        Difficulty difficulty) noexcept
+    {
+        switch (difficulty)
+        {
+        case Difficulty::Easy:
+            return Select(language, L"쉬움", L"EASY");
+        case Difficulty::Normal:
+            return Select(language, L"보통", L"NORMAL");
+        case Difficulty::Hard:
+            return Select(language, L"어려움", L"HARD");
+        }
+        return Select(language, L"보통", L"NORMAL");
+    }
+
+    std::wstring LocalizedText::GetDifficultyDescription(
+        Language language,
+        Difficulty difficulty)
+    {
+        const DifficultyTuning tuning = GetDifficultyTuning(difficulty);
+        std::wstringstream description;
+        description << Select(language, L"비용 ", L"COST ")
+                    << tuning.forgeCostPercent
+                    << Select(language, L"% | 제한 ", L"% | ")
+                    << static_cast<int>(tuning.forgeDurationSeconds)
+                    << Select(language, L"초 | ", L" sec | ");
+
+        // 수치는 Domain 튜닝에서 가져오고 체감 설명만 난이도별 번역으로 덧붙인다.
+        switch (difficulty)
+        {
+        case Difficulty::Easy:
+            description << Select(
+                language, L"온도가 천천히 내려갑니다.", L"Heat falls slowly.");
+            break;
+        case Difficulty::Normal:
+            description << Select(
+                language, L"기본 온도 속도", L"Standard heat speed");
+            break;
+        case Difficulty::Hard:
+            description << Select(
+                language, L"온도가 빠르게 내려갑니다.", L"Heat falls quickly.");
+            break;
+        }
+        return description.str();
     }
 }

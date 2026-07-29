@@ -6,6 +6,7 @@ namespace ss
     enum class SceneType
     {
         Title,
+        Settings,
         Forge,
         Forging,
         Result,

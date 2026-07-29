@@ -2,10 +2,13 @@
 
 #include "Core/Language.h"
 
+#include <string>
 #include <string_view>
 
 namespace ss
 {
+    enum class Difficulty;
+
     /// 현재 언어에 맞는 화면 문구와 검 이름을 선택한다.
     class LocalizedText final
     {
@@ -30,5 +33,15 @@ namespace ss
         [[nodiscard]] static std::wstring_view GetSwordName(
             Language language,
             int swordTier) noexcept;
+
+        /// 선택한 게임 난이도의 현지화된 이름을 반환한다.
+        [[nodiscard]] static std::wstring_view GetDifficultyName(
+            Language language,
+            Difficulty difficulty) noexcept;
+
+        /// 선택한 게임 난이도의 비용, 제한 시간과 온도 특성을 설명한다.
+        [[nodiscard]] static std::wstring GetDifficultyDescription(
+            Language language,
+            Difficulty difficulty);
     };
 }

@@ -8,6 +8,15 @@
 
 namespace ss
 {
+    int ForgeRules::CalculateCost(int swordLevel, Difficulty difficulty) noexcept
+    {
+        const int baseCost = 120 + swordLevel * 95 + swordLevel * swordLevel * 12;
+        const DifficultyTuning tuning = GetDifficultyTuning(difficulty);
+
+        // 난이도는 성공 확률을 직접 낮추지 않고 준비 비용을 완만하게 조절한다.
+        return baseCost * tuning.forgeCostPercent / 100;
+    }
+
     float ForgeRules::GetBaseChance(int swordLevel) noexcept
     {
         // 확률 테이블은 강화 단계별 밸런스를 코드 한곳에서 조정할 수 있게 모아둔다.

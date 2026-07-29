@@ -50,7 +50,9 @@ namespace ss
         }
 
         const int swordLevel = context_.progress.GetSword().GetLevel();
-        const int forgeCost = ForgeRules::CalculateCost(swordLevel);
+        const int forgeCost = ForgeRules::CalculateCost(
+            swordLevel,
+            context_.difficulty);
         if (!context_.progress.CanAfford(forgeCost))
         {
             // 플레이가 재화 부족으로 영구 중단되지 않도록 같은 장면에서 긴급 계약을 지급한다.
@@ -117,7 +119,7 @@ namespace ss
             11,
             LocalizedText::Select(
                 context_.language,
-                L"불꽃을 다스리고 리듬을 읽어 세 번 타격하세요.",
+                L"불꽃을 조절하고, 박자에 맞춰 세 번 타격하세요.",
                 L"Control the flame. Read the rhythm. Strike three times."),
             Color::BrightBlack);
         screen.Text(8, 13, L"← / A", Color::BrightCyan);
@@ -141,7 +143,9 @@ namespace ss
                << L"%";
         screen.Text(8, 21, chance.str(), Color::BrightCyan);
 
-        const int forgeCost = ForgeRules::CalculateCost(sword.GetLevel());
+        const int forgeCost = ForgeRules::CalculateCost(
+            sword.GetLevel(),
+            context_.difficulty);
         std::wstringstream cost;
         cost << LocalizedText::Select(
                     context_.language, L"의식 비용          ", L"Ritual cost       ")

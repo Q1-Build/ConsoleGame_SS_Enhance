@@ -4,7 +4,6 @@
 #include "Core/IRandomProvider.h"
 #include "Game/Effects/ParticleSystem.h"
 #include "Game/Scenes/GameHudRenderer.h"
-#include "Game/Scenes/LocalizedText.h"
 #include "Game/Scenes/SceneContext.h"
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
@@ -37,20 +36,10 @@ namespace ss
         {
             return SceneTransition::To(SceneType::Exit);
         }
-        if (context_.input.WasPressed(InputKey::Left) ||
-            context_.input.WasPressed(InputKey::A))
-        {
-            context_.language = Language::Korean;
-        }
-        if (context_.input.WasPressed(InputKey::Right) ||
-            context_.input.WasPressed(InputKey::D))
-        {
-            context_.language = Language::English;
-        }
         if (context_.input.WasPressed(InputKey::Enter) ||
             context_.input.WasPressed(InputKey::Space))
         {
-            return SceneTransition::To(SceneType::Forge);
+            return SceneTransition::To(SceneType::Settings);
         }
         return SceneTransition::None();
     }
@@ -72,10 +61,7 @@ namespace ss
         screen.CenterText(12, L"E  N  H  A  N  C  E", Color::BrightWhite);
         screen.CenterText(
             14,
-            LocalizedText::Select(
-                context_.language,
-                L"—  검 은   모 든   것 을   기 억 한 다  —",
-                L"—  T H E   S W O R D   R E M E M B E R S  —"),
+            L"—  검 은   모 든   것 을   기 억 한 다  —",
             Color::BrightBlack);
 
         context_.hudRenderer.DrawSword(
@@ -92,19 +78,10 @@ namespace ss
             static_cast<int>(context_.worldTimeSeconds * 2.0f) % 2 == 0
                 ? Color::BrightYellow
                 : Color::White;
-        screen.CenterText(
-            29,
-            LocalizedText::Select(
-                context_.language,
-                L"언어  ◀  한국어  |  ENGLISH  ▶",
-                L"LANGUAGE  ◀  KOREAN  |  ENGLISH  ▶"),
-            Color::BrightCyan);
+        screen.CenterText(29, L"언어와 난이도는 다음 화면에서 설정합니다.", Color::BrightCyan);
         screen.CenterText(
             31,
-            LocalizedText::Select(
-                context_.language,
-                L"[ ENTER ]  대장간 깨우기",
-                L"[ ENTER ]  AWAKEN THE FORGE"),
+            L"[ ENTER ]  설정으로",
             promptColor);
     }
 

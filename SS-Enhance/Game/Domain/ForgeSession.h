@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Game/Domain/Difficulty.h"
+
 #include <optional>
 #include <vector>
 
@@ -9,7 +11,8 @@ namespace ss
     class ForgeSession final
     {
     public:
-        explicit ForgeSession(int swordLevel);
+        /// 진입 시점의 검 단계와 난이도로 한 번의 제련 조건을 고정한다.
+        ForgeSession(int swordLevel, Difficulty difficulty);
 
         void Update(
             float deltaSeconds,
@@ -37,11 +40,12 @@ namespace ss
             return value < minValue ? minValue : (value > maxValue ? maxValue : value);
         }
 
-        // 제련 난이도와 프레임마다 변하는 실시간 상태다.
+        // 진입 시 고정된 제련 조건과 프레임마다 변하는 실시간 상태다.
         int swordLevel_ = 0;
+        float naturalCoolingMultiplier_ = 1.0f;
         float heat_ = 50.0f;
         float marker_ = 0.0f;
-        float timeLeft_ = 14.0f;
+        float timeLeft_ = 0.0f;
         float strikeCooldown_ = 0.0f;
         float impactFlash_ = 0.0f;
 

@@ -178,6 +178,7 @@
     <ClCompile Include="Game\Scenes\GameHudRenderer.cpp" />
     <ClCompile Include="Game\Scenes\LocalizedText.cpp" />
     <ClCompile Include="Game\Scenes\ResultScene.cpp" />
+    <ClCompile Include="Game\Scenes\SettingsScene.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Platform\Console\ConsoleInput.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Core\Language.h" />
     <ClInclude Include="Core\RandomProvider.h" />
     <ClInclude Include="Game\Domain\ForgeOutcome.h" />
+    <ClInclude Include="Game\Domain\Difficulty.h" />
     <ClInclude Include="Game\Domain\ForgeRules.h" />
     <ClInclude Include="Game\Domain\ForgeSession.h" />
     <ClInclude Include="Game\Domain\PlayerProgress.h" />
@@ -206,6 +208,7 @@
     <ClInclude Include="Game\Scenes\ResultScene.h" />
     <ClInclude Include="Game\Scenes\SceneContext.h" />
     <ClInclude Include="Game\Scenes\SceneTransition.h" />
+    <ClInclude Include="Game\Scenes\SettingsScene.h" />
     <ClInclude Include="Game\Scenes\TitleScene.h" />
     <ClInclude Include="Platform\Console\ConsoleInput.h" />
     <ClInclude Include="Platform\Console\ConsolePresenter.h" />

@@ -64,6 +64,9 @@
     <ClCompile Include="Game\Scenes\ResultScene.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scenes\SettingsScene.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Scenes\TitleScene.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
@@ -97,6 +100,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Game\Domain\ForgeOutcome.h">
+      <Filter>Game\Domain</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Domain\Difficulty.h">
       <Filter>Game\Domain</Filter>
     </ClInclude>
     <ClInclude Include="Game\Domain\ForgeRules.h">
@@ -139,6 +145,9 @@
       <Filter>Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scenes\SceneTransition.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\SettingsScene.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scenes\TitleScene.h">

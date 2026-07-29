@@ -40,10 +40,18 @@ namespace ss
             return VK_SPACE;
         case InputKey::Escape:
             return VK_ESCAPE;
+        case InputKey::Up:
+            return VK_UP;
+        case InputKey::Down:
+            return VK_DOWN;
         case InputKey::Left:
             return VK_LEFT;
         case InputKey::Right:
             return VK_RIGHT;
+        case InputKey::W:
+            return 'W';
+        case InputKey::S:
+            return 'S';
         case InputKey::A:
             return 'A';
         case InputKey::D:

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Language.h"
+#include "Game/Domain/Difficulty.h"
 #include "Game/Domain/ForgeOutcome.h"
 
 #include <optional>
@@ -47,7 +48,9 @@ namespace ss
         std::optional<ForgeOutcome> lastOutcome;
         std::wstring notice;
 
-        // 첫 실행 언어는 한국어이며 타이틀 장면에서만 시작 전에 변경한다.
+        // 첫 실행은 한국어와 보통 난이도이며 설정 장면에서 본게임 진입 전에 변경한다.
         Language language = Language::Korean;
+
+        Difficulty difficulty = Difficulty::Normal;
     };
 }
