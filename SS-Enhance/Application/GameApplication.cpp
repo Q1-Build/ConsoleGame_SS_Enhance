@@ -2,6 +2,8 @@
 
 #include "Core/GameConstants.h"
 #include "Core/IRandomProvider.h"
+#include "Game/Scenes/BattleScene.h"
+#include "Game/Scenes/EndingScene.h"
 #include "Game/Scenes/ForgeScene.h"
 #include "Game/Scenes/ForgingScene.h"
 #include "Game/Scenes/IScene.h"
@@ -121,6 +123,10 @@ namespace ss
             return std::make_unique<ForgingScene>(sceneContext_);
         case SceneType::Result:
             return std::make_unique<ResultScene>(sceneContext_);
+        case SceneType::Battle:
+            return std::make_unique<BattleScene>(sceneContext_);
+        case SceneType::Ending:
+            return std::make_unique<EndingScene>(sceneContext_);
         case SceneType::Exit:
             break;
         }

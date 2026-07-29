@@ -7,6 +7,7 @@
 
 namespace ss
 {
+    enum class BossType;
     enum class Difficulty;
 
     /// 현재 언어에 맞는 화면 문구와 검 이름을 선택한다.
@@ -43,5 +44,10 @@ namespace ss
         [[nodiscard]] static std::wstring GetDifficultyDescription(
             Language language,
             Difficulty difficulty);
+
+        /// 보스 종류에 맞는 현지화된 이름을 반환한다.
+        [[nodiscard]] static std::wstring_view GetBossName(
+            Language language,
+            BossType bossType) noexcept;
     };
 }

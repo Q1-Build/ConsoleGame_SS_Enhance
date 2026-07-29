@@ -55,6 +55,11 @@ namespace ss
         }
     }
 
+    int ScreenBuffer::MeasureText(std::wstring_view text) const noexcept
+    {
+        return GetDisplayWidth(text);
+    }
+
     void ScreenBuffer::CenterText(int y, std::wstring_view text, Color color)
     {
         const int left = (kScreenWidth - GetDisplayWidth(text)) / 2;

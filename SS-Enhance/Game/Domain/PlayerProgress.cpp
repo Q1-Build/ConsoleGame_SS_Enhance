@@ -29,6 +29,11 @@ namespace ss
         return successCount_;
     }
 
+    int PlayerProgress::GetBossVictoryCount() const noexcept
+    {
+        return bossVictoryCount_;
+    }
+
     bool PlayerProgress::CanAfford(int amount) const noexcept
     {
         return amount >= 0 && gold_ >= amount;
@@ -66,6 +71,12 @@ namespace ss
         return true;
     }
 
+    void PlayerProgress::GrantFragments(int amount)
+    {
+        assert(amount >= 0);
+        fragments_ += amount;
+    }
+
     void PlayerProgress::RecordAttempt() noexcept
     {
         ++attemptCount_;
@@ -74,6 +85,15 @@ namespace ss
     void PlayerProgress::RecordSuccess() noexcept
     {
         ++successCount_;
+    }
+
+    void PlayerProgress::RecordBossVictory() noexcept
+    {
+        // 현재 수직 슬라이스의 세 보스를 모두 처치한 뒤에는 엔딩 상태를 유지한다.
+        if (bossVictoryCount_ < 3)
+        {
+            ++bossVictoryCount_;
+        }
     }
 
     void PlayerProgress::EnhanceSword(int levelCount)

@@ -136,21 +136,22 @@ namespace ss
     {
         // 호출자가 범위를 벗어난 값을 전달해도 막대가 프레임을 침범하지 않게 보정한다.
         const float safeValue = Clamp01(value);
+        const int labelWidth = screen.MeasureText(label);
         screen.Text(x, y, label, Color::BrightWhite);
-        screen.Put(x + static_cast<int>(label.size()), y, L'[', Color::BrightBlack);
+        screen.Put(x + labelWidth, y, L'[', Color::BrightBlack);
 
         const int filled = static_cast<int>(safeValue * static_cast<float>(width));
         for (int index = 0; index < width; ++index)
         {
             screen.Put(
-                x + static_cast<int>(label.size()) + 1 + index,
+                x + labelWidth + 1 + index,
                 y,
                 index < filled ? L'█' : L'░',
                 index < filled ? fillColor : Color::BrightBlack);
         }
 
         screen.Put(
-            x + static_cast<int>(label.size()) + width + 1,
+            x + labelWidth + width + 1,
             y,
             L']',
             Color::BrightBlack);

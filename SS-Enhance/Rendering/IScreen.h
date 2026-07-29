@@ -21,6 +21,9 @@ namespace ss
         /// 지정한 좌표부터 소유하지 않는 문자열 뷰를 그린다.
         virtual void Text(int x, int y, std::wstring_view text, Color color = Color::White) = 0;
 
+        /// 현재 화면 구현에서 문자열이 차지하는 실제 셀 너비를 반환한다.
+        [[nodiscard]] virtual int MeasureText(std::wstring_view text) const noexcept = 0;
+
         /// 전각 문자 폭을 반영해 지정한 오른쪽 좌표에 문자열 끝을 맞춘다.
         virtual void RightText(
             int right,

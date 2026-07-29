@@ -1,6 +1,7 @@
 #include "Game/Domain/ForgeRules.h"
 
 #include "Game/Domain/PlayerProgress.h"
+#include "Game/Domain/ProgressionRules.h"
 
 #include <algorithm>
 #include <array>
@@ -71,10 +72,27 @@ namespace ss
             randomRoll < outcome.finalChance * 0.20f;
         outcome.succeeded = randomRoll < outcome.finalChance;
 
+        const int levelCap = ProgressionRules::GetSwordLevelCap(
+            progress.GetBossVictoryCount());
+        if (outcome.previousLevel >= levelCap)
+        {
+            // 장면 밖 호출에서도 상한을 넘기거나 실패 패널티를 잘못 적용하지 않게 안전하게 종료한다.
+            outcome.succeeded = false;
+            outcome.wasCritical = false;
+            outcome.finalChance = 0.0f;
+            outcome.newLevel = outcome.previousLevel;
+            return outcome;
+        }
+
         // 판정과 진행도 반영을 한 트랜잭션으로 처리해 화면과 실제 상태가 어긋나지 않게 한다.
         if (outcome.succeeded)
         {
-            const int gainedLevels = outcome.wasCritical ? 2 : 1;
+            const int requestedLevels = outcome.wasCritical ? 2 : 1;
+            const int gainedLevels = std::min(
+                requestedLevels,
+                levelCap - outcome.previousLevel);
+            assert(gainedLevels > 0);
+            outcome.wasCritical = gainedLevels == 2;
             progress.EnhanceSword(gainedLevels);
             progress.RecordSuccess();
             progress.GrantGold(65 + progress.GetSword().GetLevel() * 15);

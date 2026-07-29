@@ -10,6 +10,8 @@ namespace ss
         Forge,
         Forging,
         Result,
+        Battle,
+        Ending,
         Exit
     };
 

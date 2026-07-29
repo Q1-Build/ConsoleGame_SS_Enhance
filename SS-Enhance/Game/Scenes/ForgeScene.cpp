@@ -3,6 +3,7 @@
 #include "Core/IRandomProvider.h"
 #include "Game/Domain/ForgeRules.h"
 #include "Game/Domain/PlayerProgress.h"
+#include "Game/Domain/ProgressionRules.h"
 #include "Game/Effects/ParticleSystem.h"
 #include "Game/Scenes/GameHudRenderer.h"
 #include "Game/Scenes/LocalizedText.h"
@@ -12,6 +13,7 @@
 
 #include <cmath>
 #include <iomanip>
+#include <optional>
 #include <sstream>
 
 namespace ss
@@ -41,6 +43,15 @@ namespace ss
             return SceneTransition::To(SceneType::Exit);
         }
 
+        const int swordLevel = context_.progress.GetSword().GetLevel();
+        const int bossVictoryCount = context_.progress.GetBossVictoryCount();
+        const std::optional<BossType> availableBoss =
+            ProgressionRules::GetAvailableBoss(swordLevel, bossVictoryCount);
+        if (context_.input.WasPressed(InputKey::B) && availableBoss.has_value())
+        {
+            return SceneTransition::To(SceneType::Battle);
+        }
+
         const bool isStartRequested =
             context_.input.WasPressed(InputKey::Enter) ||
             context_.input.WasPressed(InputKey::Space);
@@ -49,7 +60,16 @@ namespace ss
             return SceneTransition::None();
         }
 
-        const int swordLevel = context_.progress.GetSword().GetLevel();
+        const int levelCap = ProgressionRules::GetSwordLevelCap(bossVictoryCount);
+        if (swordLevel >= levelCap)
+        {
+            context_.notice = std::wstring(LocalizedText::Select(
+                context_.language,
+                L"다음 강화를 열려면 보스를 격파해야 합니다.",
+                L"Defeat the boss to unlock further enhancement."));
+            return SceneTransition::None();
+        }
+
         const int forgeCost = ForgeRules::CalculateCost(
             swordLevel,
             context_.difficulty);
@@ -93,6 +113,12 @@ namespace ss
             context_.language, L"검의 기억", L"BLADE MEMORY"), Color::BrightCyan);
 
         const Sword& sword = context_.progress.GetSword();
+        const int levelCap = ProgressionRules::GetSwordLevelCap(
+            context_.progress.GetBossVictoryCount());
+        const std::optional<BossType> availableBoss =
+            ProgressionRules::GetAvailableBoss(
+                sword.GetLevel(),
+                context_.progress.GetBossVictoryCount());
         const Color swordColor = context_.hudRenderer.GetSwordColor(sword.GetLevel());
         context_.hudRenderer.DrawSword(
             screen,
@@ -154,6 +180,29 @@ namespace ss
             ? Color::BrightYellow
             : Color::BrightRed;
         screen.Text(8, 23, cost.str(), costColor);
+
+        if (availableBoss.has_value())
+        {
+            std::wstringstream bossPrompt;
+            bossPrompt << L"[ B ] "
+                       << LocalizedText::Select(
+                              context_.language, L"보스 도전: ", L"CHALLENGE: ")
+                       << LocalizedText::GetBossName(
+                              context_.language,
+                              *availableBoss);
+            screen.Text(8, 25, bossPrompt.str(), Color::BrightRed);
+        }
+        else if (sword.GetLevel() >= levelCap)
+        {
+            screen.Text(
+                8,
+                25,
+                LocalizedText::Select(
+                    context_.language,
+                    L"현재 강화 구간의 상한입니다.",
+                    L"CURRENT ENHANCEMENT CAP REACHED."),
+                Color::BrightRed);
+        }
 
         screen.Text(8, 26, LocalizedText::Select(
             context_.language,

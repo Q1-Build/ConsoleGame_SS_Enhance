@@ -1,6 +1,7 @@
 #include "Game/Scenes/LocalizedText.h"
 
 #include "Game/Domain/Difficulty.h"
+#include "Game/Domain/BossBattle.h"
 
 #include <algorithm>
 #include <array>
@@ -88,5 +89,21 @@ namespace ss
             break;
         }
         return description.str();
+    }
+
+    std::wstring_view LocalizedText::GetBossName(
+        Language language,
+        BossType bossType) noexcept
+    {
+        switch (bossType)
+        {
+        case BossType::EmberWarden:
+            return Select(language, L"잿불의 문지기", L"EMBER WARDEN");
+        case BossType::StormSentinel:
+            return Select(language, L"폭풍의 파수꾼", L"STORM SENTINEL");
+        case BossType::MemoryDevourer:
+            return Select(language, L"기억을 삼키는 자", L"MEMORY DEVOURER");
+        }
+        return {};
     }
 }

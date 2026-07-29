@@ -16,6 +16,7 @@ namespace ss
         S,
         A,
         D,
+        B,
         Q,
         Count
     };

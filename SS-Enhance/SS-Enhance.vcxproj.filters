@@ -37,6 +37,12 @@
     <ClCompile Include="Game\Domain\ForgeRules.cpp">
       <Filter>Game\Domain</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Domain\BattleRules.cpp">
+      <Filter>Game\Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Domain\BattleSession.cpp">
+      <Filter>Game\Domain</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Domain\ForgeSession.cpp">
       <Filter>Game\Domain</Filter>
     </ClCompile>
@@ -46,10 +52,19 @@
     <ClCompile Include="Game\Domain\Sword.cpp">
       <Filter>Game\Domain</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Domain\ProgressionRules.cpp">
+      <Filter>Game\Domain</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Effects\ParticleSystem.cpp">
       <Filter>Game\Effects</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scenes\ForgeScene.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\BattleScene.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\EndingScene.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scenes\ForgingScene.cpp">
@@ -102,6 +117,15 @@
     <ClInclude Include="Game\Domain\ForgeOutcome.h">
       <Filter>Game\Domain</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Domain\BossBattle.h">
+      <Filter>Game\Domain</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Domain\BattleRules.h">
+      <Filter>Game\Domain</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Domain\BattleSession.h">
+      <Filter>Game\Domain</Filter>
+    </ClInclude>
     <ClInclude Include="Game\Domain\Difficulty.h">
       <Filter>Game\Domain</Filter>
     </ClInclude>
@@ -114,6 +138,9 @@
     <ClInclude Include="Game\Domain\PlayerProgress.h">
       <Filter>Game\Domain</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Domain\ProgressionRules.h">
+      <Filter>Game\Domain</Filter>
+    </ClInclude>
     <ClInclude Include="Game\Domain\Sword.h">
       <Filter>Game\Domain</Filter>
     </ClInclude>
@@ -124,6 +151,12 @@
       <Filter>Game\Effects</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scenes\ForgeScene.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\BattleScene.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\EndingScene.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scenes\ForgingScene.h">

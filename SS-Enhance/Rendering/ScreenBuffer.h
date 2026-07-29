@@ -24,6 +24,9 @@ namespace ss
         /// 지정한 좌표부터 실제 콘솔 표시 폭을 반영해 문자열을 기록한다.
         void Text(int x, int y, std::wstring_view text, Color color = Color::White) override;
 
+        /// 한글과 CJK 전각 문자를 두 칸으로 계산한 문자열 너비를 반환한다.
+        [[nodiscard]] int MeasureText(std::wstring_view text) const noexcept override;
+
         /// 실제 표시 폭을 기준으로 문자열 끝을 지정한 오른쪽 좌표에 맞춘다.
         void RightText(
             int right,

@@ -56,6 +56,8 @@ namespace ss
             return 'A';
         case InputKey::D:
             return 'D';
+        case InputKey::B:
+            return 'B';
         case InputKey::Q:
             return 'Q';
         case InputKey::Count:
