@@ -36,8 +36,13 @@ namespace ss
             std::wstring_view text,
             Color color = Color::White) = 0;
 
+        /// 전각 문자 폭을 반영해 전체 화면의 가운데에 문자열을 그린다.
         virtual void CenterText(int y, std::wstring_view text, Color color = Color::White) = 0;
+
+        /// 두 좌표를 포함하는 직선을 지정한 문자로 그린다.
         virtual void Line(int x1, int y1, int x2, int y2, wchar_t glyph, Color color) = 0;
+
+        /// 지정한 경계를 포함하는 사각형 테두리를 그린다.
         virtual void Box(int left, int top, int right, int bottom, Color color) = 0;
     };
 }
