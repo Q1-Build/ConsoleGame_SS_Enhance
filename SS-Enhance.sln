@@ -9,6 +9,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{59061BF8-527B-4822-A006-49175D70B5F6}"
 	ProjectSection(SolutionItems) = preProject
 		AGENTS.md = AGENTS.md
+		docs\ARCHITECTURE.md = docs\ARCHITECTURE.md
+		docs\CODING_CONVENTIONS.md = docs\CODING_CONVENTIONS.md
+		docs\DEVELOPMENT_WORKFLOW.md = docs\DEVELOPMENT_WORKFLOW.md
+		docs\GAME_DESIGN.md = docs\GAME_DESIGN.md
 	EndProjectSection
 EndProject
 Global
