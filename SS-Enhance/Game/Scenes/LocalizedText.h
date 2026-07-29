@@ -49,5 +49,10 @@ namespace ss
         [[nodiscard]] static std::wstring_view GetBossName(
             Language language,
             BossType bossType) noexcept;
+
+        /// 보스의 핵심 전투 패턴을 짧게 설명한다.
+        [[nodiscard]] static std::wstring_view GetBossPatternDescription(
+            Language language,
+            BossType bossType) noexcept;
     };
 }

@@ -100,21 +100,21 @@ SS-Enhance/
 | Platform/Console | `ConsolePresenter` | ANSI 프레임을 Windows 콘솔에 출력 |
 | Game/Domain | `Sword` | 검의 강화 단계와 등급 관리 |
 | Game/Domain | `Difficulty`, `DifficultyTuning` | 난이도 값과 비용·냉각·제한 시간 튜닝 |
-| Game/Domain | `BossBattle`, `BattleRules` | 보스 전투 값과 피해·보상 규칙 |
-| Game/Domain | `BattleSession` | 체력, 공격 주기와 전투 타이밍 상태 |
+| Game/Domain | `BossBattle`, `BattleRules` | 보스 패턴 값과 공격·방어·반격 피해 및 보상 규칙 |
+| Game/Domain | `BattleSession` | 체력, 공격 예고, 방어, 연속 공격과 타이밍 상태 |
 | Game/Domain | `ProgressionRules` | 강화 구간 상한, 보스 해금과 엔딩 조건 |
 | Game/Domain | `PlayerProgress` | 검, 재화, 기억 조각, 강화 기록 관리 |
 | Game/Domain | `ForgeRules` | 강화 비용, 확률, 성공과 실패 결과 판정 |
 | Game/Domain | `ForgeSession` | 온도, 리듬, 제한 시간, 타격 점수 관리 |
 | Game/Domain | `ForgeOutcome` | 한 번의 강화 판정 결과 전달 |
-| Game/Effects | `Particle`, `ParticleSystem` | 파티클 생성, 갱신, 제거와 그리기 |
+| Game/Effects | `Particle`, `ParticleSystem` | 초당 생성률 기반 파티클 방출, 갱신, 제거와 그리기 |
 | Game/Scenes | `IScene`, `SceneTransition` | 장면 수명 주기와 전환 요청 계약 |
-| Game/Scenes | `SceneContext` | 공유 상태와 서비스의 비소유 참조 |
+| Game/Scenes | `SceneContext` | 공유 진행·설정, 장면 간 임시 결과와 서비스의 비소유 참조 |
 | Game/Scenes | `GameHudRenderer` | 공통 배경, HUD와 검 형상 렌더링 |
 | Game/Scenes | `LocalizedText` | 현재 언어에 맞는 UI 문구와 검 이름 선택 |
 | Game/Scenes | `TitleScene` | 한국어 기본 제목 연출과 설정 화면 진입 |
 | Game/Scenes | `SettingsScene` | 표시 언어와 게임 난이도 선택 |
-| Game/Scenes | `BattleScene` | 보스 타이밍 전투, 승패와 보상 반영 |
+| Game/Scenes | `BattleScene` | 보스 전투 입력, 예고·흔들림 연출, 승패와 보상 반영 |
 | Game/Scenes | `EndingScene` | 최종 기록과 완성된 검 표시 |
 | Game/Scenes | `ForgeScene` | 검 상태 표시, 비용 확인과 제련 시작 |
 | Game/Scenes | `ForgingScene` | 실시간 입력 해석, 제련 진행과 판정 요청 |

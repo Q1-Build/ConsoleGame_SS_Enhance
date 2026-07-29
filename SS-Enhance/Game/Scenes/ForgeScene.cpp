@@ -1,6 +1,5 @@
 #include "Game/Scenes/ForgeScene.h"
 
-#include "Core/IRandomProvider.h"
 #include "Game/Domain/ForgeRules.h"
 #include "Game/Domain/PlayerProgress.h"
 #include "Game/Domain/ProgressionRules.h"
@@ -30,12 +29,10 @@ namespace ss
 
     SceneTransition ForgeScene::Update(float deltaSeconds)
     {
-        static_cast<void>(deltaSeconds);
-
-        if (context_.randomProvider.NextFloat(0.0f, 1.0f) < 0.08f)
-        {
-            context_.particles.SpawnAmbientEmber();
-        }
+        constexpr float kAmbientEmbersPerSecond = 5.0f;
+        context_.particles.EmitAmbientEmbers(
+            deltaSeconds,
+            kAmbientEmbersPerSecond);
 
         if (context_.input.WasPressed(InputKey::Escape) ||
             context_.input.WasPressed(InputKey::Q))
@@ -47,6 +44,7 @@ namespace ss
         const int bossVictoryCount = context_.progress.GetBossVictoryCount();
         const std::optional<BossType> availableBoss =
             ProgressionRules::GetAvailableBoss(swordLevel, bossVictoryCount);
+        // 보스 도전은 강화 시작과 별도 입력으로 분리해 같은 프레임에 비용이 차감되지 않게 한다.
         if (context_.input.WasPressed(InputKey::B) && availableBoss.has_value())
         {
             return SceneTransition::To(SceneType::Battle);

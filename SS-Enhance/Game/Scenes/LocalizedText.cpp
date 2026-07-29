@@ -48,6 +48,7 @@ namespace ss
         Language language,
         Difficulty difficulty) noexcept
     {
+        // enum 값과 화면 이름의 대응은 설정 장면 밖에서도 재사용할 수 있도록 한곳에 둔다.
         switch (difficulty)
         {
         case Difficulty::Easy:
@@ -95,6 +96,7 @@ namespace ss
         Language language,
         BossType bossType) noexcept
     {
+        // 도메인에는 표시 문자열을 넣지 않고 보스 식별 값만 번역 키처럼 사용한다.
         switch (bossType)
         {
         case BossType::EmberWarden:
@@ -103,6 +105,23 @@ namespace ss
             return Select(language, L"폭풍의 파수꾼", L"STORM SENTINEL");
         case BossType::MemoryDevourer:
             return Select(language, L"기억을 삼키는 자", L"MEMORY DEVOURER");
+        }
+        return {};
+    }
+
+    std::wstring_view LocalizedText::GetBossPatternDescription(
+        Language language,
+        BossType bossType) noexcept
+    {
+        // 상세 수치를 반복하지 않고 전투 전에 알아야 할 패턴의 차이만 짧게 전달한다.
+        switch (bossType)
+        {
+        case BossType::EmberWarden:
+            return Select(language, L"느리지만 강한 일격", L"SLOW, HEAVY STRIKES");
+        case BossType::StormSentinel:
+            return Select(language, L"빠르게 이어지는 삼연격", L"RAPID TRIPLE COMBO");
+        case BossType::MemoryDevourer:
+            return Select(language, L"예고 중 타이밍 교란", L"DISTORTS TIMING WHILE WARNING");
         }
         return {};
     }

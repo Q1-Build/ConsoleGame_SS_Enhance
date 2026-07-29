@@ -15,6 +15,7 @@ namespace ss
         int swordLevel,
         int bossVictoryCount) noexcept
     {
+        // 처치 순서를 진행도와 함께 검사해 이미 쓰러뜨린 보스가 다시 해금되지 않게 한다.
         if (bossVictoryCount == 0 && swordLevel >= 4)
         {
             return BossType::EmberWarden;

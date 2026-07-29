@@ -1,6 +1,5 @@
 #include "Game/Scenes/SettingsScene.h"
 
-#include "Core/IRandomProvider.h"
 #include "Game/Domain/Difficulty.h"
 #include "Game/Effects/ParticleSystem.h"
 #include "Game/Scenes/GameHudRenderer.h"
@@ -25,12 +24,10 @@ namespace ss
 
     SceneTransition SettingsScene::Update(float deltaSeconds)
     {
-        static_cast<void>(deltaSeconds);
-
-        if (context_.randomProvider.NextFloat(0.0f, 1.0f) < 0.08f)
-        {
-            context_.particles.SpawnAmbientEmber();
-        }
+        constexpr float kAmbientEmbersPerSecond = 5.0f;
+        context_.particles.EmitAmbientEmbers(
+            deltaSeconds,
+            kAmbientEmbersPerSecond);
 
         if (context_.input.WasPressed(InputKey::Escape))
         {

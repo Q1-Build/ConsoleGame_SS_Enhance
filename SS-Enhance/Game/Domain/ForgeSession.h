@@ -14,6 +14,8 @@ namespace ss
         /// 진입 시점의 검 단계와 난이도로 한 번의 제련 조건을 고정한다.
         ForgeSession(int swordLevel, Difficulty difficulty);
 
+        /// 경과 시간, 전체 게임 시간과 온도 조작 입력으로 실시간 제련 상태를 갱신한다.
+        /// 리듬 표식은 전체 게임 시간을 사용하지만 점수와 제한 시간은 세션 안에서 관리한다.
         void Update(
             float deltaSeconds,
             float worldTimeSeconds,

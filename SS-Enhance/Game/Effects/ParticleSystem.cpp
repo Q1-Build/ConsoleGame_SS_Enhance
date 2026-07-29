@@ -5,6 +5,7 @@
 #include "Rendering/IScreen.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 
 namespace ss
@@ -40,6 +41,28 @@ namespace ss
     void ParticleSystem::Clear() noexcept
     {
         particles_.clear();
+    }
+
+    void ParticleSystem::EmitAmbientEmbers(
+        float deltaSeconds,
+        float particlesPerSecond)
+    {
+        if (ShouldEmit(deltaSeconds, particlesPerSecond))
+        {
+            SpawnAmbientEmber();
+        }
+    }
+
+    void ParticleSystem::EmitResultParticles(
+        float deltaSeconds,
+        float particlesPerSecond,
+        bool succeeded,
+        Color swordColor)
+    {
+        if (ShouldEmit(deltaSeconds, particlesPerSecond))
+        {
+            SpawnResultParticle(succeeded, swordColor);
+        }
     }
 
     void ParticleSystem::SpawnAmbientEmber()
@@ -124,5 +147,23 @@ namespace ss
                 particle.glyph,
                 color);
         }
+    }
+
+    bool ParticleSystem::ShouldEmit(
+        float deltaSeconds,
+        float particlesPerSecond)
+    {
+        assert(deltaSeconds >= 0.0f);
+        assert(particlesPerSecond >= 0.0f);
+        if (deltaSeconds <= 0.0f || particlesPerSecond <= 0.0f)
+        {
+            return false;
+        }
+
+        // 초당 생성률을 프레임 확률로 바꿔 실행 속도가 달라도 평균 밀도를 유지한다.
+        const float emissionChance = std::min(
+            1.0f,
+            deltaSeconds * particlesPerSecond);
+        return randomProvider_.NextFloat(0.0f, 1.0f) < emissionChance;
     }
 }

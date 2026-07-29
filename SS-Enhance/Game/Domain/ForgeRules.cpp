@@ -23,8 +23,8 @@ namespace ss
         // 확률 테이블은 강화 단계별 밸런스를 코드 한곳에서 조정할 수 있게 모아둔다.
         static constexpr std::array<float, 12> kBaseChances =
         {
-            0.96f, 0.90f, 0.82f, 0.73f, 0.63f, 0.52f,
-            0.41f, 0.31f, 0.22f, 0.14f, 0.08f, 0.04f
+            0.98f, 0.95f, 0.90f, 0.84f, 0.76f, 0.68f,
+            0.60f, 0.52f, 0.44f, 0.36f, 0.29f, 0.23f
         };
 
         const int safeLevel = std::max(0, std::min(swordLevel, 11));

@@ -1,9 +1,9 @@
 #include "Game/Scenes/TitleScene.h"
 
 #include "Core/GameConstants.h"
-#include "Core/IRandomProvider.h"
 #include "Game/Effects/ParticleSystem.h"
 #include "Game/Scenes/GameHudRenderer.h"
+#include "Game/Scenes/LocalizedText.h"
 #include "Game/Scenes/SceneContext.h"
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
@@ -24,13 +24,11 @@ namespace ss
 
     SceneTransition TitleScene::Update(float deltaSeconds)
     {
-        static_cast<void>(deltaSeconds);
-
-        // 프레임마다 낮은 확률로 생성해 시간에 따라 불규칙한 배경 불씨를 만든다.
-        if (context_.randomProvider.NextFloat(0.0f, 1.0f) < 0.13f)
-        {
-            context_.particles.SpawnAmbientEmber();
-        }
+        // 생성률 계산은 파티클 시스템에 맡겨 타이틀 연출 밀도가 프레임 속도에 좌우되지 않게 한다.
+        constexpr float kAmbientEmbersPerSecond = 8.0f;
+        context_.particles.EmitAmbientEmbers(
+            deltaSeconds,
+            kAmbientEmbersPerSecond);
 
         if (context_.input.WasPressed(InputKey::Escape))
         {
@@ -61,7 +59,10 @@ namespace ss
         screen.CenterText(12, L"E  N  H  A  N  C  E", Color::BrightWhite);
         screen.CenterText(
             14,
-            L"—  검 은   모 든   것 을   기 억 한 다  —",
+            LocalizedText::Select(
+                context_.language,
+                L"—  검 은   모 든   것 을   기 억 한 다  —",
+                L"—  T H E   B L A D E   R E M E M B E R S  —"),
             Color::BrightBlack);
 
         context_.hudRenderer.DrawSword(
@@ -78,10 +79,19 @@ namespace ss
             static_cast<int>(context_.worldTimeSeconds * 2.0f) % 2 == 0
                 ? Color::BrightYellow
                 : Color::White;
-        screen.CenterText(29, L"언어와 난이도는 다음 화면에서 설정합니다.", Color::BrightCyan);
+        screen.CenterText(
+            29,
+            LocalizedText::Select(
+                context_.language,
+                L"언어와 난이도는 다음 화면에서 설정합니다.",
+                L"LANGUAGE AND DIFFICULTY ARE SET ON THE NEXT SCREEN."),
+            Color::BrightCyan);
         screen.CenterText(
             31,
-            L"[ ENTER ]  설정으로",
+            LocalizedText::Select(
+                context_.language,
+                L"[ ENTER ]  설정으로",
+                L"[ ENTER ]  OPEN SETTINGS"),
             promptColor);
     }
 

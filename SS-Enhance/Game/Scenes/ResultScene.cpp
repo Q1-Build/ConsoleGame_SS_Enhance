@@ -1,6 +1,5 @@
 #include "Game/Scenes/ResultScene.h"
 
-#include "Core/IRandomProvider.h"
 #include "Game/Domain/ForgeOutcome.h"
 #include "Game/Domain/PlayerProgress.h"
 #include "Game/Effects/ParticleSystem.h"
@@ -36,10 +35,12 @@ namespace ss
         const Color swordColor = context_.hudRenderer.GetSwordColor(outcome.newLevel);
 
         // 초기 폭발 뒤에도 작은 결과 파티클을 추가해 정지 화면처럼 보이지 않게 한다.
-        if (context_.randomProvider.NextFloat(0.0f, 1.0f) < 0.22f)
-        {
-            context_.particles.SpawnResultParticle(outcome.succeeded, swordColor);
-        }
+        constexpr float kResultParticlesPerSecond = 13.0f;
+        context_.particles.EmitResultParticles(
+            deltaSeconds,
+            kResultParticlesPerSecond,
+            outcome.succeeded,
+            swordColor);
 
         if (context_.input.WasPressed(InputKey::Escape))
         {
@@ -131,6 +132,9 @@ namespace ss
 
     void ResultScene::OnExit()
     {
+        // 결과 장면의 전달 값과 전용 효과가 다음 강화 화면에 섞이지 않게 수명을 함께 끝낸다.
+        context_.lastOutcome.reset();
+        context_.particles.Clear();
     }
 
     std::wstring_view ResultScene::GetHeadline(
