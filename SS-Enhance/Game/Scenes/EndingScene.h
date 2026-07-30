@@ -10,6 +10,7 @@ namespace ss
     class EndingScene final : public IScene
     {
     public:
+        /// 애플리케이션이 소유한 최종 진행 기록과 공유 서비스를 비소유 참조로 연결한다.
         explicit EndingScene(SceneContext& context);
 
         void OnEnter() override;
@@ -18,6 +19,7 @@ namespace ss
         void OnExit() override;
 
     private:
+        // 공유 서비스는 비소유하며 엔딩 입력 지연을 위한 초 단위 경과 시간만 직접 관리한다.
         SceneContext& context_;
         float sceneTimeSeconds_ = 0.0f;
     };

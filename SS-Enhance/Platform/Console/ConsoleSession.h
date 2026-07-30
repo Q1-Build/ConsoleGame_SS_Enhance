@@ -11,7 +11,10 @@ namespace ss
     class ConsoleSession final
     {
     public:
+        /// 원래 콘솔 상태를 저장한 뒤 게임용 화면·입력 모드와 창 제목을 적용한다.
         ConsoleSession();
+
+        /// 대체 화면, 커서, 입출력 모드와 창 제목을 생성 전 상태로 복원한다.
         ~ConsoleSession() noexcept;
 
         ConsoleSession(const ConsoleSession&) = delete;

@@ -25,11 +25,14 @@ namespace ss
     class GameApplication final
     {
     public:
+        /// 플랫폼 서비스의 비소유 참조를 연결하며 모든 서비스는 애플리케이션보다 오래 살아야 한다.
         GameApplication(
             IInput& input,
             IFramePresenter& presenter,
             IRandomProvider& randomProvider,
             IAudio& audio);
+
+        /// 현재 장면을 먼저 폐기한 뒤 애플리케이션이 소유한 게임 상태를 정리한다.
         ~GameApplication();
 
         GameApplication(const GameApplication&) = delete;

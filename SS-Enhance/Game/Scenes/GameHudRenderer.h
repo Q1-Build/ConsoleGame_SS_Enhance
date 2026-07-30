@@ -45,6 +45,7 @@ namespace ss
             Color fillColor,
             std::wstring_view label) const;
 
+        /// 강화 단계에 대응하는 검과 결과 연출의 공통 대표 색상을 반환한다.
         [[nodiscard]] Color GetSwordColor(int swordLevel) const noexcept;
 
     private:

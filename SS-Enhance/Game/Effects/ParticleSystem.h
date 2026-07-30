@@ -13,10 +13,13 @@ namespace ss
     class ParticleSystem final
     {
     public:
+        /// 애플리케이션이 소유한 난수 공급자를 비소유 참조로 연결한다.
         explicit ParticleSystem(IRandomProvider& randomProvider);
 
         /// 모든 파티클을 경과 시간만큼 이동시키고 수명이 끝난 항목을 제거한다.
         void Update(float deltaSeconds);
+
+        /// 장면 전환 전에 남아 있는 모든 파티클을 즉시 제거한다.
         void Clear() noexcept;
 
         /// 프레임 속도와 무관한 초당 생성률로 배경 불씨를 방출한다.
@@ -32,8 +35,10 @@ namespace ss
             bool succeeded,
             Color swordColor);
 
-        /// 장면의 확정된 사건에 맞는 파티클 묶음을 즉시 생성한다.
+        /// 타격 점수에 비례하는 충돌 파티클 묶음을 즉시 생성한다.
         void SpawnImpact(float score);
+
+        /// 성공 여부와 검 색상을 반영한 지정 개수의 결과 파티클을 즉시 생성한다.
         void SpawnResultBurst(bool succeeded, Color swordColor, int count);
 
         /// 현재 파티클을 화면에 그리며 파티클 상태는 변경하지 않는다.

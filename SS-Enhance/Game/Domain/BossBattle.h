@@ -33,6 +33,7 @@ namespace ss
     /// 승리 후 선택할 수 있는 골드와 기억 조각 보상 묶음이다.
     struct BattleReward
     {
+        // 두 값은 진행도에 더할 음수 없는 정수 보상이다.
         int gold = 0;
         int fragments = 0;
     };

@@ -8,12 +8,15 @@ namespace ss
     class PlayerProgress final
     {
     public:
+        /// 진행도가 소유한 검의 읽기 전용 참조와 누적 자원·기록을 반환한다.
         [[nodiscard]] const Sword& GetSword() const noexcept;
         [[nodiscard]] int GetGold() const noexcept;
         [[nodiscard]] int GetFragments() const noexcept;
         [[nodiscard]] int GetAttemptCount() const noexcept;
         [[nodiscard]] int GetSuccessCount() const noexcept;
         [[nodiscard]] int GetBossVictoryCount() const noexcept;
+
+        /// 요청 금액을 현재 골드로 지불할 수 있는지 상태 변경 없이 확인한다.
         [[nodiscard]] bool CanAfford(int amount) const noexcept;
 
         /// 골드가 충분하면 차감하고 성공 여부를 반환한다.

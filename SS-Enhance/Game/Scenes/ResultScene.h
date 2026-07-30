@@ -14,6 +14,7 @@ namespace ss
     class ResultScene final : public IScene
     {
     public:
+        /// 애플리케이션이 소유한 직전 강화 결과와 공유 서비스를 비소유 참조로 연결한다.
         explicit ResultScene(SceneContext& context);
 
         void OnEnter() override;

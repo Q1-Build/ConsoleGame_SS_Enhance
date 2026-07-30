@@ -18,10 +18,12 @@ namespace ss
     /// 한 난이도에 묶여 함께 조정되는 강화 비용과 제련 조건이다.
     struct DifficultyTuning
     {
-        // 비용, 냉각, 제한 시간과 실패 페널티 시작 단계를 함께 관리한다.
+        // 비용은 백분율, 냉각은 배율, 제한 시간은 초 단위로 저장한다.
         int forgeCostPercent = 100;
         float naturalCoolingMultiplier = 1.0f;
         float forgeDurationSeconds = 12.0f;
+
+        // 이 강화 단계부터 보호 자원이 없을 때 한 단계 하락할 수 있다.
         int failurePenaltyStartLevel = 9;
     };
 

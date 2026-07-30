@@ -20,6 +20,8 @@ namespace ss
     /// 장면들이 공유하는 게임 상태와 서비스의 비소유 참조를 묶는다.
     struct SceneContext
     {
+        /// GameApplication이 소유한 공유 객체를 비소유 참조로 연결한다.
+        /// 모든 참조 대상은 이 컨텍스트와 장면보다 오래 살아야 한다.
         SceneContext(
             IInput& inputReference,
             IRandomProvider& randomReference,

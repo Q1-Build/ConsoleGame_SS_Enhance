@@ -24,9 +24,10 @@ namespace ss
         void SubmitCurrentInput(const IScreen& screen);
         [[nodiscard]] std::wstring GetVisibleInput(const IScreen& screen) const;
 
-        // 확정된 줄은 박스에 표시 가능한 수만 보관하고 편집문은 등록 전까지 별도로 유지한다.
+        // 확정 줄과 편집문을 분리하고 채팅 열기 키의 지연 문자 소비 여부를 함께 추적한다.
         std::deque<std::wstring> lines_;
         std::wstring currentInput_;
         bool isEditing_ = false;
+        bool isWaitingForOpeningCharacter_ = false;
     };
 }

@@ -23,6 +23,15 @@ namespace ss
         constexpr int kContentWidth = kChatRight - kChatLeft - 6;
         constexpr std::size_t kMaximumInputCharacters = 160;
 
+        [[nodiscard]] constexpr bool IsOpeningCharacter(
+            wchar_t character) noexcept
+        {
+            return character == L't' ||
+                character == L'T' ||
+                character == L'ㅅ' ||
+                character == L'ㅆ';
+        }
+
         static_assert(kVisibleLineCount > 0);
         static_assert(kContentWidth > 0);
     }
@@ -41,6 +50,10 @@ namespace ss
             // 채팅을 연 T가 같은 프레임의 메시지 첫 글자로 들어가지 않게 편집을 다음 프레임부터 시작한다.
             currentInput_.clear();
             isEditing_ = true;
+            const std::wstring_view textInput = input.GetTextInput();
+            isWaitingForOpeningCharacter_ =
+                textInput.empty() ||
+                !IsOpeningCharacter(textInput.front());
             return true;
         }
 
@@ -48,6 +61,7 @@ namespace ss
         {
             currentInput_.clear();
             isEditing_ = false;
+            isWaitingForOpeningCharacter_ = false;
             return true;
         }
         if (input.WasPressed(InputKey::Enter))
@@ -55,6 +69,7 @@ namespace ss
             SubmitCurrentInput(screen);
             currentInput_.clear();
             isEditing_ = false;
+            isWaitingForOpeningCharacter_ = false;
             return true;
         }
         if (input.WasPressed(InputKey::Backspace) && !currentInput_.empty())
@@ -62,7 +77,16 @@ namespace ss
             currentInput_.pop_back();
         }
 
-        const std::wstring_view textInput = input.GetTextInput();
+        std::wstring_view textInput = input.GetTextInput();
+        if (isWaitingForOpeningCharacter_ && !textInput.empty())
+        {
+            // 한글 IME는 채팅을 연 물리 키 T를 ㅅ으로 한 프레임 늦게 전달할 수 있어 첫 열기 문자만 소비한다.
+            isWaitingForOpeningCharacter_ = false;
+            if (IsOpeningCharacter(textInput.front()))
+            {
+                textInput.remove_prefix(1);
+            }
+        }
         const std::size_t remainingCharacters =
             kMaximumInputCharacters - currentInput_.size();
         currentInput_.append(

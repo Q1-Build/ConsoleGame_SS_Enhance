@@ -10,6 +10,7 @@ namespace ss
     public:
         virtual ~IFramePresenter() = default;
 
+        /// 호출 시점까지 완성된 프레임을 소유하지 않는 문자열 뷰로 한 번 출력한다.
         virtual void Present(std::wstring_view frame) = 0;
     };
 }

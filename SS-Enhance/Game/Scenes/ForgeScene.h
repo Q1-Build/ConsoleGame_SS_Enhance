@@ -10,6 +10,7 @@ namespace ss
     class ForgeScene final : public IScene
     {
     public:
+        /// 애플리케이션이 소유한 공유 상태와 서비스를 비소유 참조로 연결한다.
         explicit ForgeScene(SceneContext& context);
 
         void OnEnter() override;

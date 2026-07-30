@@ -12,7 +12,10 @@ namespace ss
     class WindowsAudio final : public IAudio
     {
     public:
+        /// 실행 파일 위치를 기준으로 배포 음원 디렉터리를 결정한다.
         WindowsAudio();
+
+        /// 진행 중인 BGM과 효과음을 정지하고 모든 MCI 별칭을 닫는다.
         ~WindowsAudio() override;
 
         WindowsAudio(const WindowsAudio&) = delete;

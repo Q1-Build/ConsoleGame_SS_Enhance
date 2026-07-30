@@ -19,7 +19,10 @@ namespace ss
     class BattleScene final : public IScene
     {
     public:
+        /// 애플리케이션이 소유한 진행 상태와 서비스를 비소유 참조로 연결한다.
         explicit BattleScene(SceneContext& context);
+
+        /// 헤더에 전방 선언한 전투 세션을 완전한 타입이 보이는 구현 파일에서 폐기한다.
         ~BattleScene() override;
 
         void OnEnter() override;

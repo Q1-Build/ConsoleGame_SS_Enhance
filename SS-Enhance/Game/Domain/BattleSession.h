@@ -47,6 +47,8 @@ namespace ss
 
         /// 보스 체력만 먼저 0이 된 경우에만 승리로 판정한다.
         [[nodiscard]] bool IsPlayerVictorious() const noexcept;
+
+        /// 현재·최대 체력과 플레이어 공격 타이밍 표식의 0~1 위치를 조회한다.
         [[nodiscard]] int GetPlayerHealth() const noexcept;
         [[nodiscard]] int GetPlayerMaxHealth() const noexcept;
         [[nodiscard]] int GetBossHealth() const noexcept;
@@ -61,11 +63,14 @@ namespace ss
 
         /// 현재 공격 예고에서 완벽 방어 구간이 시작되는 0~1 위치를 반환한다.
         [[nodiscard]] float GetPerfectGuardStartProgress() const noexcept;
+
+        /// 현재 프레임이 완벽 방어 입력을 받을 수 있는 구간인지 반환한다.
         [[nodiscard]] bool IsPerfectGuardWindow() const noexcept;
 
         /// 현재 예고의 종류를 반환해 장면이 정직한 공격, 교란과 잔상을 구분하게 한다.
         [[nodiscard]] AttackTelegraph GetCurrentTelegraph() const noexcept;
 
+        /// 현재 공격 단계의 0 기반 위치와 전체 단계 수를 UI 표시에 제공한다.
         [[nodiscard]] int GetCurrentAttackStep() const noexcept;
         [[nodiscard]] int GetAttackStepCount() const noexcept;
 

@@ -14,7 +14,10 @@ namespace ss
     class ForgingScene final : public IScene
     {
     public:
+        /// 애플리케이션이 소유한 공유 상태를 연결하고 제련 세션은 진입 시 별도로 생성한다.
         explicit ForgingScene(SceneContext& context);
+
+        /// 헤더에 전방 선언한 제련 세션을 완전한 타입이 보이는 구현 파일에서 폐기한다.
         ~ForgingScene() override;
 
         ForgingScene(const ForgingScene&) = delete;

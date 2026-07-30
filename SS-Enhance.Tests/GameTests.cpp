@@ -19,6 +19,7 @@
 
 namespace
 {
+    /// 프레임별 키와 문자 입력을 직접 구성해 입력 경계 동작을 검증하는 테스트 대역이다.
     class StubInput final : public ss::IInput
     {
     public:
@@ -273,24 +274,24 @@ namespace
 
         Expect(
             !chat.Update(input, screen),
-            "idle presentation chat consumed game input");
+            "idle chat consumed game input");
 
         for (int index = 0; index < 7; ++index)
         {
             input.SetFrame(ss::InputKey::T, L"t");
             Expect(
                 chat.Update(input, screen),
-                "presentation chat did not consume its open command");
+                "chat did not consume its open command");
 
             input.SetText(L"note " + std::to_wstring(index));
             Expect(
                 chat.Update(input, screen),
-                "presentation chat did not consume text editing");
+                "chat did not consume text editing");
 
             input.SetFrame(ss::InputKey::Enter);
             Expect(
                 chat.Update(input, screen),
-                "presentation chat did not consume submission");
+                "chat did not consume submission");
             input.Clear();
         }
 
@@ -299,11 +300,44 @@ namespace
         const std::wstring frame = screen.BuildAnsiFrame();
         Expect(
             frame.find(L"note 0") == std::wstring::npos,
-            "presentation chat retained a line above visible capacity");
+            "chat retained a line above visible capacity");
         Expect(
             frame.find(L"note 1") != std::wstring::npos &&
             frame.find(L"note 6") != std::wstring::npos,
-            "presentation chat did not retain the six newest lines");
+            "chat did not retain the six newest lines");
+    }
+
+    void TestChatOverlayIgnoresDelayedOpenCharacter()
+    {
+        ss::ChatOverlay chat;
+        ss::ScreenBuffer screen;
+        StubInput input;
+
+        input.SetFrame(ss::InputKey::T);
+        Expect(
+            chat.Update(input, screen),
+            "chat did not consume its open command");
+
+        // 한글 IME가 채팅 시작 키의 자모를 다음 프레임에 늦게 전달하는 실제 순서를 재현한다.
+        input.SetText(L"ㅅ안녕하세요");
+        Expect(
+            chat.Update(input, screen),
+            "chat did not consume delayed IME text");
+
+        input.SetFrame(ss::InputKey::Enter);
+        Expect(
+            chat.Update(input, screen),
+            "chat did not consume submission");
+
+        screen.Clear();
+        chat.Draw(screen, ss::Language::English);
+        const std::wstring frame = screen.BuildAnsiFrame();
+        Expect(
+            frame.find(L"안녕하세요") != std::wstring::npos,
+            "chat discarded message text after the delayed open character");
+        Expect(
+            frame.find(L"ㅅ안녕하세요") == std::wstring::npos,
+            "chat retained the delayed Korean open character");
     }
 
     void TestDifficultyFailurePenaltyThresholds()
@@ -485,6 +519,11 @@ int main()
     RunTest(
         "ChatOverlayScrollsVisibleLines",
         TestChatOverlayScrollsVisibleLines,
+        passedCount,
+        failedCount);
+    RunTest(
+        "ChatOverlayIgnoresDelayedOpenCharacter",
+        TestChatOverlayIgnoresDelayedOpenCharacter,
         passedCount,
         failedCount);
     RunTest(

@@ -10,8 +10,10 @@ namespace ss
     class RandomProvider final : public IRandomProvider
     {
     public:
+        /// 비결정적 시드로 게임 전체에서 공유할 메르센 트위스터를 초기화한다.
         RandomProvider();
 
+        /// 요청 범위에 균등 분포하는 실수를 반환하며 구체 엔진은 외부에 노출하지 않는다.
         [[nodiscard]] float NextFloat(float minValue, float maxValue) override;
 
     private:

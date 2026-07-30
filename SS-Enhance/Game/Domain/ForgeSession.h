@@ -25,12 +25,18 @@ namespace ss
         /// 현재 타격을 시도하고 성공적으로 입력된 타격 점수를 반환한다.
         [[nodiscard]] std::optional<float> TryStrike();
 
+        /// 세 번 타격했거나 제한 시간이 끝나 최종 판정을 요청해야 하는지 반환한다.
         [[nodiscard]] bool IsComplete() const noexcept;
+
+        /// UI 표현에 필요한 현재 온도, 리듬 위치와 초 단위 타이머를 조회한다.
         [[nodiscard]] float GetHeat() const noexcept;
         [[nodiscard]] float GetMarker() const noexcept;
         [[nodiscard]] float GetTimeLeft() const noexcept;
         [[nodiscard]] float GetStrikeCooldown() const noexcept;
         [[nodiscard]] float GetImpactFlash() const noexcept;
+
+        /// 입력 순서대로 저장된 0~1 타격 점수의 읽기 전용 참조를 반환한다.
+        /// 반환 참조는 세션이 유지되고 다음 타격으로 벡터가 변경되기 전까지 유효하다.
         [[nodiscard]] const std::vector<float>& GetStrikeScores() const noexcept;
 
         /// 높은 온도 정확도를 얻는 64~72도 최적 공명 구간인지 반환한다.
