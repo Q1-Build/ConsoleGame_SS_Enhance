@@ -8,6 +8,7 @@
 #include "Game/Scenes/GameHudRenderer.h"
 #include "Game/Scenes/LocalizedText.h"
 #include "Game/Scenes/SceneContext.h"
+#include "Platform/IAudio.h"
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
 
@@ -24,6 +25,22 @@ namespace ss
         constexpr float kIntroductionSeconds = 1.4f;
         constexpr float kResultInputDelaySeconds = 0.65f;
         constexpr float kRewardInputDelaySeconds = 0.25f;
+
+        // 보스의 전투 성격을 논리 음악 큐에 연결하고 실제 파일 선택은 플랫폼 계층에 남긴다.
+        MusicTrack GetBattleMusic(BossType bossType) noexcept
+        {
+            switch (bossType)
+            {
+            case BossType::EmberWarden:
+                return MusicTrack::BattleEmber;
+            case BossType::StormSentinel:
+                return MusicTrack::BattleStorm;
+            case BossType::MemoryDevourer:
+                return MusicTrack::BattleMemory;
+            }
+            assert(false && "지원하지 않는 보스 종류다.");
+            return MusicTrack::BattleEmber;
+        }
     }
 
     BattleScene::BattleScene(SceneContext& context)
@@ -56,6 +73,7 @@ namespace ss
         lastDamage_ = 0;
         battleMessage_.clear();
         context_.particles.Clear();
+        context_.audio.PlayMusic(GetBattleMusic(boss_.type));
     }
 
     SceneTransition BattleScene::Update(float deltaSeconds)
@@ -160,6 +178,7 @@ namespace ss
             const std::optional<int> damage = session_->TryAttack();
             if (damage.has_value())
             {
+                context_.audio.PlaySound(SoundEffect::PlayerAttack);
                 lastDamage_ = *damage;
                 if (!bossAttackResult.has_value())
                 {
@@ -191,11 +210,13 @@ namespace ss
             context_.input.WasPressed(InputKey::A))
         {
             rewardChoice_ = RewardChoice::Gold;
+            context_.audio.PlaySound(SoundEffect::MenuMove);
         }
         if (context_.input.WasPressed(InputKey::Right) ||
             context_.input.WasPressed(InputKey::D))
         {
             rewardChoice_ = RewardChoice::Memory;
+            context_.audio.PlaySound(SoundEffect::MenuMove);
         }
 
         const bool isConfirmed =
@@ -204,6 +225,7 @@ namespace ss
         if (phaseTimeSeconds_ >= kRewardInputDelaySeconds && isConfirmed)
         {
             ApplySelectedReward();
+            context_.audio.PlaySound(SoundEffect::RewardConfirm);
             phase_ = BattlePhase::Completed;
             phaseTimeSeconds_ = 0.0f;
         }
@@ -243,6 +265,7 @@ namespace ss
         }
         else if (result.guardQuality == GuardQuality::Perfect)
         {
+            context_.audio.PlaySound(SoundEffect::PerfectGuard);
             resultMessage << LocalizedText::Select(
                                  context_.language,
                                  L"완벽 방어! 반격 ",
@@ -253,6 +276,7 @@ namespace ss
         }
         else if (result.guardQuality == GuardQuality::Guarded)
         {
+            context_.audio.PlaySound(SoundEffect::Guard);
             resultMessage << LocalizedText::Select(
                                  context_.language,
                                  L"방어 성공! 피해 ",
@@ -263,6 +287,7 @@ namespace ss
         }
         else
         {
+            context_.audio.PlaySound(SoundEffect::PlayerHit);
             resultMessage << LocalizedText::Select(
                                  context_.language,
                                  L"피격! 피해 ",
@@ -296,6 +321,7 @@ namespace ss
 
         if (session_->IsPlayerVictorious())
         {
+            context_.audio.PlaySound(SoundEffect::BattleVictory);
             phase_ = BattlePhase::RewardSelection;
             return;
         }
@@ -303,6 +329,7 @@ namespace ss
         // 패배는 선택 단계가 없으므로 즉시 한 번만 강화 단계 하락을 확정한다.
         const bool wasApplied = settlement_.ApplyDefeat(context_.progress);
         assert(wasApplied);
+        context_.audio.PlaySound(SoundEffect::BattleDefeat);
         phase_ = BattlePhase::Completed;
     }
 
@@ -312,6 +339,7 @@ namespace ss
 
         const bool wasApplied = settlement_.ApplyDefeat(context_.progress);
         assert(wasApplied);
+        context_.audio.PlaySound(SoundEffect::BattleDefeat);
         wasRetreat_ = true;
         phase_ = BattlePhase::Completed;
         phaseTimeSeconds_ = 0.0f;

@@ -5,6 +5,7 @@
 #include "Game/Scenes/GameHudRenderer.h"
 #include "Game/Scenes/LocalizedText.h"
 #include "Game/Scenes/SceneContext.h"
+#include "Platform/IAudio.h"
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
 
@@ -22,6 +23,7 @@ namespace ss
         // 전투 파티클을 제거해 엔딩의 정적인 검 연출과 시각적으로 분리한다.
         sceneTimeSeconds_ = 0.0f;
         context_.particles.Clear();
+        context_.audio.PlayMusic(MusicTrack::Ending);
     }
 
     SceneTransition EndingScene::Update(float deltaSeconds)
@@ -34,6 +36,7 @@ namespace ss
              context_.input.WasPressed(InputKey::Space) ||
              context_.input.WasPressed(InputKey::Escape)))
         {
+            context_.audio.PlaySound(SoundEffect::MenuConfirm);
             return SceneTransition::To(SceneType::Exit);
         }
         return SceneTransition::None();

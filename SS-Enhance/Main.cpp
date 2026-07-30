@@ -3,6 +3,7 @@
 #include "Platform/Console/ConsoleInput.h"
 #include "Platform/Console/ConsolePresenter.h"
 #include "Platform/Console/ConsoleSession.h"
+#include "Platform/Windows/WindowsAudio.h"
 
 int main()
 {
@@ -11,7 +12,8 @@ int main()
     ss::ConsoleInput input;
     ss::ConsolePresenter presenter;
     ss::RandomProvider randomProvider;
+    ss::WindowsAudio audio;
 
-    ss::GameApplication application(input, presenter, randomProvider);
+    ss::GameApplication application(input, presenter, randomProvider, audio);
     return application.Run();
 }

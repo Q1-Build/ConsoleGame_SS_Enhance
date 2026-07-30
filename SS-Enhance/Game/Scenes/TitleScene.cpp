@@ -5,6 +5,7 @@
 #include "Game/Scenes/GameHudRenderer.h"
 #include "Game/Scenes/LocalizedText.h"
 #include "Game/Scenes/SceneContext.h"
+#include "Platform/IAudio.h"
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
 
@@ -20,6 +21,7 @@ namespace ss
     void TitleScene::OnEnter()
     {
         context_.notice.clear();
+        context_.audio.PlayMusic(MusicTrack::Title);
     }
 
     SceneTransition TitleScene::Update(float deltaSeconds)
@@ -32,11 +34,13 @@ namespace ss
 
         if (context_.input.WasPressed(InputKey::Escape))
         {
+            context_.audio.PlaySound(SoundEffect::MenuBack);
             return SceneTransition::To(SceneType::Exit);
         }
         if (context_.input.WasPressed(InputKey::Enter) ||
             context_.input.WasPressed(InputKey::Space))
         {
+            context_.audio.PlaySound(SoundEffect::MenuConfirm);
             return SceneTransition::To(SceneType::Settings);
         }
         return SceneTransition::None();

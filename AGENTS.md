@@ -25,7 +25,7 @@
 
 - `Main.cpp`는 플랫폼 객체 생성과 의존성 조립만 담당하며 게임 로직을 넣지 않는다.
 - `Game/Domain`은 입력, 렌더링, Windows API에 의존하지 않는다.
-- Windows API는 `Platform/Console`에 격리하고 변경한 콘솔 상태는 RAII로 복구한다.
+- Windows API는 `Platform/Console`, `Platform/Windows`의 구체 구현에 격리하고 변경한 콘솔 상태는 RAII로 복구한다.
 - 장면은 서로를 직접 생성하지 않고 `SceneTransition`으로 전환을 요청한다.
 - 입력, 상태 갱신, 판정, 렌더링을 분리하며 `Render`는 게임 상태를 변경하지 않는다.
 - 강화 비용, 확률, 실패 페널티는 `ForgeRules`에서 관리하고 UI가 다시 계산하지 않는다.

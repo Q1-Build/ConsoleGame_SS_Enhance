@@ -181,6 +181,7 @@ Ending
 - 한글·CJK 전각 문자는 실제 표시 폭인 두 칸으로 배치하고 정렬한다.
 - 게임 의미가 있는 수치와 판정은 렌더링 코드에서 새로 계산하지 않는다.
 - 검의 현지화된 이름은 화면 표현이며 `Sword` 도메인 객체는 강화 단계와 등급만 관리한다.
+- 공통 상단 HUD는 현재 난이도를 언어별 이름과 쉬움·보통·어려움 색상으로 표시한다.
 - 기존 게임 화면은 왼쪽 104×34 영역을 유지한다.
 - 오른쪽 조작 안내는 `WASD`, 방향키, `Space`, `Enter`, `B`, `Q`, `Esc`의 공통 용도를 보여 준다.
 - 게임 화면 아래의 가상 키보드는 `WASD`, 방향키, `Enter`, `Space`, `Q`, `Esc` 입력을 표시한다.
@@ -188,3 +189,81 @@ Ending
 - 연타할 때마다 노란 점멸이 다시 시작되어 각 입력의 간격을 녹화 화면에서 확인할 수 있다.
 - `A`는 전투의 방어·반격 용도를, `Q`와 `Esc`는 나가기·후퇴 용도를 함께 안내한다.
 - `B` 입력은 오른쪽 조작 안내의 해당 항목을 강조한다.
+
+## 오디오 설계와 음원 목록
+
+- 배경음악은 장면 분위기를 유지하는 반복 재생 음원이며 효과음과 독립적으로 재생한다.
+- 같은 배경음악을 공유하는 장면으로 이동하면 곡을 처음부터 다시 시작하지 않는다.
+- 효과음은 입력 자체보다 실제 메뉴 이동, 타격, 판정과 보상 확정 시점에 재생한다.
+- 장면은 논리 식별 값만 요청하며 파일 경로와 Windows 재생 API는 `Platform/Windows`가 담당한다.
+- 1차 구현은 WAV 파일을 사용한다. 배포 시 실행 파일을 기준으로 아래 경로와 파일 이름을 유지한다.
+- 음원이 없거나 재생 장치에서 실패해도 게임은 무음으로 계속 진행한다.
+
+### 배경음악
+
+| 상태 | 파일 경로 | 사용 장면 | 연출 의도 |
+| --- | --- | --- | --- |
+| 적용 | `Assets/Audio/Bgm/title.wav` | Title, Settings | 낮은 불꽃과 기억의 신비감을 담은 차분한 도입 |
+| 적용 | `Assets/Audio/Bgm/forge.wav` | Forge, Result | 모루와 화로의 반복 리듬이 중심인 대장간 테마 |
+| 적용 | `Assets/Audio/Bgm/forging.wav` | Forging | 제한 시간과 세 번의 타격을 밀어주는 빠른 제련 테마 |
+| 적용 | `Assets/Audio/Bgm/battle_ember.wav` | Battle: 잿불의 문지기 | 첫 보스의 무게감을 살리는 오케스트라 전투 테마 |
+| 적용 | `Assets/Audio/Bgm/battle_storm.wav` | Battle: 폭풍의 파수꾼 | 빠른 연속 공격을 밀어주는 강한 리듬의 전투 테마 |
+| 적용 | `Assets/Audio/Bgm/battle_memory.wav` | Battle: 기억을 삼키는 자 | 가짜 예고와 최종전을 강조하는 어둡고 불안한 테마 |
+| 적용 | `Assets/Audio/Bgm/ending.wav` | Ending | 완성된 검과 여정의 기록을 마무리하는 엔딩 테마 |
+
+### 효과음
+
+| 상태 | 파일 경로 | 재생 사건 |
+| --- | --- | --- |
+| 적용 | `Assets/Audio/Sfx/menu_move.wav` | 메뉴 항목 또는 보상 선택 이동 |
+| 적용 | `Assets/Audio/Sfx/menu_confirm.wav` | 일반 메뉴 확정 |
+| 적용 | `Assets/Audio/Sfx/menu_back.wav` | 뒤로 가기, 제련 중단 또는 종료 |
+| 적용 | `Assets/Audio/Sfx/forge_begin.wav` | 강화 비용 지불과 제련 시작 확정 |
+| 적용 | `Assets/Audio/Sfx/cool.wav` | 제련 중 냉각 입력 시작 |
+| 적용 | `Assets/Audio/Sfx/stoke.wav` | 제련 중 가열 입력 시작 |
+| 적용 | `Assets/Audio/Sfx/hammer_strike.wav` | 쿨다운을 통과한 실제 망치 타격 |
+| 적용 | `Assets/Audio/Sfx/forge_success.wav` | 일반 강화 성공 |
+| 적용 | `Assets/Audio/Sfx/forge_failure.wav` | 강화 실패 |
+| 적용 | `Assets/Audio/Sfx/forge_critical.wav` | 완벽 제련과 두 단계 승급 |
+| 적용 | `Assets/Audio/Sfx/player_attack.wav` | 보스에게 실제 피해를 준 공격 |
+| 적용 | `Assets/Audio/Sfx/guard.wav` | 보스 공격의 일반 방어 결과 |
+| 적용 | `Assets/Audio/Sfx/perfect_guard.wav` | 완벽 방어와 자동 반격 |
+| 적용 | `Assets/Audio/Sfx/player_hit.wav` | 방어하지 못한 보스 공격 피격 |
+| 적용 | `Assets/Audio/Sfx/battle_victory.wav` | 보스 체력 0과 승리 확정 |
+| 적용 | `Assets/Audio/Sfx/battle_defeat.wav` | 패배 또는 후퇴 확정 |
+| 적용 | `Assets/Audio/Sfx/reward_confirm.wav` | 선택한 보상 적용 확정 |
+
+### 현재 적용 음원 출처
+
+현재 포함된 음원은 사용자가 보유한 `Gamemaster Audio - Pro Sound Collection`에서 선택했다.
+프로젝트에는 게임용 파일명으로 복사하며 원본 ZIP의 디렉터리와 파일명은 추적을 위해 아래에 유지한다.
+보스 전용 `battle_*.wav`, `forge.wav`, `forging.wav`와 전환 효과음 `forge_begin.wav`는
+장면 전환 시 음량이 튀지 않도록 원본 PCM 진폭의 1/3로 조정했다.
+`title.wav`와 `ending.wav`는 곡별 청취 후 조절할 수 있도록 원본 PCM 진폭을 유지한다.
+
+| 게임 파일 | 컬렉션 원본 |
+| --- | --- |
+| `Bgm/battle_ember.wav` | `Ω_Bonus_Music_16bit44kOnly/music_epic_orchestral_bg_underscore.wav` |
+| `Bgm/battle_storm.wav` | `Ω_Bonus_Music_16bit44kOnly/music_modern_war.wav` |
+| `Bgm/battle_memory.wav` | `Ω_Bonus_Music_16bit44kOnly/music_cinematic_darkness_falls.wav` |
+| `Bgm/ending.wav` | `Ω_Bonus_Music_16bit44kOnly/music_epic_heroes_story.wav` |
+| `Bgm/forge.wav` | `Explosion_Fire_Gas/fire_burning_flames_crackle_loop_03.wav` |
+| `Bgm/forging.wav` | `Magic_Spells/shimmer_magic_burn_loop_01.wav` |
+| `Bgm/title.wav` | `Ω_Bonus_Music_16bit44kOnly/music_misty_woods_calling.wav` |
+| `Sfx/battle_defeat.wav` | `Collectibles_Items_Powerup/game_over_dark_bell_chime_01.wav` |
+| `Sfx/battle_victory.wav` | `Collectibles_Items_Powerup/points_ticker_bonus_score_reward_jingle_04.wav` |
+| `Sfx/cool.wav` | `Magic_Spells/fireball_impact_sizzle_burn4.wav` |
+| `Sfx/forge_begin.wav` | `Magic_Spells/fireball_conjure_03.wav` |
+| `Sfx/forge_critical.wav` | `Magic_Spells/magic_sparkle_chimes_explode.wav` |
+| `Sfx/hammer_strike.wav` | `Guns_Weapons/Knife_Sword_Pick/sword_hit_impact_heavy_03.wav` |
+| `Sfx/forge_success.wav` | `Collectibles_Items_Powerup/chime_bell_positive_ring_02.wav` |
+| `Sfx/forge_failure.wav` | `Collectibles_Items_Powerup/jingle_chime_18_negative.wav` |
+| `Sfx/guard.wav` | `Metal/metal_med_impact_01.wav` |
+| `Sfx/menu_back.wav` | `User_Interface_Menu/ui_menu_button_cancel_01.wav` |
+| `Sfx/menu_confirm.wav` | `User_Interface_Menu/ui_menu_button_confirm_02.wav` |
+| `Sfx/menu_move.wav` | `User_Interface_Menu/ui_menu_button_scroll_20.wav` |
+| `Sfx/player_attack.wav` | `Guns_Weapons/Knife_Sword_Pick/sword_hit_impact_01.wav` |
+| `Sfx/perfect_guard.wav` | `Guns_Weapons/Knife_Sword_Pick/sword_hit_impact_ringing_01.wav` |
+| `Sfx/player_hit.wav` | `Punches/punch_general_body_impact_07.wav` |
+| `Sfx/reward_confirm.wav` | `Collectibles_Items_Powerup/collect_item_sparkle_pop_08.wav` |
+| `Sfx/stoke.wav` | `Explosion_Fire_Gas/gas_large_flame_ignite_01.wav` |

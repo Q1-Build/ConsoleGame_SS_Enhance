@@ -11,6 +11,7 @@ namespace ss
 {
     class ForgeRules;
     class GameHudRenderer;
+    class IAudio;
     class IInput;
     class IRandomProvider;
     class ParticleSystem;
@@ -25,13 +26,15 @@ namespace ss
             PlayerProgress& progressReference,
             ForgeRules& rulesReference,
             ParticleSystem& particlesReference,
-            GameHudRenderer& hudRendererReference)
+            GameHudRenderer& hudRendererReference,
+            IAudio& audioReference)
             : input(inputReference),
               randomProvider(randomReference),
               progress(progressReference),
               forgeRules(rulesReference),
               particles(particlesReference),
-              hudRenderer(hudRendererReference)
+              hudRenderer(hudRendererReference),
+              audio(audioReference)
         {
         }
 
@@ -42,6 +45,7 @@ namespace ss
         ForgeRules& forgeRules;
         ParticleSystem& particles;
         GameHudRenderer& hudRenderer;
+        IAudio& audio;
 
         // 전체 장면이 공유하는 시간과 직전 강화 결과다.
         float worldTimeSeconds = 0.0f;

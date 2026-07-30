@@ -178,10 +178,10 @@ namespace ss
         DrawKey(screen, 14, 42, 22, 44, L"S", InputKey::S);
         DrawKey(screen, 23, 42, 31, 44, L"D", InputKey::D);
 
-        DrawKey(screen, 50, 38, 58, 40, L"↑", InputKey::Up);
-        DrawKey(screen, 41, 42, 49, 44, L"←", InputKey::Left);
-        DrawKey(screen, 50, 42, 58, 44, L"↓", InputKey::Down);
-        DrawKey(screen, 59, 42, 67, 44, L"→", InputKey::Right);
+        DrawKey(screen, 47, 38, 55, 40, L"↑", InputKey::Up);
+        DrawKey(screen, 38, 42, 46, 44, L"←", InputKey::Left);
+        DrawKey(screen, 47, 42, 55, 44, L"↓", InputKey::Down);
+        DrawKey(screen, 56, 42, 64, 44, L"→", InputKey::Right);
 
         DrawKey(screen, 70, 38, 82, 40, L"ENTER", InputKey::Enter);
         DrawKey(screen, 84, 38, 90, 40, L"Q", InputKey::Q);
@@ -195,8 +195,8 @@ namespace ss
             LocalizedText::Select(language, L"WASD · A 반격", L"WASD · A COUNTER"),
             Color::BrightBlack);
         screen.CenterTextIn(
-            41,
-            67,
+            38,
+            64,
             46,
             LocalizedText::Select(language, L"방향키", L"ARROWS"),
             Color::BrightBlack);

@@ -10,6 +10,7 @@
 #include "Game/Scenes/ResultScene.h"
 #include "Game/Scenes/SettingsScene.h"
 #include "Game/Scenes/TitleScene.h"
+#include "Platform/IAudio.h"
 #include "Platform/IInput.h"
 #include "Rendering/IFramePresenter.h"
 
@@ -23,24 +24,25 @@ namespace ss
     GameApplication::GameApplication(
         IInput& input,
         IFramePresenter& presenter,
-        IRandomProvider& randomProvider)
+        IRandomProvider& randomProvider,
+        IAudio& audio)
         : input_(input),
           presenter_(presenter),
-          randomProvider_(randomProvider),
           gameScreen_(
               screen_,
               0,
               0,
               kGameViewportWidth,
               kGameViewportHeight),
-          particles_(randomProvider_),
+          particles_(randomProvider),
           sceneContext_(
               input_,
-              randomProvider_,
+              randomProvider,
               progress_,
               forgeRules_,
               particles_,
-              hudRenderer_)
+              hudRenderer_,
+              audio)
     {
     }
 

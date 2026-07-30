@@ -5,6 +5,7 @@
 #include "Game/Scenes/GameHudRenderer.h"
 #include "Game/Scenes/LocalizedText.h"
 #include "Game/Scenes/SceneContext.h"
+#include "Platform/IAudio.h"
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
 
@@ -20,6 +21,7 @@ namespace ss
     void SettingsScene::OnEnter()
     {
         selectedItem_ = SettingItem::Language;
+        context_.audio.PlayMusic(MusicTrack::Title);
     }
 
     SceneTransition SettingsScene::Update(float deltaSeconds)
@@ -31,6 +33,7 @@ namespace ss
 
         if (context_.input.WasPressed(InputKey::Escape))
         {
+            context_.audio.PlaySound(SoundEffect::MenuBack);
             return SceneTransition::To(SceneType::Title);
         }
 
@@ -43,21 +46,25 @@ namespace ss
             selectedItem_ = selectedItem_ == SettingItem::Language
                 ? SettingItem::Difficulty
                 : SettingItem::Language;
+            context_.audio.PlaySound(SoundEffect::MenuMove);
         }
         if (context_.input.WasPressed(InputKey::Left) ||
             context_.input.WasPressed(InputKey::A))
         {
             SelectPreviousValue();
+            context_.audio.PlaySound(SoundEffect::MenuMove);
         }
         if (context_.input.WasPressed(InputKey::Right) ||
             context_.input.WasPressed(InputKey::D))
         {
             SelectNextValue();
+            context_.audio.PlaySound(SoundEffect::MenuMove);
         }
 
         if (context_.input.WasPressed(InputKey::Enter) ||
             context_.input.WasPressed(InputKey::Space))
         {
+            context_.audio.PlaySound(SoundEffect::MenuConfirm);
             return SceneTransition::To(SceneType::Forge);
         }
         return SceneTransition::None();

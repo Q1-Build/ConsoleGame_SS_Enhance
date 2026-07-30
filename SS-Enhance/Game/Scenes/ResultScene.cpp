@@ -6,6 +6,7 @@
 #include "Game/Scenes/GameHudRenderer.h"
 #include "Game/Scenes/LocalizedText.h"
 #include "Game/Scenes/SceneContext.h"
+#include "Platform/IAudio.h"
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
 
@@ -25,6 +26,14 @@ namespace ss
     {
         assert(context_.lastOutcome.has_value());
         sceneTimeSeconds_ = 0.0f;
+        context_.audio.PlayMusic(MusicTrack::Forge);
+        const ForgeOutcome& outcome = *context_.lastOutcome;
+        context_.audio.PlaySound(
+            outcome.wasCritical
+                ? SoundEffect::ForgeCritical
+                : (outcome.succeeded
+                    ? SoundEffect::ForgeSuccess
+                    : SoundEffect::ForgeFailure));
     }
 
     SceneTransition ResultScene::Update(float deltaSeconds)
@@ -44,6 +53,8 @@ namespace ss
 
         if (context_.input.WasPressed(InputKey::Escape))
         {
+            context_.audio.StopSounds();
+            context_.audio.PlaySound(SoundEffect::MenuBack);
             return SceneTransition::To(SceneType::Forge);
         }
 
@@ -53,6 +64,8 @@ namespace ss
             context_.input.WasPressed(InputKey::Space);
         if (sceneTimeSeconds_ > 0.65f && isReturnRequested)
         {
+            context_.audio.StopSounds();
+            context_.audio.PlaySound(SoundEffect::MenuConfirm);
             return SceneTransition::To(SceneType::Forge);
         }
         return SceneTransition::None();
@@ -67,7 +80,8 @@ namespace ss
         context_.hudRenderer.DrawHeader(
             screen,
             context_.progress,
-            context_.language);
+            context_.language,
+            context_.difficulty);
 
         const Color swordColor = context_.hudRenderer.GetSwordColor(outcome.newLevel);
         const Color resultColor = outcome.succeeded ? swordColor : Color::BrightRed;

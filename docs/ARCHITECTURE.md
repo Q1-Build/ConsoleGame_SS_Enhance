@@ -11,6 +11,10 @@
 ```text
 SS-Enhance/
 ├─ Main.cpp
+├─ Assets/
+│  └─ Audio/
+│     ├─ Bgm/
+│     └─ Sfx/
 ├─ Application/
 │  ├─ GameApplication.h
 │  └─ GameApplication.cpp
@@ -21,8 +25,13 @@ SS-Enhance/
 │  ├─ RandomProvider.h
 │  └─ RandomProvider.cpp
 ├─ Platform/
+│  ├─ AudioCue.h
+│  ├─ IAudio.h
 │  ├─ InputKey.h
 │  ├─ IInput.h
+│  ├─ Windows/
+│  │  ├─ WindowsAudio.h
+│  │  └─ WindowsAudio.cpp
 │  └─ Console/
 │     ├─ ConsoleSession.h
 │     ├─ ConsoleSession.cpp
@@ -104,6 +113,8 @@ SS-Enhance.Tests/
 | Core | `GameConstants` | 화면 크기와 프레임 시간 등 공통 컴파일 타임 상수 |
 | Core | `Language` | 화면 표시 언어 값 |
 | Core | `IRandomProvider`, `RandomProvider` | 난수 계약과 메르센 트위스터 구현 |
+| Assets | `Audio/Bgm`, `Audio/Sfx` | 실행 파일과 함께 배포하는 배경음악·효과음 WAV 자산 |
+| Platform | `MusicTrack`, `SoundEffect`, `IAudio` | 플랫폼과 파일 이름에 독립적인 BGM·효과음 식별 값과 재생 계약 |
 | Rendering | `Color`, `Cell` | ANSI 색상과 전각 연속 칸을 포함한 화면 셀 값 |
 | Rendering | `IScreen`, `ScreenBuffer`, `ScreenViewport` | 그리기 계약, 전각 문자 폭 처리, 전체 버퍼와 장면 영역 격리 |
 | Rendering | `IFramePresenter` | 완성된 프레임 출력 계약 |
@@ -111,6 +122,7 @@ SS-Enhance.Tests/
 | Platform/Console | `ConsoleSession` | Windows 콘솔 초기화와 RAII 복원 |
 | Platform/Console | `ConsoleInput` | Windows 키 상태를 게임 입력으로 변환 |
 | Platform/Console | `ConsolePresenter` | ANSI 프레임을 Windows 콘솔에 출력 |
+| Platform/Windows | `WindowsAudio` | WinMM 기반 반복 BGM, 비동기 효과음과 음원 파일 경로 관리 |
 | Game/Domain | `Sword` | 검의 강화 단계와 등급 관리 |
 | Game/Domain | `Difficulty`, `DifficultyTuning` | 난이도 값과 비용·냉각·제한 시간·실패 페널티 시작 단계 튜닝 |
 | Game/Domain | `BossBattle`, `BattleRules` | 데이터 기반 공격 시퀀스와 공격·방어·반격 피해 및 선택 보상 규칙 |
@@ -165,6 +177,14 @@ SS-Enhance.Tests/
 - 게임 규칙에 Windows 가상 키 코드나 콘솔 핸들을 노출하지 않는다.
 - 콘솔 상태를 변경하면 정상 종료와 예외 상황 모두에서 RAII로 복구한다.
 
+### `Platform/Windows`
+
+- 콘솔 출력과 무관한 Windows 전용 서비스 구현을 격리한다.
+- `WindowsAudio`는 MCI 별칭으로 반복 BGM을, `PlaySound`로 효과음을 재생해 두 종류의 수명과 재생 경로를 분리한다.
+- 효과음은 한 채널을 사용하므로 새 효과음 요청은 현재 효과음을 교체하고 배경음악에는 영향을 주지 않는다.
+- 실행 파일 아래 `Assets/Audio/Bgm`과 `Assets/Audio/Sfx`에서 음원을 찾는다.
+- 음원 누락이나 장치 재생 실패는 게임 규칙과 장면 전환을 막지 않고 무음으로 복구한다.
+
 ### `Rendering`
 
 - 화면 버퍼와 게임 의미를 모르는 그리기 기본 기능만 제공한다.
@@ -190,6 +210,7 @@ SS-Enhance.Tests/
 - 한 장면의 입력 해석, 상태 갱신과 화면 구성을 담당한다.
 - 장면끼리 서로의 구체 클래스를 생성하거나 소유하지 않는다.
 - 공통 데이터와 서비스는 `SceneContext`로 필요한 최소 범위만 전달한다.
+- 장면은 `IAudio`, `MusicTrack`, `SoundEffect`만 사용하며 Windows API, 음원 경로와 파일 형식을 알지 못한다.
 - 현지화된 문자열과 검 이름은 화면 표현 책임으로 유지하고 Domain에 넣지 않는다.
 - `InputOverlay`는 모든 장면 뒤에 그려지며 입력 규칙을 변경하지 않고 발표용 피드백만 제공한다.
 
@@ -203,8 +224,11 @@ Main
           → Effects
           → Rendering abstraction
           → Input abstraction
+          → Audio abstraction
 Platform/Console
   → Rendering/Input abstraction의 구현
+Platform/Windows
+  → Audio abstraction의 구현
 ```
 
 - `Domain`은 가장 안쪽 계층이다.

@@ -8,6 +8,7 @@
 #include "Game/Scenes/GameHudRenderer.h"
 #include "Game/Scenes/LocalizedText.h"
 #include "Game/Scenes/SceneContext.h"
+#include "Platform/IAudio.h"
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
 
@@ -33,6 +34,7 @@ namespace ss
             swordLevel,
             context_.difficulty);
         context_.particles.Clear();
+        context_.audio.PlayMusic(MusicTrack::Forging);
     }
 
     SceneTransition ForgingScene::Update(float deltaSeconds)
@@ -41,6 +43,7 @@ namespace ss
 
         if (context_.input.WasPressed(InputKey::Escape))
         {
+            context_.audio.PlaySound(SoundEffect::MenuBack);
             return SceneTransition::To(SceneType::Forge);
         }
 
@@ -51,6 +54,16 @@ namespace ss
         const bool isStoking =
             context_.input.IsDown(InputKey::D) ||
             context_.input.IsDown(InputKey::Right);
+        if (context_.input.WasPressed(InputKey::A) ||
+            context_.input.WasPressed(InputKey::Left))
+        {
+            context_.audio.PlaySound(SoundEffect::Cool);
+        }
+        else if (context_.input.WasPressed(InputKey::D) ||
+                 context_.input.WasPressed(InputKey::Right))
+        {
+            context_.audio.PlaySound(SoundEffect::Stoke);
+        }
         session_->Update(
             deltaSeconds,
             context_.worldTimeSeconds,
@@ -67,6 +80,7 @@ namespace ss
             {
                 // 쿨다운 중 입력은 점수가 없으므로 실제 타격이 성립한 경우에만 효과를 생성한다.
                 context_.particles.SpawnImpact(*score);
+                context_.audio.PlaySound(SoundEffect::HammerStrike);
             }
         }
 
@@ -85,7 +99,8 @@ namespace ss
         context_.hudRenderer.DrawHeader(
             screen,
             context_.progress,
-            context_.language);
+            context_.language,
+            context_.difficulty);
 
         const Color frameColor = session_->GetImpactFlash() > 0.0f
             ? Color::BrightWhite

@@ -14,6 +14,7 @@
 namespace ss
 {
     class IFramePresenter;
+    class IAudio;
     class IInput;
     class IRandomProvider;
     class IScene;
@@ -26,7 +27,8 @@ namespace ss
         GameApplication(
             IInput& input,
             IFramePresenter& presenter,
-            IRandomProvider& randomProvider);
+            IRandomProvider& randomProvider,
+            IAudio& audio);
         ~GameApplication();
 
         GameApplication(const GameApplication&) = delete;
@@ -41,10 +43,9 @@ namespace ss
         void ChangeScene(SceneType sceneType);
         [[nodiscard]] std::unique_ptr<IScene> CreateScene(SceneType sceneType);
 
-        // 플랫폼 구현은 main이 소유하며 애플리케이션보다 오래 사는 비소유 참조다.
+        // 프레임 루프에서 직접 사용하는 플랫폼 서비스의 비소유 참조다.
         IInput& input_;
         IFramePresenter& presenter_;
-        IRandomProvider& randomProvider_;
 
         // 게임 전체에서 한 번 생성되어 장면들이 공유하는 상태와 서비스다.
         ScreenBuffer screen_;

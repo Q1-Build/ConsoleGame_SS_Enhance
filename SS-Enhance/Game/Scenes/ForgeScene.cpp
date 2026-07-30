@@ -7,6 +7,7 @@
 #include "Game/Scenes/GameHudRenderer.h"
 #include "Game/Scenes/LocalizedText.h"
 #include "Game/Scenes/SceneContext.h"
+#include "Platform/IAudio.h"
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
 
@@ -25,6 +26,7 @@ namespace ss
     void ForgeScene::OnEnter()
     {
         context_.notice.clear();
+        context_.audio.PlayMusic(MusicTrack::Forge);
     }
 
     SceneTransition ForgeScene::Update(float deltaSeconds)
@@ -37,6 +39,7 @@ namespace ss
         if (context_.input.WasPressed(InputKey::Escape) ||
             context_.input.WasPressed(InputKey::Q))
         {
+            context_.audio.PlaySound(SoundEffect::MenuBack);
             return SceneTransition::To(SceneType::Exit);
         }
 
@@ -47,6 +50,7 @@ namespace ss
         // 보스 도전은 강화 시작과 별도 입력으로 분리해 같은 프레임에 비용이 차감되지 않게 한다.
         if (context_.input.WasPressed(InputKey::B) && availableBoss.has_value())
         {
+            context_.audio.PlaySound(SoundEffect::MenuConfirm);
             return SceneTransition::To(SceneType::Battle);
         }
 
@@ -91,6 +95,7 @@ namespace ss
 
         context_.progress.RecordAttempt();
         context_.particles.Clear();
+        context_.audio.PlaySound(SoundEffect::ForgeBegin);
         return SceneTransition::To(SceneType::Forging);
     }
 
@@ -100,7 +105,8 @@ namespace ss
         context_.hudRenderer.DrawHeader(
             screen,
             context_.progress,
-            context_.language);
+            context_.language,
+            context_.difficulty);
 
         // 왼쪽은 조작과 확률, 오른쪽은 현재 검의 시각 정보로 영역을 구분한다.
         screen.Box(4, 5, 65, 29, Color::BrightBlack);

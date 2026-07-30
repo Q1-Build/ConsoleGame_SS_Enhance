@@ -22,6 +22,15 @@
     <Filter Include="Platform\Console">
       <UniqueIdentifier>{382C41D2-64D5-40AE-9B25-C30DC5D975AE}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform\Windows">
+      <UniqueIdentifier>{B99F7694-C30E-4A0D-8781-D78AD9176302}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Audio\Bgm">
+      <UniqueIdentifier>{7F4B02EA-43C3-43D2-845F-39D444781BC4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Audio\Sfx">
+      <UniqueIdentifier>{C917F75B-F6CF-4798-931C-F82D9EAE1555}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Rendering">
       <UniqueIdentifier>{C64FAD00-4DD3-4E29-B4EF-D1068AECCEE0}</UniqueIdentifier>
     </Filter>
@@ -102,6 +111,9 @@
     </ClCompile>
     <ClCompile Include="Platform\Console\ConsoleSession.cpp">
       <Filter>Platform\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Windows\WindowsAudio.cpp">
+      <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="Rendering\ScreenBuffer.cpp">
       <Filter>Rendering</Filter>
@@ -210,6 +222,12 @@
     <ClInclude Include="Platform\IInput.h">
       <Filter>Platform</Filter>
     </ClInclude>
+    <ClInclude Include="Platform\AudioCue.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\IAudio.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
     <ClInclude Include="Platform\InputKey.h">
       <Filter>Platform</Filter>
     </ClInclude>
@@ -221,6 +239,9 @@
     </ClInclude>
     <ClInclude Include="Platform\Console\ConsoleSession.h">
       <Filter>Platform\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Windows\WindowsAudio.h">
+      <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="Rendering\Cell.h">
       <Filter>Rendering</Filter>
@@ -240,5 +261,79 @@
     <ClInclude Include="Rendering\ScreenViewport.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Audio\Bgm\battle_ember.wav">
+      <Filter>Assets\Audio\Bgm</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Bgm\battle_memory.wav">
+      <Filter>Assets\Audio\Bgm</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Bgm\battle_storm.wav">
+      <Filter>Assets\Audio\Bgm</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Bgm\ending.wav">
+      <Filter>Assets\Audio\Bgm</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Bgm\forge.wav">
+      <Filter>Assets\Audio\Bgm</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Bgm\forging.wav">
+      <Filter>Assets\Audio\Bgm</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Bgm\title.wav">
+      <Filter>Assets\Audio\Bgm</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\battle_defeat.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\battle_victory.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\cool.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\forge_begin.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\forge_critical.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\forge_failure.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\forge_success.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\hammer_strike.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\guard.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\menu_back.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\menu_confirm.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\menu_move.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\player_attack.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\perfect_guard.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\player_hit.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\reward_confirm.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
+    <Content Include="Assets\Audio\Sfx\stoke.wav">
+      <Filter>Assets\Audio\Sfx</Filter>
+    </Content>
   </ItemGroup>
 </Project>

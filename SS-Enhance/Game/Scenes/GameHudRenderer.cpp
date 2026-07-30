@@ -1,6 +1,7 @@
 #include "Game/Scenes/GameHudRenderer.h"
 
 #include "Core/GameConstants.h"
+#include "Game/Domain/Difficulty.h"
 #include "Game/Domain/PlayerProgress.h"
 #include "Game/Scenes/LocalizedText.h"
 #include "Rendering/IScreen.h"
@@ -11,6 +12,23 @@
 
 namespace ss
 {
+    namespace
+    {
+        Color GetDifficultyColor(Difficulty difficulty) noexcept
+        {
+            switch (difficulty)
+            {
+            case Difficulty::Easy:
+                return Color::BrightGreen;
+            case Difficulty::Normal:
+                return Color::BrightCyan;
+            case Difficulty::Hard:
+                return Color::BrightRed;
+            }
+            return Color::BrightWhite;
+        }
+    }
+
     void GameHudRenderer::DrawBackdrop(IScreen& screen, float worldTimeSeconds) const
     {
         screen.Clear();
@@ -54,9 +72,24 @@ namespace ss
     void GameHudRenderer::DrawHeader(
         IScreen& screen,
         const PlayerProgress& progress,
-        Language language) const
+        Language language,
+        Difficulty difficulty) const
     {
-        screen.Text(4, 2, L"S S _ E N H A N C E", Color::BrightRed);
+        constexpr std::wstring_view title = L"S S _ E N H A N C E";
+        screen.Text(4, 2, title, Color::BrightRed);
+
+        // 로고 옆의 고정 배지로 플레이 중인 규칙 난이도를 항상 확인할 수 있게 한다.
+        std::wstringstream difficultyBadge;
+        difficultyBadge
+            << LocalizedText::Select(language, L"난이도 ", L"DIFFICULTY ")
+            << L"[ "
+            << LocalizedText::GetDifficultyName(language, difficulty)
+            << L" ]";
+        screen.Text(
+            4 + screen.MeasureText(title) + 4,
+            2,
+            difficultyBadge.str(),
+            GetDifficultyColor(difficulty));
 
         std::wstringstream status;
         status << LocalizedText::Select(language, L"골드 ", L"GOLD ")
