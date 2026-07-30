@@ -1,6 +1,6 @@
-#define NOMINMAX
 #include "Platform/Console/ConsolePresenter.h"
 
+#define NOMINMAX
 #include <Windows.h>
 
 namespace ss

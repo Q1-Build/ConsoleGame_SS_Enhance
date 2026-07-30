@@ -99,7 +99,7 @@ namespace ss
         std::wstring_view text,
         Color color)
     {
-        // 전체 발표 프레임이 아니라 기존 게임 영역을 기준으로 중앙을 계산한다.
+        // 전체 프레임이 아니라 기존 게임 영역을 기준으로 중앙을 계산한다.
         CenterTextIn(0, width_ - 1, y, text, color);
     }
 

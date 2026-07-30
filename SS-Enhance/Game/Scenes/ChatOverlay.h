@@ -11,7 +11,7 @@ namespace ss
     class IScreen;
 
     /// 입력한 메시지를 모든 장면 위에 유지하고 우측 하단 채팅 박스로 표시한다.
-    class PresentationChatOverlay final
+    class ChatOverlay final
     {
     public:
         /// 채팅 열기·편집·등록 입력을 처리하고 이번 프레임의 게임 입력 차단 여부를 반환한다.

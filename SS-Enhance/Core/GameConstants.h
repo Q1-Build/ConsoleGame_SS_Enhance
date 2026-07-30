@@ -6,7 +6,7 @@ namespace ss
     inline constexpr int kGameViewportWidth = 104;
     inline constexpr int kGameViewportHeight = 34;
 
-    // 오른쪽 조작 안내와 아래 가상 키보드를 포함한 전체 발표용 프레임 크기다.
+    // 오른쪽 조작 안내와 아래 공통 보조 UI를 포함한 전체 프레임 크기다.
     inline constexpr int kScreenWidth = 174;
     inline constexpr int kScreenHeight = 48;
 

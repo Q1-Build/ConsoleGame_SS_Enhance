@@ -5,7 +5,7 @@
 #include "Game/Domain/ForgeSession.h"
 #include "Game/Domain/PlayerProgress.h"
 #include "Game/Domain/ProgressionRules.h"
-#include "Game/Scenes/PresentationChatOverlay.h"
+#include "Game/Scenes/ChatOverlay.h"
 #include "Platform/IInput.h"
 #include "Rendering/ScreenBuffer.h"
 
@@ -265,9 +265,9 @@ namespace
             "resonant forge heat range rejected a boundary");
     }
 
-    void TestPresentationChatScrollsVisibleLines()
+    void TestChatOverlayScrollsVisibleLines()
     {
-        ss::PresentationChatOverlay chat;
+        ss::ChatOverlay chat;
         ss::ScreenBuffer screen;
         StubInput input;
 
@@ -483,8 +483,8 @@ int main()
         passedCount,
         failedCount);
     RunTest(
-        "PresentationChatScrollsVisibleLines",
-        TestPresentationChatScrollsVisibleLines,
+        "ChatOverlayScrollsVisibleLines",
+        TestChatOverlayScrollsVisibleLines,
         passedCount,
         failedCount);
     RunTest(

@@ -39,6 +39,9 @@ namespace ss
         /// 현재 항목의 다음 값을 선택하며 끝에서는 첫 값으로 순환한다.
         void SelectNextValue();
 
+        /// 공유 설정의 정수 백분율을 오디오 계약의 0~1 범위로 변환해 즉시 적용한다.
+        void ApplyMasterVolume();
+
         // 공유 설정은 SceneContext에 저장하고 현재 메뉴 위치만 장면이 소유한다.
         SceneContext& context_;
         SettingItem selectedItem_ = SettingItem::Language;

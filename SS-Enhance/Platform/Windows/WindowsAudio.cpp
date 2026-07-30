@@ -1,5 +1,12 @@
 #include "Platform/Windows/WindowsAudio.h"
 
+#include <algorithm>
+#include <array>
+#include <cassert>
+#include <cmath>
+#include <string>
+#include <system_error>
+
 #define NOMINMAX
 #include <Windows.h>
 #include <mmsystem.h>
@@ -7,13 +14,6 @@
 #ifdef PlaySound
 #undef PlaySound
 #endif
-
-#include <algorithm>
-#include <array>
-#include <cassert>
-#include <cmath>
-#include <system_error>
-#include <string>
 
 #pragma comment(lib, "winmm.lib")
 
@@ -33,7 +33,7 @@ namespace ss
     WindowsAudio::~WindowsAudio()
     {
         StopMusic();
-        // 비동기 효과음 콜백이 객체 수명 뒤까지 남지 않도록 프로세스 종료 전에 정지한다.
+        // 비동기 효과음 재생이 객체 수명 뒤까지 남지 않도록 프로세스 종료 전에 정지한다.
         StopSounds();
     }
 
@@ -159,6 +159,7 @@ namespace ss
 
     std::filesystem::path WindowsAudio::GetExecutableDirectory()
     {
+        // 작업 디렉터리가 달라도 배포된 Assets를 찾도록 실행 파일 위치를 기준으로 삼는다.
         std::array<wchar_t, MAX_PATH> pathBuffer{};
         const DWORD length = GetModuleFileNameW(
             nullptr,
@@ -177,6 +178,7 @@ namespace ss
 
     std::filesystem::path WindowsAudio::GetMusicPath(MusicTrack track) const
     {
+        // 논리 큐와 배포 파일명의 대응은 플랫폼 경계 한곳에서만 관리한다.
         switch (track)
         {
         case MusicTrack::Title:

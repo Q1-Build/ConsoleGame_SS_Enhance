@@ -13,7 +13,7 @@ namespace ss
     class IInput;
     class IScreen;
 
-    /// 발표용 조작 안내와 현재 입력을 보여 주는 가상 키보드 오버레이다.
+    /// 공통 조작 안내와 현재 입력을 보여 주는 가상 키보드 오버레이다.
     /// 게임 장면의 좌표와 상태는 변경하지 않고 입력 표현만 담당한다.
     class InputOverlay final
     {

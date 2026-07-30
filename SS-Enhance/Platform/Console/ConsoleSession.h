@@ -1,11 +1,13 @@
 #pragma once
 
+#include <string>
+
 #define NOMINMAX
 #include <Windows.h>
 
 namespace ss
 {
-    /// 프로그램 실행 동안 Windows 콘솔 모드를 설정하고 종료 시 원래 상태로 복원한다.
+    /// 프로그램 실행 동안 Windows 콘솔 모드와 제목을 설정하고 종료 시 원래 상태로 복원한다.
     class ConsoleSession final
     {
     public:
@@ -20,12 +22,14 @@ namespace ss
     private:
         static void WriteControlSequence(const wchar_t* text) noexcept;
 
-        // 복원해야 하는 콘솔 핸들과 원래 입출력 모드다.
+        // 복원해야 하는 콘솔 핸들, 원래 입출력 모드와 창 제목이다.
         HANDLE outputHandle_ = INVALID_HANDLE_VALUE;
         HANDLE inputHandle_ = INVALID_HANDLE_VALUE;
         DWORD oldOutputMode_ = 0;
         DWORD oldInputMode_ = 0;
+        std::wstring oldTitle_;
         bool hasOutputMode_ = false;
         bool hasInputMode_ = false;
+        bool hasOldTitle_ = false;
     };
 }

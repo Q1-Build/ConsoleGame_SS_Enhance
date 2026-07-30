@@ -65,10 +65,10 @@ namespace ss
             // 디버거 중단이나 창 이동 뒤의 큰 시간 값이 게임 상태를 건너뛰지 않게 제한한다.
             deltaSeconds = std::min(deltaSeconds, 0.05f);
 
-            // 발표 설명을 입력하는 동안 같은 키가 게임 조작으로 전달되지 않게 장면 갱신을 멈춘다.
+            // 채팅을 입력하는 동안 같은 키가 게임 조작으로 전달되지 않게 장면 갱신을 멈춘다.
             input_.Update();
             const bool isChatInputConsumed =
-                presentationChatOverlay_.Update(input_, screen_);
+                chatOverlay_.Update(input_, screen_);
             inputOverlay_.Update(deltaSeconds, input_);
             if (!isChatInputConsumed)
             {
@@ -87,12 +87,12 @@ namespace ss
                 break;
             }
 
-            // 장면은 기존 게임 뷰포트에, 발표용 입력 UI는 전체 프레임에 서로 겹치지 않게 그린다.
+            // 장면은 기존 게임 뷰포트에, 공통 보조 UI는 전체 프레임에 서로 겹치지 않게 그린다.
             screen_.Clear();
             currentScene_->Render(gameScreen_);
             particles_.Draw(gameScreen_);
             inputOverlay_.Draw(screen_, sceneContext_.language);
-            presentationChatOverlay_.Draw(screen_, sceneContext_.language);
+            chatOverlay_.Draw(screen_, sceneContext_.language);
 
             // 여러 번 출력하면 깜빡임이 생기므로 완성된 프레임을 한 번에 전달한다.
             const std::wstring frame = screen_.BuildAnsiFrame();

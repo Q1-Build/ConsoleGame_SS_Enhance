@@ -88,8 +88,8 @@ namespace ss
             31,
             LocalizedText::Select(
                 context_.language,
-                L"언어와 난이도는 다음 화면에서 설정합니다.",
-                L"LANGUAGE AND DIFFICULTY ARE SET ON THE NEXT SCREEN."),
+                L"언어, 볼륨과 난이도는 다음 화면에서 설정합니다.",
+                L"LANGUAGE, VOLUME, AND DIFFICULTY ARE SET NEXT."),
             Color::BrightCyan);
         screen.CenterText(
             32,

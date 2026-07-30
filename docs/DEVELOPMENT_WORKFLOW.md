@@ -17,7 +17,7 @@
 - 난수, 입력, 시간 등 외부 요소는 작은 계약으로 주입한다.
 - 구체 장면 생성은 `GameApplication::CreateScene` 한 곳에서만 수행한다.
 - 공통 시각 요소만 `GameHudRenderer`나 별도 렌더러로 추출한다.
-- Windows 전용 기능은 `Platform/Console`에 구현하고 게임 계층에는 계약만 노출한다.
+- Windows 전용 기능은 역할에 따라 `Platform/Console` 또는 `Platform/Windows`에 구현하고 게임 계층에는 계약만 노출한다.
 - 새 클래스, public API, 멤버 묶음과 핵심 로직에 코딩 컨벤션에 맞는 한글 주석을 작성한다.
 - 새 `.cpp`와 `.h`를 `SS-Enhance.vcxproj`와 `SS-Enhance.vcxproj.filters`에 등록한다.
 - 구조나 규칙이 바뀌면 관련 문서를 코드와 같은 변경에서 갱신한다.
@@ -26,8 +26,8 @@
 
 1. 변경된 호출부와 계층 의존성을 정적 검색으로 확인한다.
 2. Debug x64 빌드를 실행한다.
-3. Domain 규칙 변경 시 `SS-Enhance.Tests`를 빌드하고 실행한다.
-4. 새 컴파일 경고가 없는지 확인한다.
+3. 관련 규칙이나 UI 경계가 변경되면 `SS-Enhance.Tests`를 빌드하고 실행한다.
+4. 프로젝트 기본값인 `/W4`와 경고 오류 처리 기준으로 새 컴파일 경고가 없는지 확인한다.
 5. `git diff --check`로 공백 오류를 확인한다.
 6. 변경 범위에 맞는 수동 플레이 또는 자동 테스트를 수행한다.
 7. 한글 UI 변경 시 전각 문자 정렬, 박스 경계와 줄바꿈을 실제 콘솔에서 확인한다.
@@ -51,8 +51,8 @@
 ## 완료 조건
 
 - Debug x64 빌드 성공
-- 관련 Domain 자동 테스트 통과
-- 새 경고를 추가하지 않음
+- 관련 자동 테스트 통과
+- Debug와 Release가 `/W4` 및 경고 오류 처리 기준에서 성공
 - `git diff --check` 통과
 - `Main.cpp`에 게임 로직을 추가하지 않음
 - 각 클래스의 책임을 한 문장으로 설명 가능
@@ -84,3 +84,16 @@
 6. 구현과 함께 자동 테스트 범위를 넓힌다.
 
 새 기능을 `Main.cpp`에 직접 추가하거나 Domain에서 콘솔 API를 호출하지 않는다.
+
+## Windows x64 배포 준비
+
+1. 소스 코드와 외부 음원의 배포·재배포 권한을 확인한다.
+2. 작업 트리의 의도한 변경이 모두 포함됐는지 확인한다.
+3. Debug x64 솔루션을 다시 빌드하고 `SS-Enhance.Tests.exe`를 실행한다.
+4. Release x64 제품 프로젝트를 다시 빌드한다.
+5. `SS-Enhance/x64/Release`에 `SS-Enhance.exe`와 `Assets/Audio`가 함께 생성됐는지 확인한다.
+6. 실행 파일과 `Assets`만 `dist/SS-Enhance-win-x64`에 복사하고 PDB와 중간 산출물은 제외한다.
+7. 배포 폴더를 ZIP으로 압축한 뒤 파일 목록, 음원 개수와 SHA-256을 기록한다.
+
+배포 패키지의 실행 파일은 상대 경로 `Assets/Audio/Bgm`, `Assets/Audio/Sfx`를 사용하므로
+`SS-Enhance.exe`와 `Assets` 디렉터리의 위치 관계를 변경하지 않는다.

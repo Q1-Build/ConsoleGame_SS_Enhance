@@ -1,11 +1,11 @@
-#define NOMINMAX
 #include "Platform/Console/ConsoleInput.h"
-
-#include <Windows.h>
 
 #include <algorithm>
 #include <array>
 #include <cassert>
+
+#define NOMINMAX
+#include <Windows.h>
 
 namespace ss
 {

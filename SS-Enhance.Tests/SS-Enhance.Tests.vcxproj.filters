@@ -7,12 +7,12 @@
     <Filter Include="Shared Domain">
       <UniqueIdentifier>{1906E27B-DB9D-4447-BED4-B4E970CC4928}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shared Presentation">
+    <Filter Include="Shared UI">
       <UniqueIdentifier>{4BCB1279-7A86-47D9-910A-43A60AE98C7D}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BattleDomainTests.cpp">
+    <ClCompile Include="GameTests.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="..\SS-Enhance\Game\Domain\BattleRules.cpp">
@@ -37,13 +37,13 @@
       <Filter>Shared Domain</Filter>
     </ClCompile>
     <ClCompile Include="..\SS-Enhance\Game\Scenes\LocalizedText.cpp">
-      <Filter>Shared Presentation</Filter>
+      <Filter>Shared UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\SS-Enhance\Game\Scenes\PresentationChatOverlay.cpp">
-      <Filter>Shared Presentation</Filter>
+    <ClCompile Include="..\SS-Enhance\Game\Scenes\ChatOverlay.cpp">
+      <Filter>Shared UI</Filter>
     </ClCompile>
     <ClCompile Include="..\SS-Enhance\Rendering\ScreenBuffer.cpp">
-      <Filter>Shared Presentation</Filter>
+      <Filter>Shared UI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

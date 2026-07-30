@@ -43,7 +43,8 @@
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup>
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -56,7 +57,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BattleDomainTests.cpp" />
+    <ClCompile Include="GameTests.cpp" />
     <ClCompile Include="..\SS-Enhance\Game\Domain\BattleRules.cpp" />
     <ClCompile Include="..\SS-Enhance\Game\Domain\BattleSession.cpp" />
     <ClCompile Include="..\SS-Enhance\Game\Domain\BattleSettlement.cpp" />
@@ -65,7 +66,7 @@
     <ClCompile Include="..\SS-Enhance\Game\Domain\ProgressionRules.cpp" />
     <ClCompile Include="..\SS-Enhance\Game\Domain\Sword.cpp" />
     <ClCompile Include="..\SS-Enhance\Game\Scenes\LocalizedText.cpp" />
-    <ClCompile Include="..\SS-Enhance\Game\Scenes\PresentationChatOverlay.cpp" />
+    <ClCompile Include="..\SS-Enhance\Game\Scenes\ChatOverlay.cpp" />
     <ClCompile Include="..\SS-Enhance\Rendering\ScreenBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>

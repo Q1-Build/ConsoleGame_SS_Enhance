@@ -1,5 +1,6 @@
 #include "Platform/Console/ConsoleSession.h"
 
+#include <array>
 #include <cwchar>
 
 namespace ss
@@ -10,10 +11,6 @@ namespace ss
     {
         hasOutputMode_ = GetConsoleMode(outputHandle_, &oldOutputMode_) != 0;
         hasInputMode_ = GetConsoleMode(inputHandle_, &oldInputMode_) != 0;
-
-        // 유니코드 검 문자와 ANSI 색상 시퀀스를 같은 콘솔에서 사용할 수 있게 설정한다.
-        SetConsoleOutputCP(CP_UTF8);
-        SetConsoleCP(CP_UTF8);
 
         if (hasOutputMode_)
         {
@@ -37,6 +34,18 @@ namespace ss
             }
         }
 
+        // Wide API만 사용하므로 코드 페이지는 바꾸지 않고, 변경이 필요한 창 제목만 복원용으로 보관한다.
+        constexpr std::size_t kMaximumConsoleTitleLength = 32768;
+        std::array<wchar_t, kMaximumConsoleTitleLength> titleBuffer{};
+        SetLastError(ERROR_SUCCESS);
+        const DWORD titleLength = GetConsoleTitleW(
+            titleBuffer.data(),
+            static_cast<DWORD>(titleBuffer.size()));
+        hasOldTitle_ = titleLength > 0 || GetLastError() == ERROR_SUCCESS;
+        if (hasOldTitle_)
+        {
+            oldTitle_.assign(titleBuffer.data(), titleLength);
+        }
         SetConsoleTitleW(L"SS_Enhance");
 
         // 대체 화면 버퍼를 사용해 종료 후 사용자의 기존 콘솔 내용을 그대로 복원한다.
@@ -55,6 +64,10 @@ namespace ss
         if (hasInputMode_)
         {
             SetConsoleMode(inputHandle_, oldInputMode_);
+        }
+        if (hasOldTitle_)
+        {
+            SetConsoleTitleW(oldTitle_.c_str());
         }
     }
 

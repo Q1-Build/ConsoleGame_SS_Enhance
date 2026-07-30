@@ -5,7 +5,7 @@
 #include "Game/Effects/ParticleSystem.h"
 #include "Game/Scenes/GameHudRenderer.h"
 #include "Game/Scenes/InputOverlay.h"
-#include "Game/Scenes/PresentationChatOverlay.h"
+#include "Game/Scenes/ChatOverlay.h"
 #include "Game/Scenes/SceneContext.h"
 #include "Rendering/ScreenBuffer.h"
 #include "Rendering/ScreenViewport.h"
@@ -56,7 +56,7 @@ namespace ss
         ParticleSystem particles_;
         GameHudRenderer hudRenderer_;
         InputOverlay inputOverlay_;
-        PresentationChatOverlay presentationChatOverlay_;
+        ChatOverlay chatOverlay_;
         SceneContext sceneContext_;
 
         // 현재 장면은 애플리케이션이 단독 소유하며 전환 시 즉시 교체한다.

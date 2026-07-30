@@ -16,13 +16,18 @@ namespace ss
         assert(swordLevel >= 0);
         assert(boss.maxHealth > 0);
         assert(!boss.attackSequence.empty());
-        for (const BossAttackStep& step : boss.attackSequence)
-        {
-            assert(step.delaySeconds > 0.0f);
-            assert(step.warningSeconds > 0.0f);
-            assert(step.warningSeconds <= step.delaySeconds);
-            assert(step.damage >= 0);
-        }
+        const bool hasValidAttackSequence = std::all_of(
+            boss.attackSequence.begin(),
+            boss.attackSequence.end(),
+            [](const BossAttackStep& step)
+            {
+                return step.delaySeconds > 0.0f &&
+                    step.warningSeconds > 0.0f &&
+                    step.warningSeconds <= step.delaySeconds &&
+                    step.damage >= 0;
+            });
+        assert(hasValidAttackSequence);
+        static_cast<void>(hasValidAttackSequence);
         bossAttackTimeLeft_ = GetCurrentStep().delaySeconds;
     }
 

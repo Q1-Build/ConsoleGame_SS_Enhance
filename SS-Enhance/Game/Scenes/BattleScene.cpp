@@ -329,6 +329,7 @@ namespace ss
         // 패배는 선택 단계가 없으므로 즉시 한 번만 강화 단계 하락을 확정한다.
         const bool wasApplied = settlement_.ApplyDefeat(context_.progress);
         assert(wasApplied);
+        static_cast<void>(wasApplied);
         context_.audio.PlaySound(SoundEffect::BattleDefeat);
         phase_ = BattlePhase::Completed;
     }
@@ -339,6 +340,7 @@ namespace ss
 
         const bool wasApplied = settlement_.ApplyDefeat(context_.progress);
         assert(wasApplied);
+        static_cast<void>(wasApplied);
         context_.audio.PlaySound(SoundEffect::BattleDefeat);
         wasRetreat_ = true;
         phase_ = BattlePhase::Completed;
@@ -354,6 +356,7 @@ namespace ss
             context_.progress,
             GetSelectedReward());
         assert(wasApplied);
+        static_cast<void>(wasApplied);
     }
 
     BattleReward BattleScene::GetSelectedReward() const noexcept

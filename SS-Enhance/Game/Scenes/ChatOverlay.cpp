@@ -1,4 +1,4 @@
-#include "Game/Scenes/PresentationChatOverlay.h"
+#include "Game/Scenes/ChatOverlay.h"
 
 #include "Core/GameConstants.h"
 #include "Game/Scenes/LocalizedText.h"
@@ -27,17 +27,13 @@ namespace ss
         static_assert(kContentWidth > 0);
     }
 
-    bool PresentationChatOverlay::Update(
+    bool ChatOverlay::Update(
         const IInput& input,
         const IScreen& screen)
     {
         if (!isEditing_)
         {
-            const std::wstring_view textInput = input.GetTextInput();
-            const bool typedChatKey =
-                textInput.find(L't') != std::wstring_view::npos ||
-                textInput.find(L'T') != std::wstring_view::npos;
-            if (!input.WasPressed(InputKey::T) && !typedChatKey)
+            if (!input.WasPressed(InputKey::T))
             {
                 return false;
             }
@@ -74,7 +70,7 @@ namespace ss
         return true;
     }
 
-    void PresentationChatOverlay::Draw(
+    void ChatOverlay::Draw(
         IScreen& screen,
         Language language) const
     {
@@ -166,7 +162,7 @@ namespace ss
             Color::BrightBlack);
     }
 
-    void PresentationChatOverlay::SubmitCurrentInput(const IScreen& screen)
+    void ChatOverlay::SubmitCurrentInput(const IScreen& screen)
     {
         const std::size_t firstCharacter =
             currentInput_.find_first_not_of(L" \t");
@@ -180,6 +176,7 @@ namespace ss
             firstCharacter,
             lastCharacter - firstCharacter + 1);
 
+        // 전각 문자도 실제 셀 폭으로 측정해 오른쪽 테두리를 침범하기 전에 다음 줄로 넘긴다.
         std::wstring line;
         for (const wchar_t glyph : message)
         {
@@ -203,9 +200,10 @@ namespace ss
         }
     }
 
-    std::wstring PresentationChatOverlay::GetVisibleInput(
+    std::wstring ChatOverlay::GetVisibleInput(
         const IScreen& screen) const
     {
+        // 입력문이 한 줄보다 길면 커서와 가장 가까운 마지막 부분을 남겨 편집 위치를 보여 준다.
         std::wstring visibleInput;
         for (auto iterator = currentInput_.rbegin();
              iterator != currentInput_.rend();

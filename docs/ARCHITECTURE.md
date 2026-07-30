@@ -81,8 +81,8 @@ SS-Enhance/
       ├─ GameHudRenderer.cpp
       ├─ InputOverlay.h
       ├─ InputOverlay.cpp
-      ├─ PresentationChatOverlay.h
-      ├─ PresentationChatOverlay.cpp
+      ├─ ChatOverlay.h
+      ├─ ChatOverlay.cpp
       ├─ LocalizedText.h
       ├─ LocalizedText.cpp
       ├─ SettingsScene.h
@@ -103,7 +103,7 @@ SS-Enhance/
       └─ ResultScene.cpp
 
 SS-Enhance.Tests/
-├─ BattleDomainTests.cpp
+├─ GameTests.cpp
 └─ SS-Enhance.Tests.vcxproj
 ```
 
@@ -121,7 +121,7 @@ SS-Enhance.Tests/
 | Rendering | `IScreen`, `ScreenBuffer`, `ScreenViewport` | 그리기 계약, 전각 문자 폭 처리, 전체 버퍼와 장면 영역 격리 |
 | Rendering | `IFramePresenter` | 완성된 프레임 출력 계약 |
 | Platform | `InputKey`, `IInput` | 운영체제와 독립적인 게임 키·완성 문자 입력 값과 계약 |
-| Platform/Console | `ConsoleSession` | Windows 콘솔 초기화와 RAII 복원 |
+| Platform/Console | `ConsoleSession` | Windows 콘솔 모드·창 제목 초기화와 RAII 복원 |
 | Platform/Console | `ConsoleInput` | Windows 키 상태와 IME 완성 문자를 게임 입력으로 변환 |
 | Platform/Console | `ConsolePresenter` | ANSI 프레임을 Windows 콘솔에 출력 |
 | Platform/Windows | `WindowsAudio` | WinMM 기반 반복 BGM, 비동기 효과음과 음원 파일 경로 관리 |
@@ -140,7 +140,7 @@ SS-Enhance.Tests/
 | Game/Scenes | `SceneContext` | 공유 진행·설정, 장면 간 임시 결과와 서비스의 비소유 참조 |
 | Game/Scenes | `GameHudRenderer` | 공통 배경, HUD와 검 형상 렌더링 |
 | Game/Scenes | `InputOverlay` | 공통 조작 안내와 입력 강조 가상 키보드 |
-| Game/Scenes | `PresentationChatOverlay` | 전역 채팅 메시지 편집, 표시 줄 보관과 우측 하단 채팅 렌더링 |
+| Game/Scenes | `ChatOverlay` | 전역 채팅 메시지 편집, 표시 줄 보관과 우측 하단 채팅 렌더링 |
 | Game/Scenes | `LocalizedText` | 현재 언어에 맞는 UI 문구와 검 이름 선택 |
 | Game/Scenes | `TitleScene` | 한국어 기본 제목 연출과 설정 화면 진입 |
 | Game/Scenes | `SettingsScene` | 표시 언어, 마스터 볼륨과 게임 난이도 선택 |
@@ -151,7 +151,7 @@ SS-Enhance.Tests/
 | Game/Scenes | `ForgingScene` | 실시간 입력 해석, 제련 진행과 판정 요청 |
 | Game/Scenes | `ResultScene` | 강화 결과와 단계 변화 연출 |
 | Composition Root | `main` | 플랫폼 구현 생성, 의존성 주입과 실행 |
-| Tests | `BattleDomainTests` | 방어, 공격 시퀀스 시간, 진행 경계, 실패 기준과 결과 중복 방지 검증 |
+| Tests | `GameTests` | 전투·강화·진행 규칙과 채팅 줄 보관·렌더링 경계 검증 |
 
 ## 계층별 책임
 
@@ -215,8 +215,8 @@ SS-Enhance.Tests/
 - 공통 데이터와 서비스는 `SceneContext`로 필요한 최소 범위만 전달한다.
 - 장면은 `IAudio`, `MusicTrack`, `SoundEffect`만 사용하며 Windows API, 음원 경로와 파일 형식을 알지 못한다.
 - 현지화된 문자열과 검 이름은 화면 표현 책임으로 유지하고 Domain에 넣지 않는다.
-- `InputOverlay`는 모든 장면 뒤에 그려지며 입력 규칙을 변경하지 않고 발표용 피드백만 제공한다.
-- `PresentationChatOverlay`는 모든 장면 위에 유지되며 편집 중 게임 입력과 시간 갱신을 차단한다.
+- `InputOverlay`는 모든 장면 뒤에 그려지며 입력 규칙을 변경하지 않고 공통 조작 피드백만 제공한다.
+- `ChatOverlay`는 모든 장면 위에 유지되며 편집 중 게임 입력과 시간 갱신을 차단한다.
 
 ## 의존성 방향
 

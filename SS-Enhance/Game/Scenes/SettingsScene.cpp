@@ -17,7 +17,9 @@ namespace ss
     namespace
     {
         constexpr int kVolumeStepPercent = 10;
-        constexpr int kVolumeSegmentCount = 10;
+        constexpr int kMaximumVolumePercent = 100;
+        constexpr int kVolumeSegmentCount =
+            kMaximumVolumePercent / kVolumeStepPercent;
     }
 
     SettingsScene::SettingsScene(SceneContext& context)
@@ -28,8 +30,7 @@ namespace ss
     void SettingsScene::OnEnter()
     {
         selectedItem_ = SettingItem::Language;
-        context_.audio.SetMasterVolume(
-            static_cast<float>(context_.masterVolumePercent) / 100.0f);
+        ApplyMasterVolume();
         context_.audio.PlayMusic(MusicTrack::Title);
     }
 
@@ -263,8 +264,7 @@ namespace ss
             context_.masterVolumePercent = std::max(
                 0,
                 context_.masterVolumePercent - kVolumeStepPercent);
-            context_.audio.SetMasterVolume(
-                static_cast<float>(context_.masterVolumePercent) / 100.0f);
+            ApplyMasterVolume();
             return;
         }
 
@@ -296,10 +296,9 @@ namespace ss
         if (selectedItem_ == SettingItem::MasterVolume)
         {
             context_.masterVolumePercent = std::min(
-                100,
+                kMaximumVolumePercent,
                 context_.masterVolumePercent + kVolumeStepPercent);
-            context_.audio.SetMasterVolume(
-                static_cast<float>(context_.masterVolumePercent) / 100.0f);
+            ApplyMasterVolume();
             return;
         }
 
@@ -315,5 +314,12 @@ namespace ss
             context_.difficulty = Difficulty::Easy;
             break;
         }
+    }
+
+    void SettingsScene::ApplyMasterVolume()
+    {
+        context_.audio.SetMasterVolume(
+            static_cast<float>(context_.masterVolumePercent) /
+            static_cast<float>(kMaximumVolumePercent));
     }
 }

@@ -14,6 +14,7 @@ namespace ss
         int shakeX,
         float worldTimeSeconds) const
     {
+        // 프레임 시간 초과가 연출 좌표와 색상 범위를 뒤집지 않도록 진행률을 먼저 보정한다.
         const float safeIntro = std::clamp(introductionProgress, 0.0f, 1.0f);
         const float safeDefeat = std::clamp(defeatProgress, 0.0f, 1.0f);
         Color primaryColor = GetPrimaryColor(bossType);

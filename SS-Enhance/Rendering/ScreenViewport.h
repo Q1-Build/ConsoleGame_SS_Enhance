@@ -5,7 +5,7 @@
 namespace ss
 {
     /// 전체 화면의 지정된 사각 영역을 독립된 화면처럼 제공한다.
-    /// 장면이 발표용 보조 UI의 크기와 위치를 알지 못하도록 좌표와 중앙 정렬을 격리한다.
+    /// 장면이 공통 보조 UI의 크기와 위치를 알지 못하도록 좌표와 중앙 정렬을 격리한다.
     class ScreenViewport final : public IScreen
     {
     public:
