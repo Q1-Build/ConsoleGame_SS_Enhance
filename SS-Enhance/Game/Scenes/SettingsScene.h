@@ -6,7 +6,7 @@ namespace ss
 {
     struct SceneContext;
 
-    /// 본게임 진입 전에 표시 언어와 게임 난이도를 선택하는 장면이다.
+    /// 본게임 진입 전에 표시 언어, 마스터 볼륨과 게임 난이도를 선택하는 장면이다.
     class SettingsScene final : public IScene
     {
     public:
@@ -23,8 +23,15 @@ namespace ss
         enum class SettingItem
         {
             Language,
+            MasterVolume,
             Difficulty
         };
+
+        /// 현재 항목의 위 항목을 선택하며 첫 항목에서는 마지막 항목으로 순환한다.
+        void SelectPreviousItem();
+
+        /// 현재 항목의 아래 항목을 선택하며 마지막 항목에서는 첫 항목으로 순환한다.
+        void SelectNextItem();
 
         /// 현재 항목의 이전 값을 선택하며 끝에서는 마지막 값으로 순환한다.
         void SelectPreviousValue();

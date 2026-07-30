@@ -21,9 +21,20 @@ namespace ss
         }
         if (hasInputMode_)
         {
-            const DWORD inputMode = oldInputMode_ &
-                ~(ENABLE_QUICK_EDIT_MODE | ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
-            SetConsoleMode(inputHandle_, inputMode);
+            // Rider 실행 창처럼 가상 터미널 입력이 활성화된 호스트에서는 마우스 동작이
+            // "[M..." 형태의 문자 시퀀스로 변환될 수 있으므로 레코드 기반 입력만 사용한다.
+            const DWORD inputMode =
+                (oldInputMode_ | ENABLE_EXTENDED_FLAGS) &
+                ~(ENABLE_QUICK_EDIT_MODE |
+                  ENABLE_LINE_INPUT |
+                  ENABLE_ECHO_INPUT |
+                  ENABLE_VIRTUAL_TERMINAL_INPUT);
+            if (SetConsoleMode(inputHandle_, inputMode) != 0)
+            {
+                // 실행 호스트가 게임 시작 전에 쌓아 둔 마우스/ANSI 입력이
+                // 첫 채팅 내용으로 소비되지 않도록 초기 입력만 폐기한다.
+                FlushConsoleInputBuffer(inputHandle_);
+            }
         }
 
         SetConsoleTitleW(L"SS_Enhance");

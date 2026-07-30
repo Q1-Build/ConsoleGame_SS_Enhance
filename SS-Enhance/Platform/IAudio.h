@@ -21,5 +21,8 @@ namespace ss
 
         /// 현재 재생 중인 효과음만 정지하며 배경음악은 유지한다.
         virtual void StopSounds() = 0;
+
+        /// 0~1 범위로 보정한 마스터 볼륨을 배경음악과 효과음에 즉시 적용한다.
+        virtual void SetMasterVolume(float volume) = 0;
     };
 }

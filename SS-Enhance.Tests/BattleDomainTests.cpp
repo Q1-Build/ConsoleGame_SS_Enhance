@@ -2,9 +2,14 @@
 #include "Game/Domain/BattleSession.h"
 #include "Game/Domain/BattleSettlement.h"
 #include "Game/Domain/ForgeRules.h"
+#include "Game/Domain/ForgeSession.h"
 #include "Game/Domain/PlayerProgress.h"
 #include "Game/Domain/ProgressionRules.h"
+#include "Game/Scenes/PresentationChatOverlay.h"
+#include "Platform/IInput.h"
+#include "Rendering/ScreenBuffer.h"
 
+#include <array>
 #include <iostream>
 #include <optional>
 #include <stdexcept>
@@ -14,6 +19,61 @@
 
 namespace
 {
+    class StubInput final : public ss::IInput
+    {
+    public:
+        void Update() override
+        {
+        }
+
+        [[nodiscard]] bool IsDown(ss::InputKey key) const override
+        {
+            return isDown_[static_cast<std::size_t>(key)];
+        }
+
+        [[nodiscard]] bool WasPressed(ss::InputKey key) const override
+        {
+            return wasPressed_[static_cast<std::size_t>(key)];
+        }
+
+        [[nodiscard]] std::wstring_view GetTextInput() const noexcept override
+        {
+            return textInput_;
+        }
+
+        void SetFrame(ss::InputKey key, std::wstring text = {})
+        {
+            isDown_.fill(false);
+            wasPressed_.fill(false);
+            isDown_[static_cast<std::size_t>(key)] = true;
+            wasPressed_[static_cast<std::size_t>(key)] = true;
+            textInput_ = std::move(text);
+        }
+
+        void SetText(std::wstring text)
+        {
+            isDown_.fill(false);
+            wasPressed_.fill(false);
+            textInput_ = std::move(text);
+        }
+
+        void Clear()
+        {
+            isDown_.fill(false);
+            wasPressed_.fill(false);
+            textInput_.clear();
+        }
+
+    private:
+        std::array<
+            bool,
+            static_cast<std::size_t>(ss::InputKey::Count)> isDown_{};
+        std::array<
+            bool,
+            static_cast<std::size_t>(ss::InputKey::Count)> wasPressed_{};
+        std::wstring textInput_;
+    };
+
     void Expect(bool condition, const std::string& message)
     {
         if (!condition)
@@ -186,6 +246,64 @@ namespace
             {0.0f, 0.0f, 0.0f},
             difficulty,
             1.0f);
+    }
+
+    void TestForgeHeatRanges()
+    {
+        Expect(
+            ss::ForgeSession::IsOptimalHeat(64.0f) &&
+            ss::ForgeSession::IsOptimalHeat(68.0f) &&
+            ss::ForgeSession::IsOptimalHeat(72.0f),
+            "optimal forge heat range rejected a boundary or center");
+        Expect(
+            !ss::ForgeSession::IsOptimalHeat(63.9f) &&
+            !ss::ForgeSession::IsOptimalHeat(72.1f),
+            "optimal forge heat range accepted an outside value");
+        Expect(
+            ss::ForgeSession::IsResonantHeat(58.0f) &&
+            ss::ForgeSession::IsResonantHeat(78.0f),
+            "resonant forge heat range rejected a boundary");
+    }
+
+    void TestPresentationChatScrollsVisibleLines()
+    {
+        ss::PresentationChatOverlay chat;
+        ss::ScreenBuffer screen;
+        StubInput input;
+
+        Expect(
+            !chat.Update(input, screen),
+            "idle presentation chat consumed game input");
+
+        for (int index = 0; index < 7; ++index)
+        {
+            input.SetFrame(ss::InputKey::T, L"t");
+            Expect(
+                chat.Update(input, screen),
+                "presentation chat did not consume its open command");
+
+            input.SetText(L"note " + std::to_wstring(index));
+            Expect(
+                chat.Update(input, screen),
+                "presentation chat did not consume text editing");
+
+            input.SetFrame(ss::InputKey::Enter);
+            Expect(
+                chat.Update(input, screen),
+                "presentation chat did not consume submission");
+            input.Clear();
+        }
+
+        screen.Clear();
+        chat.Draw(screen, ss::Language::English);
+        const std::wstring frame = screen.BuildAnsiFrame();
+        Expect(
+            frame.find(L"note 0") == std::wstring::npos,
+            "presentation chat retained a line above visible capacity");
+        Expect(
+            frame.find(L"note 1") != std::wstring::npos &&
+            frame.find(L"note 6") != std::wstring::npos,
+            "presentation chat did not retain the six newest lines");
     }
 
     void TestDifficultyFailurePenaltyThresholds()
@@ -362,6 +480,16 @@ int main()
     RunTest(
         "SettlementAppliesOnce",
         TestSettlementAppliesOnce,
+        passedCount,
+        failedCount);
+    RunTest(
+        "PresentationChatScrollsVisibleLines",
+        TestPresentationChatScrollsVisibleLines,
+        passedCount,
+        failedCount);
+    RunTest(
+        "ForgeHeatRanges",
+        TestForgeHeatRanges,
         passedCount,
         failedCount);
     RunTest(

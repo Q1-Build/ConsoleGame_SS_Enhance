@@ -59,7 +59,8 @@ namespace ss
         }
 
         const float markerAccuracy = 1.0f - std::abs(marker_ - 0.5f) * 2.0f;
-        const float heatAccuracy = 1.0f - std::abs(heat_ - 68.0f) / 32.0f;
+        const float heatAccuracy =
+            1.0f - std::abs(heat_ - kIdealHeat) / kHeatAccuracySpan;
 
         // 리듬 조작 비중을 더 크게 두되 온도를 무시하면 최고 점수를 얻을 수 없게 한다.
         const float score = Clamp(

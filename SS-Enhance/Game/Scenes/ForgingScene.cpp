@@ -16,6 +16,7 @@
 #include <cassert>
 #include <iomanip>
 #include <sstream>
+#include <string_view>
 
 namespace ss
 {
@@ -161,22 +162,29 @@ namespace ss
             L"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀",
             Color::BrightBlack);
 
-        context_.hudRenderer.DrawProgressBar(
-            screen,
-            10,
-            21,
-            31,
-            heat / 100.0f,
-            bladeColor,
-            LocalizedText::Select(context_.language, L"온도   ", L"HEAT   "));
-        const bool isResonantHeat = heat >= 58.0f && heat <= 78.0f;
+        DrawHeatGauge(screen, heat, bladeColor);
+        const bool isOptimalHeat = ForgeSession::IsOptimalHeat(heat);
+        const bool isResonantHeat = ForgeSession::IsResonantHeat(heat);
         screen.Text(
             71,
             21,
-            isResonantHeat
-                ? LocalizedText::Select(context_.language, L"공명", L"RESONANT")
-                : LocalizedText::Select(context_.language, L"불안정", L"UNSTABLE"),
-            isResonantHeat ? Color::BrightGreen : Color::BrightRed);
+            isOptimalHeat
+                ? LocalizedText::Select(
+                    context_.language,
+                    L"최적 공명",
+                    L"OPTIMAL")
+                : (isResonantHeat
+                    ? LocalizedText::Select(
+                        context_.language,
+                        L"공명",
+                        L"RESONANT")
+                    : LocalizedText::Select(
+                        context_.language,
+                        L"불안정",
+                        L"UNSTABLE")),
+            isOptimalHeat
+                ? Color::BrightCyan
+                : (isResonantHeat ? Color::BrightGreen : Color::BrightRed));
 
         screen.Text(10, 24, LocalizedText::Select(
             context_.language, L"리듬   ", L"RHYTHM "), Color::BrightWhite);
@@ -251,6 +259,68 @@ namespace ss
     void ForgingScene::OnExit()
     {
         session_.reset();
+    }
+
+    void ForgingScene::DrawHeatGauge(
+        IScreen& screen,
+        float heat,
+        Color fillColor) const
+    {
+        constexpr int kGaugeX = 10;
+        constexpr int kGaugeY = 21;
+        constexpr int kGaugeWidth = 31;
+        const std::wstring_view label =
+            LocalizedText::Select(context_.language, L"온도   ", L"HEAT   ");
+        const int labelWidth = screen.MeasureText(label);
+        const int barX = kGaugeX + labelWidth + 1;
+        const int filledCells = heat <= 0.0f
+            ? 0
+            : std::min(
+                kGaugeWidth,
+                static_cast<int>(
+                    heat /
+                    100.0f *
+                    static_cast<float>(kGaugeWidth - 1) +
+                    0.5f) +
+                    1);
+        const int optimalStart = static_cast<int>(
+            ForgeSession::GetOptimalHeatMinimum() /
+            100.0f *
+            static_cast<float>(kGaugeWidth - 1) +
+            0.5f);
+        const int optimalEnd = static_cast<int>(
+            ForgeSession::GetOptimalHeatMaximum() /
+            100.0f *
+            static_cast<float>(kGaugeWidth - 1) +
+            0.5f);
+
+        screen.Text(kGaugeX, kGaugeY, label, Color::BrightWhite);
+        screen.Put(kGaugeX + labelWidth, kGaugeY, L'[', Color::BrightBlack);
+        for (int index = 0; index < kGaugeWidth; ++index)
+        {
+            const bool isFilled = index < filledCells;
+            const bool isOptimal = index >= optimalStart && index <= optimalEnd;
+            screen.Put(
+                barX + index,
+                kGaugeY,
+                isFilled ? L'█' : (isOptimal ? L'◆' : L'░'),
+                isOptimal
+                    ? Color::BrightCyan
+                    : (isFilled ? fillColor : Color::BrightBlack));
+        }
+        screen.Put(
+            barX + kGaugeWidth,
+            kGaugeY,
+            L']',
+            Color::BrightBlack);
+        screen.Text(
+            53,
+            kGaugeY,
+            LocalizedText::Select(
+                context_.language,
+                L"◆ 최적 64-72",
+                L"◆ IDEAL 64-72"),
+            Color::BrightCyan);
     }
 
     SceneTransition ForgingScene::ResolveForge()

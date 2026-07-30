@@ -16,8 +16,10 @@ namespace ss
         S,
         A,
         D,
+        T,
         B,
         Q,
+        Backspace,
         Count
     };
 }

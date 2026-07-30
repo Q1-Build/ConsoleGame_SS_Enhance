@@ -8,6 +8,7 @@ namespace ss
 {
     class ForgeSession;
     struct SceneContext;
+    enum class Color;
 
     /// 실시간 온도 조절과 세 번의 타격을 진행하고 강화 판정을 요청하는 장면이다.
     class ForgingScene final : public IScene
@@ -27,6 +28,7 @@ namespace ss
         void OnExit() override;
 
     private:
+        void DrawHeatGauge(IScreen& screen, float heat, Color fillColor) const;
         [[nodiscard]] SceneTransition ResolveForge();
 
         // 공유 서비스는 비소유하며 제련 세션은 이 장면이 단독 소유한다.

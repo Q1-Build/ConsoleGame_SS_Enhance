@@ -52,9 +52,9 @@ namespace ss
         std::optional<ForgeOutcome> lastOutcome;
         std::wstring notice;
 
-        // 첫 실행은 한국어와 보통 난이도이며 설정 장면에서 본게임 진입 전에 변경한다.
+        // 첫 실행은 한국어, 마스터 볼륨 100%와 보통 난이도이며 설정 장면에서 변경한다.
         Language language = Language::Korean;
-
+        int masterVolumePercent = 100;
         Difficulty difficulty = Difficulty::Normal;
     };
 }

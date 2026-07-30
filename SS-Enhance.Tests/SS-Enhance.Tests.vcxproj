@@ -64,6 +64,9 @@
     <ClCompile Include="..\SS-Enhance\Game\Domain\PlayerProgress.cpp" />
     <ClCompile Include="..\SS-Enhance\Game\Domain\ProgressionRules.cpp" />
     <ClCompile Include="..\SS-Enhance\Game\Domain\Sword.cpp" />
+    <ClCompile Include="..\SS-Enhance\Game\Scenes\LocalizedText.cpp" />
+    <ClCompile Include="..\SS-Enhance\Game\Scenes\PresentationChatOverlay.cpp" />
+    <ClCompile Include="..\SS-Enhance\Rendering\ScreenBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SS-Enhance.Tests.vcxproj.filters" />

@@ -9,10 +9,17 @@
 #include "Platform/IInput.h"
 #include "Rendering/IScreen.h"
 
+#include <algorithm>
 #include <string>
 
 namespace ss
 {
+    namespace
+    {
+        constexpr int kVolumeStepPercent = 10;
+        constexpr int kVolumeSegmentCount = 10;
+    }
+
     SettingsScene::SettingsScene(SceneContext& context)
         : context_(context)
     {
@@ -21,6 +28,8 @@ namespace ss
     void SettingsScene::OnEnter()
     {
         selectedItem_ = SettingItem::Language;
+        context_.audio.SetMasterVolume(
+            static_cast<float>(context_.masterVolumePercent) / 100.0f);
         context_.audio.PlayMusic(MusicTrack::Title);
     }
 
@@ -37,15 +46,17 @@ namespace ss
             return SceneTransition::To(SceneType::Title);
         }
 
-        // 위아래 입력은 항목을 고르고 좌우 입력은 선택한 값만 변경한다.
+        // 위아래 입력은 세 항목을 순서대로 순환하고 좌우 입력은 선택한 값만 변경한다.
         if (context_.input.WasPressed(InputKey::Up) ||
-            context_.input.WasPressed(InputKey::W) ||
-            context_.input.WasPressed(InputKey::Down) ||
+            context_.input.WasPressed(InputKey::W))
+        {
+            SelectPreviousItem();
+            context_.audio.PlaySound(SoundEffect::MenuMove);
+        }
+        if (context_.input.WasPressed(InputKey::Down) ||
             context_.input.WasPressed(InputKey::S))
         {
-            selectedItem_ = selectedItem_ == SettingItem::Language
-                ? SettingItem::Difficulty
-                : SettingItem::Language;
+            SelectNextItem();
             context_.audio.PlaySound(SoundEffect::MenuMove);
         }
         if (context_.input.WasPressed(InputKey::Left) ||
@@ -94,6 +105,9 @@ namespace ss
         const Color languageColor = selectedItem_ == SettingItem::Language
             ? Color::BrightYellow
             : Color::White;
+        const Color volumeColor = selectedItem_ == SettingItem::MasterVolume
+            ? Color::BrightYellow
+            : Color::White;
         const Color difficultyColor = selectedItem_ == SettingItem::Difficulty
             ? Color::BrightYellow
             : Color::White;
@@ -118,12 +132,43 @@ namespace ss
 
         screen.Text(
             27,
-            18,
+            16,
+            selectedItem_ == SettingItem::MasterVolume ? L"▶" : L" ",
+            volumeColor);
+        screen.Text(
+            31,
+            16,
+            LocalizedText::Select(
+                context_.language,
+                L"마스터 볼륨",
+                L"MASTER VOLUME"),
+            volumeColor);
+
+        std::wstring volumeSlider = L"◀  [";
+        const int filledSegments =
+            context_.masterVolumePercent / kVolumeStepPercent;
+        for (int index = 0; index < kVolumeSegmentCount; ++index)
+        {
+            volumeSlider += index < filledSegments ? L'█' : L'░';
+        }
+        volumeSlider += L"] ";
+        volumeSlider += std::to_wstring(context_.masterVolumePercent);
+        volumeSlider += L"%  ▶";
+        screen.CenterTextIn(
+            48,
+            78,
+            16,
+            volumeSlider,
+            volumeColor);
+
+        screen.Text(
+            27,
+            20,
             selectedItem_ == SettingItem::Difficulty ? L"▶" : L" ",
             difficultyColor);
         screen.Text(
             31,
-            18,
+            20,
             LocalizedText::Select(context_.language, L"난이도", L"DIFFICULTY"),
             difficultyColor);
         // 화살표와 값을 한 문자열로 묶어 난이도 이름 길이가 달라도 중심을 유지한다.
@@ -135,14 +180,14 @@ namespace ss
         screen.CenterTextIn(
             48,
             78,
-            18,
+            20,
             difficultyValue,
             difficultyColor);
 
         screen.CenterTextIn(
             19,
             84,
-            22,
+            23,
             LocalizedText::GetDifficultyDescription(
                 context_.language,
                 context_.difficulty),
@@ -171,6 +216,38 @@ namespace ss
     {
     }
 
+    void SettingsScene::SelectPreviousItem()
+    {
+        switch (selectedItem_)
+        {
+        case SettingItem::Language:
+            selectedItem_ = SettingItem::Difficulty;
+            break;
+        case SettingItem::MasterVolume:
+            selectedItem_ = SettingItem::Language;
+            break;
+        case SettingItem::Difficulty:
+            selectedItem_ = SettingItem::MasterVolume;
+            break;
+        }
+    }
+
+    void SettingsScene::SelectNextItem()
+    {
+        switch (selectedItem_)
+        {
+        case SettingItem::Language:
+            selectedItem_ = SettingItem::MasterVolume;
+            break;
+        case SettingItem::MasterVolume:
+            selectedItem_ = SettingItem::Difficulty;
+            break;
+        case SettingItem::Difficulty:
+            selectedItem_ = SettingItem::Language;
+            break;
+        }
+    }
+
     void SettingsScene::SelectPreviousValue()
     {
         if (selectedItem_ == SettingItem::Language)
@@ -178,6 +255,16 @@ namespace ss
             context_.language = context_.language == Language::Korean
                 ? Language::English
                 : Language::Korean;
+            return;
+        }
+
+        if (selectedItem_ == SettingItem::MasterVolume)
+        {
+            context_.masterVolumePercent = std::max(
+                0,
+                context_.masterVolumePercent - kVolumeStepPercent);
+            context_.audio.SetMasterVolume(
+                static_cast<float>(context_.masterVolumePercent) / 100.0f);
             return;
         }
 
@@ -203,6 +290,16 @@ namespace ss
             context_.language = context_.language == Language::Korean
                 ? Language::English
                 : Language::Korean;
+            return;
+        }
+
+        if (selectedItem_ == SettingItem::MasterVolume)
+        {
+            context_.masterVolumePercent = std::min(
+                100,
+                context_.masterVolumePercent + kVolumeStepPercent);
+            context_.audio.SetMasterVolume(
+                static_cast<float>(context_.masterVolumePercent) / 100.0f);
             return;
         }
 

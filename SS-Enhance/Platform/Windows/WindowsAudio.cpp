@@ -8,8 +8,10 @@
 #undef PlaySound
 #endif
 
+#include <algorithm>
 #include <array>
 #include <cassert>
+#include <cmath>
 #include <system_error>
 #include <string>
 
@@ -20,6 +22,7 @@ namespace ss
     namespace
     {
         constexpr wchar_t kMusicAlias[] = L"ss_enhance_bgm";
+        constexpr wchar_t kSoundAlias[] = L"ss_enhance_sfx";
     }
 
     WindowsAudio::WindowsAudio()
@@ -49,11 +52,19 @@ namespace ss
             return;
         }
 
-        // mpegvideo 드라이버는 WAV 반복 명령을 지원해 효과음용 PlaySound와 재생 경로를 분리한다.
+        // 별도 MCI 별칭을 사용해 효과음과 독립된 반복 재생·음량 제어 경로를 유지한다.
         const std::wstring openCommand =
             L"open \"" + path.wstring() + L"\" type mpegvideo alias " + kMusicAlias;
         if (mciSendStringW(openCommand.c_str(), nullptr, 0, nullptr) != 0)
         {
+            return;
+        }
+
+        if (!ApplyVolume(kMusicAlias))
+        {
+            const std::wstring closeCommand =
+                std::wstring(L"close ") + kMusicAlias;
+            mciSendStringW(closeCommand.c_str(), nullptr, 0, nullptr);
             return;
         }
 
@@ -87,6 +98,7 @@ namespace ss
 
     void WindowsAudio::PlaySound(SoundEffect effect)
     {
+        StopSounds();
         const std::filesystem::path path = GetEffectPath(effect);
         std::error_code fileError;
         if (!std::filesystem::exists(path, fileError) || fileError)
@@ -94,15 +106,55 @@ namespace ss
             return;
         }
 
-        ::PlaySoundW(
-            path.c_str(),
-            nullptr,
-            SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
+        const std::wstring openCommand =
+            L"open \"" + path.wstring() + L"\" type mpegvideo alias " + kSoundAlias;
+        if (mciSendStringW(openCommand.c_str(), nullptr, 0, nullptr) != 0)
+        {
+            return;
+        }
+        hasActiveSound_ = true;
+
+        if (!ApplyVolume(kSoundAlias))
+        {
+            StopSounds();
+            return;
+        }
+
+        const std::wstring playCommand =
+            std::wstring(L"play ") + kSoundAlias;
+        if (mciSendStringW(playCommand.c_str(), nullptr, 0, nullptr) != 0)
+        {
+            StopSounds();
+        }
     }
 
     void WindowsAudio::StopSounds()
     {
-        ::PlaySoundW(nullptr, nullptr, 0);
+        if (!hasActiveSound_)
+        {
+            return;
+        }
+
+        const std::wstring stopCommand =
+            std::wstring(L"stop ") + kSoundAlias;
+        const std::wstring closeCommand =
+            std::wstring(L"close ") + kSoundAlias;
+        mciSendStringW(stopCommand.c_str(), nullptr, 0, nullptr);
+        mciSendStringW(closeCommand.c_str(), nullptr, 0, nullptr);
+        hasActiveSound_ = false;
+    }
+
+    void WindowsAudio::SetMasterVolume(float volume)
+    {
+        masterVolume_ = std::max(0.0f, std::min(volume, 1.0f));
+        if (currentMusic_.has_value())
+        {
+            static_cast<void>(ApplyVolume(kMusicAlias));
+        }
+        if (hasActiveSound_)
+        {
+            static_cast<void>(ApplyVolume(kSoundAlias));
+        }
     }
 
     std::filesystem::path WindowsAudio::GetExecutableDirectory()
@@ -187,5 +239,18 @@ namespace ss
         }
         assert(false && "지원하지 않는 효과음이다.");
         return {};
+    }
+
+    bool WindowsAudio::ApplyVolume(const wchar_t* alias) const
+    {
+        constexpr int kMciMaximumVolume = 1000;
+        const int mciVolume = static_cast<int>(
+            std::lround(masterVolume_ * static_cast<float>(kMciMaximumVolume)));
+        const std::wstring volumeCommand =
+            std::wstring(L"setaudio ") +
+            alias +
+            L" volume to " +
+            std::to_wstring(mciVolume);
+        return mciSendStringW(volumeCommand.c_str(), nullptr, 0, nullptr) == 0;
     }
 }

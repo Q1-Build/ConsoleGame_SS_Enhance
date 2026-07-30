@@ -94,6 +94,9 @@
     <ClCompile Include="Game\Scenes\LocalizedText.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scenes\PresentationChatOverlay.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Scenes\ResultScene.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
@@ -202,6 +205,9 @@
       <Filter>Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scenes\LocalizedText.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\PresentationChatOverlay.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scenes\ResultScene.h">

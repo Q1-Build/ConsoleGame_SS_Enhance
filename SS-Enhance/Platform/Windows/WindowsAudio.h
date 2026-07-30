@@ -24,14 +24,18 @@ namespace ss
         void StopMusic() override;
         void PlaySound(SoundEffect effect) override;
         void StopSounds() override;
+        void SetMasterVolume(float volume) override;
 
     private:
         [[nodiscard]] static std::filesystem::path GetExecutableDirectory();
         [[nodiscard]] std::filesystem::path GetMusicPath(MusicTrack track) const;
         [[nodiscard]] std::filesystem::path GetEffectPath(SoundEffect effect) const;
+        [[nodiscard]] bool ApplyVolume(const wchar_t* alias) const;
 
         // 배포된 실행 파일을 기준으로 Assets/Audio를 찾고 현재 MCI 별칭의 수명을 추적한다.
         std::filesystem::path audioDirectory_;
         std::optional<MusicTrack> currentMusic_;
+        bool hasActiveSound_ = false;
+        float masterVolume_ = 1.0f;
     };
 }

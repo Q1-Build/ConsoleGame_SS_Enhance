@@ -81,6 +81,8 @@ SS-Enhance/
       ├─ GameHudRenderer.cpp
       ├─ InputOverlay.h
       ├─ InputOverlay.cpp
+      ├─ PresentationChatOverlay.h
+      ├─ PresentationChatOverlay.cpp
       ├─ LocalizedText.h
       ├─ LocalizedText.cpp
       ├─ SettingsScene.h
@@ -114,13 +116,13 @@ SS-Enhance.Tests/
 | Core | `Language` | 화면 표시 언어 값 |
 | Core | `IRandomProvider`, `RandomProvider` | 난수 계약과 메르센 트위스터 구현 |
 | Assets | `Audio/Bgm`, `Audio/Sfx` | 실행 파일과 함께 배포하는 배경음악·효과음 WAV 자산 |
-| Platform | `MusicTrack`, `SoundEffect`, `IAudio` | 플랫폼과 파일 이름에 독립적인 BGM·효과음 식별 값과 재생 계약 |
+| Platform | `MusicTrack`, `SoundEffect`, `IAudio` | 플랫폼과 파일 이름에 독립적인 BGM·효과음 식별 값, 재생과 마스터 볼륨 계약 |
 | Rendering | `Color`, `Cell` | ANSI 색상과 전각 연속 칸을 포함한 화면 셀 값 |
 | Rendering | `IScreen`, `ScreenBuffer`, `ScreenViewport` | 그리기 계약, 전각 문자 폭 처리, 전체 버퍼와 장면 영역 격리 |
 | Rendering | `IFramePresenter` | 완성된 프레임 출력 계약 |
-| Platform | `InputKey`, `IInput` | 운영체제와 독립적인 게임 입력 값과 계약 |
+| Platform | `InputKey`, `IInput` | 운영체제와 독립적인 게임 키·완성 문자 입력 값과 계약 |
 | Platform/Console | `ConsoleSession` | Windows 콘솔 초기화와 RAII 복원 |
-| Platform/Console | `ConsoleInput` | Windows 키 상태를 게임 입력으로 변환 |
+| Platform/Console | `ConsoleInput` | Windows 키 상태와 IME 완성 문자를 게임 입력으로 변환 |
 | Platform/Console | `ConsolePresenter` | ANSI 프레임을 Windows 콘솔에 출력 |
 | Platform/Windows | `WindowsAudio` | WinMM 기반 반복 BGM, 비동기 효과음과 음원 파일 경로 관리 |
 | Game/Domain | `Sword` | 검의 강화 단계와 등급 관리 |
@@ -138,9 +140,10 @@ SS-Enhance.Tests/
 | Game/Scenes | `SceneContext` | 공유 진행·설정, 장면 간 임시 결과와 서비스의 비소유 참조 |
 | Game/Scenes | `GameHudRenderer` | 공통 배경, HUD와 검 형상 렌더링 |
 | Game/Scenes | `InputOverlay` | 공통 조작 안내와 입력 강조 가상 키보드 |
+| Game/Scenes | `PresentationChatOverlay` | 전역 채팅 메시지 편집, 표시 줄 보관과 우측 하단 채팅 렌더링 |
 | Game/Scenes | `LocalizedText` | 현재 언어에 맞는 UI 문구와 검 이름 선택 |
 | Game/Scenes | `TitleScene` | 한국어 기본 제목 연출과 설정 화면 진입 |
-| Game/Scenes | `SettingsScene` | 표시 언어와 게임 난이도 선택 |
+| Game/Scenes | `SettingsScene` | 표시 언어, 마스터 볼륨과 게임 난이도 선택 |
 | Game/Scenes | `BattleScene` | 보스 전투 입력, 예고·흔들림 연출, 승패와 보상 반영 |
 | Game/Scenes | `BossRenderer` | 보스별 아스키 형상, 대표 색상과 등장·격파 연출 |
 | Game/Scenes | `EndingScene` | 최종 기록과 완성된 검 표시 |
@@ -180,8 +183,8 @@ SS-Enhance.Tests/
 ### `Platform/Windows`
 
 - 콘솔 출력과 무관한 Windows 전용 서비스 구현을 격리한다.
-- `WindowsAudio`는 MCI 별칭으로 반복 BGM을, `PlaySound`로 효과음을 재생해 두 종류의 수명과 재생 경로를 분리한다.
-- 효과음은 한 채널을 사용하므로 새 효과음 요청은 현재 효과음을 교체하고 배경음악에는 영향을 주지 않는다.
+- `WindowsAudio`는 BGM과 효과음에 별도 MCI 별칭을 사용해 두 종류의 수명과 재생 경로를 분리한다.
+- 두 채널에는 같은 마스터 볼륨을 즉시 적용하며 새 효과음 요청은 현재 효과음만 교체한다.
 - 실행 파일 아래 `Assets/Audio/Bgm`과 `Assets/Audio/Sfx`에서 음원을 찾는다.
 - 음원 누락이나 장치 재생 실패는 게임 규칙과 장면 전환을 막지 않고 무음으로 복구한다.
 
@@ -213,6 +216,7 @@ SS-Enhance.Tests/
 - 장면은 `IAudio`, `MusicTrack`, `SoundEffect`만 사용하며 Windows API, 음원 경로와 파일 형식을 알지 못한다.
 - 현지화된 문자열과 검 이름은 화면 표현 책임으로 유지하고 Domain에 넣지 않는다.
 - `InputOverlay`는 모든 장면 뒤에 그려지며 입력 규칙을 변경하지 않고 발표용 피드백만 제공한다.
+- `PresentationChatOverlay`는 모든 장면 위에 유지되며 편집 중 게임 입력과 시간 갱신을 차단한다.
 
 ## 의존성 방향
 

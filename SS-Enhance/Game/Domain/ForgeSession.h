@@ -33,6 +33,30 @@ namespace ss
         [[nodiscard]] float GetImpactFlash() const noexcept;
         [[nodiscard]] const std::vector<float>& GetStrikeScores() const noexcept;
 
+        /// 높은 온도 정확도를 얻는 64~72도 최적 공명 구간인지 반환한다.
+        [[nodiscard]] static constexpr bool IsOptimalHeat(float heat) noexcept
+        {
+            return heat >= kOptimalHeatMinimum && heat <= kOptimalHeatMaximum;
+        }
+
+        /// 타격 점수를 안정적으로 얻는 58~78도 공명 구간인지 반환한다.
+        [[nodiscard]] static constexpr bool IsResonantHeat(float heat) noexcept
+        {
+            return heat >= kResonantHeatMinimum && heat <= kResonantHeatMaximum;
+        }
+
+        /// 최적 공명 구간의 최저 온도를 반환한다.
+        [[nodiscard]] static constexpr float GetOptimalHeatMinimum() noexcept
+        {
+            return kOptimalHeatMinimum;
+        }
+
+        /// 최적 공명 구간의 최고 온도를 반환한다.
+        [[nodiscard]] static constexpr float GetOptimalHeatMaximum() noexcept
+        {
+            return kOptimalHeatMaximum;
+        }
+
     private:
         [[nodiscard]] static constexpr float Clamp(
             float value,
@@ -41,6 +65,14 @@ namespace ss
         {
             return value < minValue ? minValue : (value > maxValue ? maxValue : value);
         }
+
+        // 68도를 중심으로 점수를 계산하며 UI 안내 범위도 같은 기준에서 파생한다.
+        static constexpr float kIdealHeat = 68.0f;
+        static constexpr float kHeatAccuracySpan = 32.0f;
+        static constexpr float kOptimalHeatMinimum = 64.0f;
+        static constexpr float kOptimalHeatMaximum = 72.0f;
+        static constexpr float kResonantHeatMinimum = 58.0f;
+        static constexpr float kResonantHeatMaximum = 78.0f;
 
         // 진입 시 고정된 제련 조건과 프레임마다 변하는 실시간 상태다.
         int swordLevel_ = 0;

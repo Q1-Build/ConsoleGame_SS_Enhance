@@ -65,16 +65,22 @@ namespace ss
             // 디버거 중단이나 창 이동 뒤의 큰 시간 값이 게임 상태를 건너뛰지 않게 제한한다.
             deltaSeconds = std::min(deltaSeconds, 0.05f);
 
-            // 입력 → 공통 효과 → 장면 순서로 갱신해 모든 장면이 같은 프레임 상태를 보게 한다.
+            // 발표 설명을 입력하는 동안 같은 키가 게임 조작으로 전달되지 않게 장면 갱신을 멈춘다.
             input_.Update();
+            const bool isChatInputConsumed =
+                presentationChatOverlay_.Update(input_, screen_);
             inputOverlay_.Update(deltaSeconds, input_);
-            sceneContext_.worldTimeSeconds += deltaSeconds;
-            particles_.Update(deltaSeconds);
-
-            const SceneTransition transition = currentScene_->Update(deltaSeconds);
-            if (transition.isRequested)
+            if (!isChatInputConsumed)
             {
-                ChangeScene(transition.target);
+                sceneContext_.worldTimeSeconds += deltaSeconds;
+                particles_.Update(deltaSeconds);
+
+                const SceneTransition transition =
+                    currentScene_->Update(deltaSeconds);
+                if (transition.isRequested)
+                {
+                    ChangeScene(transition.target);
+                }
             }
             if (!isRunning_)
             {
@@ -86,6 +92,7 @@ namespace ss
             currentScene_->Render(gameScreen_);
             particles_.Draw(gameScreen_);
             inputOverlay_.Draw(screen_, sceneContext_.language);
+            presentationChatOverlay_.Draw(screen_, sceneContext_.language);
 
             // 여러 번 출력하면 깜빡임이 생기므로 완성된 프레임을 한 번에 전달한다.
             const std::wstring frame = screen_.BuildAnsiFrame();

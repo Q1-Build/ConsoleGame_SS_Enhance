@@ -45,7 +45,7 @@
     /p:Configuration=Debug `
     /p:Platform=x64
 
-& .\SS-Enhance.Tests\x64\Debug\SS-Enhance.Tests.exe
+& .\x64\Debug\SS-Enhance.Tests.exe
 ```
 
 ## 완료 조건
