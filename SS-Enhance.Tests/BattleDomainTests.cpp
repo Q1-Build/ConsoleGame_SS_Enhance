@@ -65,6 +65,7 @@ namespace
                 {{1.0f, 0.6f, 20, ss::AttackTelegraph::Honest}}),
             4);
 
+        // 완벽 방어 구간보다 일찍 입력해 일반 방어가 피해 감소 규칙만 적용하는지 확인한다.
         static_cast<void>(session.Update(0.5f));
         const std::optional<ss::GuardQuality> guard = session.TryGuard();
         Expect(guard == ss::GuardQuality::Guarded, "standard guard was not prepared");
@@ -87,6 +88,7 @@ namespace
                 }),
             4);
 
+        // 가짜 예고는 피해 없이 끝나되 다음 치명타가 빠른 후속 공격으로 연결되어야 한다.
         const std::optional<ss::BossAttackResult> feint = session.Update(0.5f);
         Expect(feint.has_value() && feint->wasFeint, "feint step was not reported");
         Expect(session.GetPlayerHealth() == 100, "feint damaged the player");
@@ -121,6 +123,7 @@ namespace
 
     void TestBossDefinitionsHaveDistinctSequences()
     {
+        // 보스별 공격 수와 속임수 위치를 고정해 데이터 정의가 같은 패턴으로 퇴행하지 않게 한다.
         const ss::BossDefinition ember =
             ss::BattleRules::GetBossDefinition(ss::BossType::EmberWarden);
         const ss::BossDefinition storm =
@@ -138,6 +141,7 @@ namespace
 
     void TestSettlementAppliesOnce()
     {
+        // 장면 갱신에서 정산이 반복 호출되어도 보상과 진행 기록은 한 번만 반영되어야 한다.
         ss::PlayerProgress victoryProgress;
         ss::BattleSettlement victorySettlement;
         const int initialGold = victoryProgress.GetGold();
@@ -156,6 +160,7 @@ namespace
             "victory fragments duplicated");
         Expect(victoryProgress.GetBossVictoryCount() == 1, "boss victory duplicated");
 
+        // 패배 정산도 같은 일회성 계약을 지켜 강화 단계가 중복 감소하지 않는지 함께 검증한다.
         ss::PlayerProgress defeatProgress;
         defeatProgress.EnhanceSword(4);
         ss::BattleSettlement defeatSettlement;
@@ -185,6 +190,7 @@ namespace
 
     void TestDifficultyFailurePenaltyThresholds()
     {
+        // 난이도별 페널티 시작 단계의 직전 값과 경계값을 함께 검사해 기준 변경을 탐지한다.
         ss::PlayerProgress hardSafeProgress;
         const ss::ForgeOutcome hardSafe = ResolveFailedForge(
             hardSafeProgress,
@@ -221,6 +227,7 @@ namespace
             normalPenalty.failureConsequence == ss::FailureConsequence::FragmentConsumed,
             "normal penalty did not start at +9");
 
+        // 보호용 기억 조각이 없을 때만 단계 하락으로 이어지는 페널티 우선순위를 확인한다.
         ss::PlayerProgress normalLossProgress;
         static_cast<void>(normalLossProgress.ConsumeFragment());
         static_cast<void>(normalLossProgress.ConsumeFragment());
@@ -256,6 +263,7 @@ namespace
 
     void TestProgressionBoundaries()
     {
+        // 보스 승리 횟수에 따른 +4, +8, +12 상한을 경계 밖 입력까지 포함해 고정한다.
         Expect(
             ss::ProgressionRules::GetSwordLevelCap(-1) == 4,
             "negative victory count changed cap");
@@ -272,6 +280,7 @@ namespace
             ss::ProgressionRules::GetSwordLevelCap(3) == 12,
             "final cap exceeded +12");
 
+        // 각 강화 구간의 보스 해금과 최종 보스 이후 엔딩 전환이 같은 진행 순서를 따르는지 검증한다.
         Expect(
             !ss::ProgressionRules::GetAvailableBoss(3, 0).has_value(),
             "ember boss unlocked below +4");
@@ -305,6 +314,7 @@ namespace
         int& passedCount,
         int& failedCount)
     {
+        // 외부 테스트 프레임워크 없이 예외를 실패 신호로 사용해 모든 테스트를 끝까지 실행한다.
         try
         {
             testFunction();
